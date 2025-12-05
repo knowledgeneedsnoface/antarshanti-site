@@ -5,19 +5,17 @@ import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useEffect } from "react";
 
 /**
- * Animated mandala SVG inside the hero.
- * - slow rotation (CSS transform)
- * - subtle SVG stroke-draw animation using strokeDashoffset
- * - low opacity so it reads as a decorative motif
- *
- * Tweakable variables are at the top of the component.
+ * HeroSection with animated SVG mandala and BREATHING GLOW.
+ * Paste this over app/(components)/HeroSection.tsx
  */
 
 export default function HeroSection() {
   // tweakables:
-  const MANDALA_OPACITY = 0.12; // overall opacity of the motif
+  const MANDALA_OPACITY = 0.12; // overall motif opacity
   const ROTATION_DURATION = 28; // seconds (slow rotation)
   const DRAW_DURATION = 6; // seconds for initial stroke draw
+  const GLOW_OPACITY = 0.17; // peak glow opacity
+  const GLOW_DURATION = 3.8; // seconds for one breath cycle
 
   // subtle parallax on mouse move:
   const x = useMotionValue(0);
@@ -40,7 +38,7 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full h-[70vh] md:h-[80vh] overflow-hidden rounded-b-3xl shadow-md">
-      {/* animated background image with parallax */}
+      {/* background image with parallax */}
       <motion.div
         style={{ x: imgX, y: imgY }}
         className="absolute inset-0 -z-20 will-change-transform"
@@ -56,28 +54,44 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
       </motion.div>
 
-      {/* Animated SVG Mandala (decorative) */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: MANDALA_OPACITY, scale: 1 }}
-        transition={{ duration: 1.2, ease: "easeOut" }}
-        className="pointer-events-none absolute right-8 top-10 hidden md:block"
-        style={{ transformOrigin: "center center" }}
-      >
+      {/* BREATHING GLOW + Animated SVG Mandala (decorative) */}
+      <div className="pointer-events-none absolute right-8 top-10 hidden md:block" style={{ width: 240, height: 240 }}>
+        {/* breathing glow layer (radial gradient) */}
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0.0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="absolute inset-0 flex items-center justify-center"
+          style={{ transformOrigin: "center center" }}
+        >
+          <div
+            className="mandala-glow"
+            style={{
+              position: "absolute",
+              width: 240,
+              height: 240,
+              borderRadius: "50%",
+              pointerEvents: "none",
+              zIndex: 0,
+            }}
+          />
+        </motion.div>
+
         {/* Rotation wrapper */}
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, ease: "linear", duration: ROTATION_DURATION }}
-          className="will-change-transform"
-          style={{ width: 220, height: 220 }}
+          className="will-change-transform relative z-10 flex items-center justify-center"
+          style={{ width: 240, height: 240 }}
           aria-hidden
         >
           {/* SVG mandala */}
           <svg viewBox="0 0 200 200" width="220" height="220" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden>
             <defs>
               <linearGradient id="g1" x1="0" x2="1">
-                <stop offset="0%" stopColor="#F6E7C0" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#E9B97A" stopOpacity="0.5" />
+                <stop offset="0%" stopColor="#F6E7C0" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#E9B97A" stopOpacity="0.55" />
               </linearGradient>
             </defs>
 
@@ -97,7 +111,7 @@ export default function HeroSection() {
               style={{ opacity: 0.95 }}
             />
 
-            {/* Radiating petals (repeat pattern) */}
+            {/* Radiating petals */}
             {Array.from({ length: 12 }).map((_, i) => {
               const angle = (i * 30) * (Math.PI / 180);
               const x1 = 100 + Math.cos(angle) * 52;
@@ -121,7 +135,7 @@ export default function HeroSection() {
               );
             })}
 
-            {/* Inner concentric decorative ring */}
+            {/* Inner concentric ring */}
             <motion.circle
               cx="100"
               cy="100"
@@ -147,7 +161,7 @@ export default function HeroSection() {
             />
           </svg>
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* Heading block */}
       <div className="absolute inset-0 flex items-end md:items-center">
@@ -211,6 +225,28 @@ export default function HeroSection() {
       >
         ✨ Quick buy
       </motion.a>
+
+      {/* breathing glow CSS (inlined for clarity) */}
+      <style jsx>{`
+        .mandala-glow {
+          background: radial-gradient(circle at 50% 40%, rgba(250,200,120, ${GLOW_OPACITY}) 0%, rgba(250,200,120, ${GLOW_OPACITY * 0.6}) 35%, rgba(250,200,120,0.06) 55%, transparent 80%);
+          filter: blur(26px);
+          transform: scale(0.96);
+          animation: mandala-breathe ${GLOW_DURATION}s ease-in-out infinite;
+          will-change: transform, opacity, filter;
+        }
+
+        @keyframes mandala-breathe {
+          0% { transform: scale(0.96); opacity: 0.75; filter: blur(20px); }
+          50% { transform: scale(1.03); opacity: 1; filter: blur(28px); }
+          100% { transform: scale(0.96); opacity: 0.75; filter: blur(20px); }
+        }
+
+        /* small responsive tweak */
+        @media (max-width: 768px) {
+          .mandala-glow { display: none; }
+        }
+      `}</style>
     </section>
   );
 }
