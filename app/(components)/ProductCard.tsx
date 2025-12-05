@@ -1,16 +1,19 @@
 "use client";
 import React, { useState } from "react";
 import { useCart } from "./CartContext";
+import { useRouter } from "next/navigation";
 
 export default function ProductCard() {
   const { add } = useCart();
   const [qty, setQty] = useState(1);
+  const router = useRouter();
 
   const product = { id: "antarshanti-30", name: "AntarShanti – 30 Days Kit", price: 1299 };
 
   function addToCart() {
     add({ id: product.id, name: product.name, price: product.price, qty });
-    window.location.href = "/checkout";
+    // Client-side navigation preserves context
+    router.push("/checkout");
   }
 
   return (
@@ -18,7 +21,12 @@ export default function ProductCard() {
       <div className="mx-auto max-w-4xl px-4">
         <div className="grid gap-6 md:grid-cols-2">
           <div className="rounded-2xl border p-6">
-            <div className="h-80 w-full bg-gray-100" />
+            <img
+src="/flatlay.jpg"
+  alt="AntarShanti Box"
+  className="w-full h-80 object-cover rounded-xl"
+/>
+
             <p className="mt-4 text-sm text-gray-600">AntarShanti Box preview</p>
           </div>
 
