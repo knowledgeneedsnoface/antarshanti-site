@@ -77,8 +77,9 @@ export default function HealingPromise() {
                 transition={{
                   duration: 0.8,
                   delay: 0.2 * index,
-                  viewport: { once: true }
+                  
                 }}
+                
                 whileHover={{
                   scale: 1.05,
                   rotateY: hoveredCard === benefit.id ? 5 : 0,
@@ -91,6 +92,7 @@ export default function HealingPromise() {
                     behavior: "smooth",
                   });
                 }}
+                viewport={{ once: true }}
               >
                 {/* Energy field glow */}
                 <motion.div
