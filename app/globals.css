@@ -1,33 +1,107 @@
 @import "tailwindcss";
 
+/* Ultra-minimal spiritual design system */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --saffron-aura: #F59E0B;
+  --lotus-white: #FFFFFF;
+  --incense-grey: #6B7280;
+  --spiritual-black: #1F2937;
+  --amber-glow: #FCD34D;
+  --copper-depth: #92400E;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Crimson Text', serif;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  color: var(--spiritual-black);
 }
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-html { scroll-behavior: smooth; }
-body { @apply bg-stone-50 text-stone-900 antialiased; }
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.5);
+}
+
+/* Custom gradient utilities */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+/* Smooth focus transitions */
+input:focus, textarea:focus, button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Spiritual breathing animation */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.breathe {
+  animation: breathe 6s ease-in-out infinite;
+}
+
+/* Sacred text styling */
+.sacred-text {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  color: var(--copper-depth);
+  letter-spacing: 0.02em;
+}
+
+/* Energy field glow */
+.energy-glow {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.energy-glow:hover {
+  box-shadow: 0 0 40px rgba(245, 158, 11, 0.5);
+}
+
+/* Hide scrollbar for horizontal scroll sections */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom selection colors */
+::selection {
+  background: rgba(245, 158, 11, 0.3);
+  color: var(--spiritual-black);
+}
 

@@ -1,8 +1,21 @@
 // app/layout.tsx
 import "./globals.css";
-import { Inter } from "next/font/google";
-import { CartProvider } from "./(components)/CartContext"; // path must match your folder
-const inter = Inter({ subsets: ["latin"] });
+import { Inter, Crimson_Text } from "next/font/google";
+import { CartProvider } from "./(components)/CartContext";
+
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap"
+});
+
+const crimsonText = Crimson_Text({ 
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  variable: "--font-crimson",
+  display: "swap"
+});
 
 export const metadata = {
   title: "AntarShanti",
@@ -11,7 +24,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${crimsonText.variable}`}>
       <body className={inter.className}>
         <CartProvider>
           {children}
