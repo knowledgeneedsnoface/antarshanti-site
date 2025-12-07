@@ -20,7 +20,8 @@ const JOURNEY_NODES = [
     type: "shrine",
     title: "Welcome to AntarShanti",
     subtitle: "A 10-minute daily ritual for inner peace",
-    description: "Discover how ancient puja rituals become modern self-therapy. Experience grounding, peace, and clarity through conscious daily practice.",
+    description:
+      "Discover how ancient puja rituals become modern self-therapy. Experience grounding, peace, and clarity through conscious daily practice.",
     image: "/hero.jpg",
     color: "#d97706",
   },
@@ -32,7 +33,8 @@ const JOURNEY_NODES = [
     type: "shrine",
     title: "Puja as Meditation",
     subtitle: "Sacred practice, modern approach",
-    description: "Puja isn't about religion—it's about presence. Light incense, arrange sacred items, and create 10 minutes of pure mindfulness each day.",
+    description:
+      "Puja isn't about religion—it's about presence. Light incense, arrange sacred items, and create 10 minutes of pure mindfulness each day.",
     image: "/lifestyle.jpg",
     color: "#ea580c",
   },
@@ -44,7 +46,8 @@ const JOURNEY_NODES = [
     type: "shrine",
     title: "Your 30-Day Journey",
     subtitle: "Day 1 → Day 30: Transform your mornings",
-    description: "Start with 5 minutes, build to 10. Each day, the ritual deepens. By day 30, this becomes your anchor of calm.",
+    description:
+      "Start with 5 minutes, build to 10. Each day, the ritual deepens. By day 30, this becomes your anchor of calm.",
     image: "/flatlay.jpg",
     color: "#f59e0b",
   },
@@ -56,7 +59,8 @@ const JOURNEY_NODES = [
     type: "benefit",
     title: "Reduce Anxiety",
     subtitle: "Calm your nervous system",
-    description: "Sacred rituals activate your parasympathetic nervous system, reducing cortisol and bringing immediate calm to your mind and body.",
+    description:
+      "Sacred rituals activate your parasympathetic nervous system, reducing cortisol and bringing immediate calm to your mind and body.",
     image: "/benefit1.jpg",
     color: "#fb923c",
   },
@@ -68,7 +72,8 @@ const JOURNEY_NODES = [
     type: "benefit",
     title: "Daily Focus",
     subtitle: "Start with clarity & intention",
-    description: "Morning rituals prime your mind for the day ahead. Build mental clarity, sharpen focus, and set powerful daily intentions.",
+    description:
+      "Morning rituals prime your mind for the day ahead. Build mental clarity, sharpen focus, and set powerful daily intentions.",
     image: "/benefit2.jpg",
     color: "#fbbf24",
   },
@@ -80,7 +85,8 @@ const JOURNEY_NODES = [
     type: "benefit",
     title: "Screen-Free Pause",
     subtitle: "Digital detox, daily reset",
-    description: "Create a sacred offline moment. Disconnect from screens and notifications. Reconnect with your deepest self through tangible, sensory practice.",
+    description:
+      "Create a sacred offline moment. Disconnect from screens and notifications. Reconnect with your deepest self through tangible, sensory practice.",
     image: "/benefit3.jpg",
     color: "#f59e0b",
   },
@@ -92,7 +98,8 @@ const JOURNEY_NODES = [
     type: "product",
     title: "Your Complete Ritual Kit",
     subtitle: "Everything you need for 30 days",
-    description: "Premium incense sticks, brass holder, sacred items, and a guided practice journal. Eco-friendly, handcrafted, ready to begin.",
+    description:
+      "Premium incense sticks, brass holder, sacred items, and a guided practice journal. Eco-friendly, handcrafted, ready to begin.",
     image: "/packet.jpg",
     color: "#d97706",
   },
@@ -104,7 +111,8 @@ const JOURNEY_NODES = [
     type: "checkout",
     title: "Begin Your Journey",
     subtitle: "₹1,299 • 30 Days • Free Delivery",
-    description: "Start your transformation today. Cash on delivery available. Feel the difference within 7 days, or your money back.",
+    description:
+      "Start your transformation today. Cash on delivery available. Feel the difference within 7 days, or your money back.",
     image: "/unbox.jpg",
     color: "#16a34a",
   },
@@ -177,9 +185,16 @@ function SpiritualNode({
   onClick: () => void;
   isFocused: boolean;
 }) {
-  const groupRef = useRef<THREE.Group>(null);
+  const groupRef = useRef<THREE.Group | null>(null);
   const texture = useTexture(data.image);
-  texture.colorSpace = THREE.SRGBColorSpace;
+  // ensure correct color space if using newer three versions
+  try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    texture.colorSpace = THREE.SRGBColorSpace;
+  } catch {
+    // ignore if property doesn't exist in older three versions
+  }
 
   const position = angleToPosition(data.angle, data.radius, data.height);
 
@@ -242,12 +257,7 @@ function SpiritualNode({
       </mesh>
 
       {/* Warm glow - diya-like */}
-      <pointLight
-        position={[0, 0, 0.4]}
-        intensity={isFocused ? 1.2 : 0.6}
-        color={data.color}
-        distance={4}
-      />
+      <pointLight position={[0, 0, 0.4]} intensity={isFocused ? 1.2 : 0.6} color={data.color} distance={4} />
 
       {/* Floating label */}
       <Html position={[0, -1.0, 0]} center distanceFactor={10}>
@@ -291,27 +301,20 @@ function TempleLighting() {
       />
       <pointLight position={[-3, 3, -3]} intensity={0.5} color="#fb923c" distance={15} />
       <pointLight position={[3, 3, -3]} intensity={0.5} color="#fbbf24" distance={15} />
-      <spotLight
-        position={[0, 5, -8]}
-        angle={Math.PI / 3}
-        intensity={0.6}
-        color="#f59e0b"
-        penumbra={0.5}
-        castShadow
-      />
+      <spotLight position={[0, 5, -8]} angle={Math.PI / 3} intensity={0.6} color="#f59e0b" penumbra={0.5} castShadow />
     </>
   );
 }
 
 // Incense smoke particles
 function IncenseParticles() {
-  const particlesRef = useRef<THREE.Points>(null);
+  const particlesRef = useRef<THREE.Points | null>(null);
 
   useFrame((state) => {
     if (particlesRef.current) {
       particlesRef.current.rotation.y = state.clock.elapsedTime * 0.02;
-      
-      const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
+
+      const positions = (particlesRef.current.geometry.attributes.position.array as unknown) as Float32Array;
       for (let i = 0; i < positions.length; i += 3) {
         positions[i + 1] += 0.01; // Rise upward
         if (positions[i + 1] > 4) positions[i + 1] = 0.2; // Reset
@@ -334,12 +337,8 @@ function IncenseParticles() {
   return (
     <points ref={particlesRef}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={particles.length / 3}
-          array={particles}
-          itemSize={3}
-        />
+        {/* IMPORTANT: use args for BufferAttribute with react-three/fiber v8+ */}
+        <bufferAttribute attach="attributes-position" args={[particles, 3]} />
       </bufferGeometry>
       <pointsMaterial size={0.08} color="#fbbf24" transparent opacity={0.25} sizeAttenuation />
     </points>
@@ -354,7 +353,7 @@ function SacredGround() {
         <circleGeometry args={[15, 64]} />
         <meshStandardMaterial color="#8b7355" roughness={0.95} />
       </mesh>
-      
+
       {/* Subtle mandala pattern */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
         <ringGeometry args={[3, 5, 32]} />
@@ -380,12 +379,7 @@ function JourneyScene({
       <IncenseParticles />
 
       {JOURNEY_NODES.map((node) => (
-        <SpiritualNode
-          key={node.id}
-          data={node}
-          onClick={() => onNodeClick(node)}
-          isFocused={focusedNode === node.id}
-        />
+        <SpiritualNode key={node.id} data={node} onClick={() => onNodeClick(node)} isFocused={focusedNode === node.id} />
       ))}
     </>
   );
@@ -415,12 +409,8 @@ export default function ThreeSceneProd({ onProceed }: { onProceed?: () => void }
             <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
               Welcome to AntarShanti
             </h1>
-            <p className="text-2xl text-gray-700 mb-3 font-light">
-              10 minutes of puja. A whole day of inner peace.
-            </p>
-            <p className="text-lg text-gray-600 mb-10">
-              Stand in the center. Move your mouse to look around. Click to explore each sacred node.
-            </p>
+            <p className="text-2xl text-gray-700 mb-3 font-light">10 minutes of puja. A whole day of inner peace.</p>
+            <p className="text-lg text-gray-600 mb-10">Stand in the center. Move your mouse to look around. Click to explore each sacred node.</p>
             <button
               onClick={() => setStarted(true)}
               className="px-14 py-6 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-2xl rounded-2xl shadow-xl transition-all hover:scale-105"

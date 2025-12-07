@@ -5,21 +5,27 @@ import { Html } from "@react-three/drei";
 import * as THREE from "three";
 
 // Interactive shrine component
-function Shrine({ position, title, color, onClick }: {
+function Shrine({
+  position,
+  title,
+  color,
+  onClick,
+}: {
   position: [number, number, number];
   title: string;
   color: string;
   onClick: () => void;
 }) {
-  const groupRef = React.useRef<THREE.Group>(null);
-  const mainMeshRef = React.useRef<THREE.Mesh>(null);
-  const glowRef = React.useRef<THREE.Mesh>(null);
+  const groupRef = React.useRef<THREE.Group | null>(null);
+  const mainMeshRef = React.useRef<THREE.Mesh | null>(null);
+  const glowRef = React.useRef<THREE.Mesh | null>(null);
   const [isHovered, setIsHovered] = React.useState(false);
 
   useFrame((state) => {
     if (groupRef.current) {
       // Gentle floating animation
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 1.5 + position[0]) * 0.1;
+      groupRef.current.position.y =
+        position[1] + Math.sin(state.clock.elapsedTime * 1.5 + position[0]) * 0.1;
     }
 
     if (mainMeshRef.current) {
@@ -28,7 +34,10 @@ function Shrine({ position, title, color, onClick }: {
 
       // Hover scale effect
       const targetScale = isHovered ? 1.1 : 1;
-      mainMeshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+      mainMeshRef.current.scale.lerp(
+        new THREE.Vector3(targetScale, targetScale, targetScale),
+        0.1
+      );
     }
 
     if (glowRef.current) {
@@ -103,19 +112,19 @@ function Shrine({ position, title, color, onClick }: {
               : "rgba(255, 255, 255, 0.9)",
             padding: "8px 16px",
             borderRadius: "20px",
-            boxShadow: isHovered
-              ? `0 8px 20px ${color}88`
-              : "0 4px 12px rgba(0,0,0,0.2)",
+            boxShadow: isHovered ? `0 8px 20px ${color}88` : "0 4px 12px rgba(0,0,0,0.2)",
             fontSize: "14px",
             fontWeight: "bold",
             color: isHovered ? "#ffffff" : "#92400E",
             whiteSpace: "nowrap",
             pointerEvents: "none",
             transform: isHovered ? "scale(1.05)" : "scale(1)",
-            transition: "all 0.3s ease"
+            transition: "all 0.3s ease",
           }}
         >
-          {isHovered ? "✨ " : ""}{title}{isHovered ? " ✨" : ""}
+          {isHovered ? "✨ " : ""}
+          {title}
+          {isHovered ? " ✨" : ""}
         </div>
       </Html>
     </group>
@@ -166,13 +175,13 @@ function CameraController() {
 
 // Particle system for incense smoke
 function IncenseParticles() {
-  const particlesRef = React.useRef<THREE.Points>(null);
+  const particlesRef = React.useRef<THREE.Points | null>(null);
 
   useFrame((state) => {
     if (particlesRef.current) {
       particlesRef.current.rotation.y = state.clock.elapsedTime * 0.05;
 
-      const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
+      const positions = (particlesRef.current.geometry.attributes.position.array as unknown) as Float32Array;
       for (let i = 0; i < positions.length; i += 3) {
         // Rise upward slowly
         positions[i + 1] += 0.005;
@@ -205,12 +214,7 @@ function IncenseParticles() {
   return (
     <points ref={particlesRef}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={particleCount}
-          array={positions}
-          itemSize={3}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
         size={0.05}
@@ -225,13 +229,13 @@ function IncenseParticles() {
 
 // Golden sparkle particles
 function GoldenSparkles() {
-  const sparklesRef = React.useRef<THREE.Points>(null);
+  const sparklesRef = React.useRef<THREE.Points | null>(null);
 
   useFrame((state) => {
     if (sparklesRef.current) {
       sparklesRef.current.rotation.y = state.clock.elapsedTime * 0.02;
 
-      const positions = sparklesRef.current.geometry.attributes.position.array as Float32Array;
+      const positions = (sparklesRef.current.geometry.attributes.position.array as unknown) as Float32Array;
       for (let i = 0; i < positions.length; i += 3) {
         // Gentle floating motion
         positions[i + 1] += Math.sin(state.clock.elapsedTime * 2 + i) * 0.002;
@@ -257,12 +261,7 @@ function GoldenSparkles() {
   return (
     <points ref={sparklesRef}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={sparkleCount}
-          array={positions}
-          itemSize={3}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
         size={0.03}
@@ -377,51 +376,57 @@ function ShrineModal({ shrine, onClose }: { shrine: any; onClose: () => void }) 
         return {
           title: "Welcome to AntarShanti",
           subtitle: "10 minutes of puja. A whole day of inner peace.",
-          description: "Discover how ancient puja rituals become modern self-therapy. Experience grounding, peace, and clarity through conscious daily practice.",
-          emoji: "🕉"
+          description:
+            "Discover how ancient puja rituals become modern self-therapy. Experience grounding, peace, and clarity through conscious daily practice.",
+          emoji: "🕉",
         };
       case "puja":
         return {
           title: "Puja as Meditation",
           subtitle: "Sacred practice, modern approach",
-          description: "Puja isn't about religion—it's about presence. Light incense, arrange sacred items, and create 10 minutes of pure mindfulness each day.",
-          emoji: "🪔"
+          description:
+            "Puja isn't about religion—it's about presence. Light incense, arrange sacred items, and create 10 minutes of pure mindfulness each day.",
+          emoji: "🪔",
         };
       case "anxiety":
         return {
           title: "Reduce Anxiety",
           subtitle: "Calm your nervous system",
-          description: "Sacred rituals activate your parasympathetic nervous system, reducing cortisol and bringing immediate calm to your mind and body.",
-          emoji: "🧘‍♀️"
+          description:
+            "Sacred rituals activate your parasympathetic nervous system, reducing cortisol and bringing immediate calm to your mind and body.",
+          emoji: "🧘‍♀️",
         };
       case "focus":
         return {
           title: "Daily Focus",
           subtitle: "Start with clarity & intention",
-          description: "Morning rituals prime your mind for the day ahead. Build mental clarity, sharpen focus, and set powerful daily intentions.",
-          emoji: "🎯"
+          description:
+            "Morning rituals prime your mind for the day ahead. Build mental clarity, sharpen focus, and set powerful daily intentions.",
+          emoji: "🎯",
         };
       case "screen":
         return {
           title: "Screen-Free Pause",
           subtitle: "Digital detox, daily reset",
-          description: "Create a sacred offline moment. Step away from screens and step into presence through mindful rituals.",
-          emoji: "📱"
+          description:
+            "Create a sacred offline moment. Step away from screens and step into presence through mindful rituals.",
+          emoji: "📱",
         };
       case "product":
         return {
           title: "Your Complete Ritual Kit",
           subtitle: "₹1299 • 30 Days • Free Shipping",
-          description: "Premium incense sticks, brass holder, sacred items, and guided practice journal. Eco-friendly, handcrafted, ready to begin.",
+          description:
+            "Premium incense sticks, brass holder, sacred items, and guided practice journal. Eco-friendly, handcrafted, ready to begin.",
           emoji: "🛕",
-          cta: true
+          cta: true,
         };
       default:
         return {
           title: "Sacred Shrine",
           subtitle: "Wisdom awaits",
           description: "Click to explore this sacred space.",
-          emoji: "✨"
+          emoji: "✨",
         };
     }
   };
@@ -430,10 +435,7 @@ function ShrineModal({ shrine, onClose }: { shrine: any; onClose: () => void }) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       <div className="relative bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl">
         <div className="bg-gradient-to-r from-amber-100 to-orange-100 p-8">
@@ -447,9 +449,7 @@ function ShrineModal({ shrine, onClose }: { shrine: any; onClose: () => void }) 
         </div>
 
         <div className="p-8">
-          <p className="text-lg text-gray-700 leading-relaxed mb-8">
-            {content.description}
-          </p>
+          <p className="text-lg text-gray-700 leading-relaxed mb-8">{content.description}</p>
 
           <div className="flex gap-4">
             <button
@@ -461,7 +461,7 @@ function ShrineModal({ shrine, onClose }: { shrine: any; onClose: () => void }) 
 
             {content.cta && (
               <button
-                onClick={() => window.location.href = "/checkout"}
+                onClick={() => (window.location.href = "/checkout")}
                 className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-full transition-all duration-300"
               >
                 Get My Kit - ₹1299
@@ -489,7 +489,7 @@ export default function JourneyScene() {
   const handleShrineClick = (shrineId: string) => {
     const shrine = { id: shrineId };
     setActiveShrine(shrine);
-    setVisitedShrines(prev => new Set(prev).add(shrineId));
+    setVisitedShrines((prev) => new Set(prev).add(shrineId));
   };
 
   const handleCloseModal = () => {
@@ -504,11 +504,11 @@ export default function JourneyScene() {
           position: [0, 3, 8],
           fov: 60,
           near: 0.1,
-          far: 100
+          far: 100,
         }}
         gl={{
           antialias: true,
-          alpha: false
+          alpha: false,
         }}
         shadows
       >
@@ -533,9 +533,7 @@ export default function JourneyScene() {
       </div>
 
       {/* Modal */}
-      {activeShrine && (
-        <ShrineModal shrine={activeShrine} onClose={handleCloseModal} />
-      )}
+      {activeShrine && <ShrineModal shrine={activeShrine} onClose={handleCloseModal} />}
     </div>
   );
 }
