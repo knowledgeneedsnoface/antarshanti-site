@@ -1,6 +1,7 @@
 "use client";
+
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useRef, useState } from "react";
 
 interface AmbientSoundToggleProps {
   enabled: boolean;
@@ -10,142 +11,120 @@ interface AmbientSoundToggleProps {
 export default function AmbientSoundToggle({ enabled, onToggle }: AmbientSoundToggleProps) {
   const [isHovered, setIsHovered] = useState(false);
 
-  useEffect(() => {
-    // Create simple ambient sound using Web Audio API
-    let audioContext: AudioContext | null = null;
-    let oscillator: OscillatorNode | null = null;
-    let gainNode: GainNode | null = null;
+  // Persistent audio context + chant loop
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const chantTimerRef = useRef<any>(null);
 
-    const startAmbientSound = async () => {
-      try {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-        oscillator = audioContext.createOscillator();
-        gainNode = audioContext.createGain();
+  // ---- REAL WORKING OM CHANT (inside click) ----
+  const startOM = () => {
+    // Create AudioContext ONLY inside user gesture
+    const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
+    const audioCtx = new AC();
+    audioCtxRef.current = audioCtx;
 
-        // Create a gentle ambient drone
-        oscillator.frequency.setValueAtTime(136.1, audioContext.currentTime); // Low C#
-        oscillator.type = "sine";
+    const playSingleOM = () => {
+      const t = audioCtx.currentTime;
 
-        gainNode.gain.setValueAtTime(0.02, audioContext.currentTime); // Very quiet
+      // Master gain
+      const master = audioCtx.createGain();
+      master.gain.setValueAtTime(0, t);
+      master.gain.linearRampToValueAtTime(0.3, t + 1.2);
+      master.connect(audioCtx.destination);
 
-        // Add subtle vibrato
-        const vibrato = audioContext.createOscillator();
-        const vibratoGain = audioContext.createGain();
+      // --- "Ooooo" part ---
+      const oscO = audioCtx.createOscillator();
+      const gainO = audioCtx.createGain();
+      oscO.type = "sine";
+      oscO.frequency.setValueAtTime(136.1, t);
 
-        vibrato.frequency.setValueAtTime(0.5, audioContext.currentTime);
-        vibratoGain.gain.setValueAtTime(2, audioContext.currentTime);
+      gainO.gain.setValueAtTime(0, t);
+      gainO.gain.linearRampToValueAtTime(0.3, t + 1.2);
+      gainO.gain.linearRampToValueAtTime(0.1, t + 1.8);
+      gainO.gain.linearRampToValueAtTime(0, t + 2.2);
 
-        vibrato.connect(vibratoGain);
-        vibratoGain.connect(oscillator.frequency);
+      oscO.connect(gainO);
+      gainO.connect(master);
 
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+      // --- "Mmmmm" part ---
+      const oscM = audioCtx.createOscillator();
+      const gainM = audioCtx.createGain();
+      oscM.type = "triangle";
+      oscM.frequency.setValueAtTime(136.1, t);
 
-        oscillator.start();
-        vibrato.start();
+      gainM.gain.setValueAtTime(0, t + 1.6);
+      gainM.gain.linearRampToValueAtTime(0.25, t + 2.2);
+      gainM.gain.linearRampToValueAtTime(0, t + 3.5);
 
-      } catch (error) {
-        console.log("Web Audio not supported");
-      }
+      oscM.connect(gainM);
+      gainM.connect(master);
+
+      // Start oscillators
+      oscO.start(t);
+      oscM.start(t);
+      oscO.stop(t + 3.5);
+      oscM.stop(t + 3.5);
     };
 
-    const stopAmbientSound = () => {
-      if (oscillator) {
-        oscillator.stop();
-        oscillator = null;
-      }
-      if (audioContext) {
-        audioContext.close();
-        audioContext = null;
-      }
-    };
+    // First chant — plays immediately
+    playSingleOM();
 
-    if (enabled) {
-      startAmbientSound();
+    // Repeat every 3.6 sec
+    chantTimerRef.current = setInterval(() => {
+      playSingleOM();
+    }, 3600);
+  };
+
+  const stopOM = () => {
+    if (chantTimerRef.current) clearInterval(chantTimerRef.current);
+    chantTimerRef.current = null;
+
+    if (audioCtxRef.current) {
+      try { audioCtxRef.current.close(); } catch {}
+    }
+    audioCtxRef.current = null;
+  };
+
+  // CLICK HANDLER — STARTS AUDIO RELIABLY
+  const handleClick = async () => {
+    if (!enabled) {
+      await startOM();   // MUST start from click
     } else {
-      stopAmbientSound();
+      stopOM();
     }
 
-    return () => {
-      stopAmbientSound();
-    };
-  }, [enabled]);
+    onToggle(); // update UI state
+  };
+
+  // ---------------- UI ----------------
 
   return (
     <motion.div
       className="fixed bottom-8 right-8 z-40"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 2, duration: 0.5 }}
+      transition={{ delay: 1, duration: 0.5 }}
     >
       <motion.button
-        className={`w-14 h-14 rounded-full shadow-lg backdrop-blur-sm border border-amber-200/50 flex items-center justify-center transition-all duration-300 ${
-          enabled ? "bg-amber-500/20" : "bg-white/20"
+        className={`w-14 h-14 rounded-full shadow-lg backdrop-blur-sm border border-purple-300/40 flex items-center justify-center transition-all duration-300 ${
+          enabled ? "bg-purple-600/30" : "bg-white/20"
         }`}
-        onClick={onToggle}
+        onClick={handleClick}  // 🔥 audio starts here
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
       >
-        <motion.div
-          animate={{
-            rotate: enabled ? 360 : 0,
-            scale: enabled ? [1, 1.2, 1] : 1,
-          }}
-          transition={{
-            rotate: { duration: 2, repeat: enabled ? Infinity : 0, ease: "linear" },
-            scale: { duration: 1, repeat: enabled ? Infinity : 0 },
-          }}
-        >
-          {enabled ? "🎵" : "🔇"}
-        </motion.div>
+        {enabled ? "🕉️" : "🔇"}
       </motion.button>
 
-      {/* Tooltip */}
-      <motion.div
-        className={`absolute bottom-full right-0 mb-3 px-3 py-2 bg-gray-900/90 text-white text-sm rounded-lg whitespace-nowrap backdrop-blur-sm ${
-          isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{
-          opacity: isHovered ? 1 : 0,
-          y: isHovered ? 0 : 10,
-        }}
-        transition={{ duration: 0.2 }}
-      >
-        {enabled ? "Ambient meditation sounds" : "Play soothing ambience"}
-        <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900/90"></div>
-      </motion.div>
-
-      {/* Sound waves animation */}
-      {enabled && (
-        <div className="absolute inset-0 pointer-events-none">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute border border-amber-400/30 rounded-full"
-              style={{
-                width: 60 + i * 20,
-                height: 60 + i * 20,
-                left: "50%",
-                top: "50%",
-                marginLeft: -(30 + i * 10),
-                marginTop: -(30 + i * 10),
-              }}
-              animate={{
-                scale: [1, 1.5, 1],
-                opacity: [0.3, 0, 0.3],
-              }}
-              transition={{
-                duration: 2,
-                delay: i * 0.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          ))}
-        </div>
+      {isHovered && (
+        <motion.div
+          className="absolute bottom-full right-0 mb-3 px-3 py-2 bg-black/80 text-white text-sm rounded-lg"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          OM Chanting
+        </motion.div>
       )}
     </motion.div>
   );
