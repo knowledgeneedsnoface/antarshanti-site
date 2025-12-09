@@ -7,6 +7,7 @@ import GlobalNavbar from "./(components)/GlobalNavbar";
 import GlobalFooter from "./(components)/GlobalFooter";
 import ThemeRenderer from "./(components)/theme-system/ThemeRenderer";
 import ThemeSwitcher from "./(components)/theme-system/ThemeSwitcher";
+import TwinWrapper from "./TwinWrapper";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -38,6 +39,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             
             {/* Theme switcher button */}
             <ThemeSwitcher />
+            
+            {/* Soul Twin System */}
+            <TwinWrapper />
             
             <GlobalNavbar />
             <div className="min-h-screen relative z-10">
