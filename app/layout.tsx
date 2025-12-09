@@ -2,9 +2,11 @@
 import "./globals.css";
 import { Inter, Crimson_Text } from "next/font/google";
 import { CartProvider } from "./(components)/CartContext";
+import { ThemeProvider } from "./(components)/theme-system/ThemeContext";
 import GlobalNavbar from "./(components)/GlobalNavbar";
 import GlobalFooter from "./(components)/GlobalFooter";
-
+import ThemeRenderer from "./(components)/theme-system/ThemeRenderer";
+import ThemeSwitcher from "./(components)/theme-system/ThemeSwitcher";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -29,14 +31,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${crimsonText.variable}`}>
       <body className={`${inter.className} antialiased`}>
-        <CartProvider>
-          <GlobalNavbar />
-          <div className="min-h-screen">
-            {children}
-          </div>
-
-          <GlobalFooter />
-        </CartProvider>
+        <ThemeProvider>
+          <CartProvider>
+            {/* Dynamic spiritual ambience background */}
+            <ThemeRenderer />
+            
+            {/* Theme switcher button */}
+            <ThemeSwitcher />
+            
+            <GlobalNavbar />
+            <div className="min-h-screen relative z-10">
+              {children}
+            </div>
+            <GlobalFooter />
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
