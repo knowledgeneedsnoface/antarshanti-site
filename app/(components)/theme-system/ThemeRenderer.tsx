@@ -8,7 +8,13 @@ import ParticleSystem from './ParticleSystem';
 import ThemeEffects from './ThemeEffects';
 
 export default function ThemeRenderer() {
-  const { currentTheme } = useTheme();
+  const { currentTheme, isClient } = useTheme();
+  
+  // Don't render on server
+  if (!isClient) {
+    return null;
+  }
+
   const theme = themes[currentTheme];
 
   if (!theme) return null;

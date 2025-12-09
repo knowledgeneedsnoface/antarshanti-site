@@ -6,16 +6,17 @@ import { defaultTheme } from './themeDefinitions';
 interface ThemeContextType {
   currentTheme: string;
   setTheme: (themeId: string) => void;
+  isClient: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [currentTheme, setCurrentTheme] = useState<string>(defaultTheme);
-  const [mounted, setMounted] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setIsClient(true);
     const saved = localStorage.getItem('antarshanti-theme');
     if (saved) {
       setCurrentTheme(saved);
@@ -24,15 +25,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (themeId: string) => {
     setCurrentTheme(themeId);
-    localStorage.setItem('antarshanti-theme', themeId);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('antarshanti-theme', themeId);
+    }
   };
 
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
   return (
-    <ThemeContext.Provider value={{ currentTheme, setTheme }}>
+    <ThemeContext.Provider value={{ currentTheme, setTheme, isClient }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -41,7 +40,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error('useTheme must be used within ThemeProvider');
+    // Return default values for SSR
+    return {
+      currentTheme: defaultTheme,
+      setTheme: () => {},
+      isClient: false,
+    };
   }
   return context;
 }

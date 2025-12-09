@@ -6,8 +6,13 @@ import { useTheme } from './ThemeContext';
 import { themes } from './themeDefinitions';
 
 export default function ThemeSwitcher() {
-  const { currentTheme, setTheme } = useTheme();
+  const { currentTheme, setTheme, isClient } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+
+  // Don't render on server
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <>
