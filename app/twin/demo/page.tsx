@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Sparkles } from 'lucide-react';
 
-// Hardcode the API key for now since env vars might not be loading
+// Try using the free models that don't require credits
 const OPENROUTER_API_KEY = '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';
 
 const PATHS = {
@@ -34,7 +34,7 @@ const PATHS = {
 };
 
 export default function SpiritualTwin() {
-  const [step, setStep] = useState('selection'); // 'selection' or 'chat'
+  const [step, setStep] = useState('selection');
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [messages, setMessages] = useState<Array<{role: string; content: string}>>([]);
   const [input, setInput] = useState('');
@@ -48,7 +48,6 @@ export default function SpiritualTwin() {
   }, [messages]);
 
   useEffect(() => {
-    // Load memory from storage
     const loadMemory = async () => {
       try {
         const result = await (window as any).storage.get('twin-memory');
@@ -120,9 +119,9 @@ export default function SpiritualTwin() {
       const systemPrompt = PATHS[selectedPath as keyof typeof PATHS].systemPrompt;
       const memoryContext = memory.context ? `\n\nContext from previous conversations: ${memory.context}` : '';
       
-      console.log('Sending request to OpenRouter...');
-      console.log('API Key (first 20 chars):', OPENROUTER_API_KEY.substring(0, 20));
-      console.log('Using site URL:', window.location.origin);
+      console.log('=== OpenRouter API Request ===');
+      console.log('Model: google/gemini-2.0-flash-exp:free');
+      console.log('API Key:', OPENROUTER_API_KEY.substring(0, 20) + '...');
       
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -133,23 +132,30 @@ export default function SpiritualTwin() {
           'X-Title': 'AntarShanti Digital Twin'
         },
         body: JSON.stringify({
-          model: 'meta-llama/llama-3.2-3b-instruct:free',
+          model: 'google/gemini-2.0-flash-exp:free',
           messages: [
             { role: 'system', content: systemPrompt + memoryContext },
-            ...messages.map(m => ({ role: m.role, content: m.content })),
+            ...messages.slice(-10).map(m => ({ role: m.role, content: m.content })),
             { role: 'user', content: currentInput }
-          ],
-          max_tokens: 500,
-          temperature: 0.7
+          ]
         })
       });
 
       console.log('Response status:', response.status);
       const data = await response.json();
-      console.log('Full response:', JSON.stringify(data, null, 2));
+      console.log('Response data:', data);
       
       if (!response.ok) {
-        const errorMsg = data.error?.message || `API Error (${response.status}): ${JSON.stringify(data)}`;
+        let errorMsg = 'Unknown error';
+        if (data.error) {
+          errorMsg = data.error.message || data.error.code || JSON.stringify(data.error);
+        }
+        
+        // Specific error handling
+        if (errorMsg.includes('User not found') || errorMsg.includes('Invalid API key')) {
+          errorMsg = 'API key issue. Please check your OpenRouter account at https://openrouter.ai/settings/keys and ensure: 1) The key is valid, 2) You have added credits or enabled free tier models.';
+        }
+        
         throw new Error(errorMsg);
       }
       
@@ -164,11 +170,13 @@ export default function SpiritualTwin() {
         throw new Error(`Invalid response format: ${JSON.stringify(data)}`);
       }
     } catch (error: any) {
-      console.error('Full error:', error);
+      console.error('=== Error Details ===');
+      console.error('Error:', error);
+      console.error('Message:', error.message);
       setError(error.message);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `I apologize, but I encountered an issue: ${error.message}. Please check the browser console for more details.`
+        content: `I apologize, but I encountered an issue: ${error.message}. ${error.message.includes('API key') ? 'Please visit https://openrouter.ai/settings/keys to check your API key and account status.' : 'Please check the browser console for more details.'}`
       }]);
     } finally {
       setLoading(false);
@@ -220,6 +228,11 @@ export default function SpiritualTwin() {
               </div>
             </div>
           </div>
+
+          <div className="bg-blue-100 border-2 border-blue-300 rounded-xl p-4 text-sm text-blue-900">
+            <p className="font-bold mb-2">⚠️ Note:</p>
+            <p>This Digital Twin uses OpenRouter AI. If you see an error, please ensure your OpenRouter API key is valid and has credits or free tier access enabled at <a href="https://openrouter.ai/settings/keys" target="_blank" className="underline">openrouter.ai/settings/keys</a></p>
+          </div>
         </div>
       </div>
     );
@@ -227,7 +240,6 @@ export default function SpiritualTwin() {
 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100">
-      {/* Header */}
       <div className="bg-white border-b-2 border-orange-200 p-4 shadow-sm">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -250,7 +262,6 @@ export default function SpiritualTwin() {
         </div>
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4">
         <div className="max-w-4xl mx-auto space-y-4">
           {messages.map((msg, idx) => (
@@ -284,7 +295,6 @@ export default function SpiritualTwin() {
         </div>
       </div>
 
-      {/* Error Banner */}
       {error && (
         <div className="bg-red-100 border-t border-red-300 px-4 py-2">
           <div className="max-w-4xl mx-auto text-sm text-red-800">
@@ -293,7 +303,6 @@ export default function SpiritualTwin() {
         </div>
       )}
 
-      {/* Memory Indicator */}
       {memory.keywords.length > 0 && (
         <div className="bg-orange-100 border-t border-orange-200 px-4 py-2">
           <div className="max-w-4xl mx-auto flex items-center gap-2 text-sm text-orange-800">
@@ -303,7 +312,6 @@ export default function SpiritualTwin() {
         </div>
       )}
 
-      {/* Input */}
       <div className="bg-white border-t-2 border-orange-200 p-4">
         <div className="max-w-4xl mx-auto flex gap-2">
           <input
