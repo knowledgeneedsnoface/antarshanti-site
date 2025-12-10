@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SoulTwin, xpToNextLevel, RITUALS } from '@/lib/twin/rules';
-import { X } from 'lucide-react';
+
 
 interface TwinFullProps {
   twin: SoulTwin;
@@ -73,7 +73,7 @@ export default function TwinFull({ twin, onClose, onSimulateRitual }: TwinFullPr
                 onClick={onClose}
                 className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
               >
-                <X className="w-6 h-6" />
+                <span className="text-2xl">×</span>
               </button>
             </div>
           </div>
