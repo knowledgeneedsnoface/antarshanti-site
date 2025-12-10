@@ -1,6 +1,7 @@
 // app/layout.tsx
 import "./globals.css";
 import { Inter, Crimson_Text } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { CartProvider } from "./(components)/CartContext";
 import { ThemeProvider } from "./(components)/theme-system/ThemeContext";
 import GlobalNavbar from "./(components)/GlobalNavbar";
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {children}
             </div>
             <GlobalFooter />
+            <Analytics />
           </CartProvider>
         </ThemeProvider>
       </body>
