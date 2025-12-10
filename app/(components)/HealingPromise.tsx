@@ -38,7 +38,7 @@ export default function HealingPromise() {
 
   return (
     <section
-      id="healing-promise"
+      id="about"
       ref={containerRef}
       className="py-24 px-6 bg-gradient-to-b from-white to-amber-50/20"
     >

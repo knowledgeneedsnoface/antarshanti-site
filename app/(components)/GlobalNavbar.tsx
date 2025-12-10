@@ -25,12 +25,12 @@ export default function GlobalNavbar() {
           <Link href="/" className="text-gray-700 hover:text-amber-600 transition-colors font-medium">
             Home
           </Link>
-          <Link href="/#about" className="text-gray-700 hover:text-amber-600 transition-colors font-medium">
+          <a href="#about" className="text-gray-700 hover:text-amber-600 transition-colors font-medium cursor-pointer">
             About
-          </Link>
-          <Link href="/#founder" className="text-gray-700 hover:text-amber-600 transition-colors font-medium">
+          </a>
+          <a href="#founder" className="text-gray-700 hover:text-amber-600 transition-colors font-medium cursor-pointer">
             Founder
-          </Link>
+          </a>
           <Link href="/twin/demo" className="text-gray-700 hover:text-amber-600 transition-colors font-medium">
             Twin Demo
           </Link>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import TwinMini from '@/components/twin/TwinMini';
+import { TwinSkeleton } from '@/components/LoadingSkeletons';
 import TwinFull from '@/components/twin/TwinFull';
 import TwinOnboarding from '@/components/twin/TwinOnboarding';
 import LevelUpModal from '@/components/twin/LevelUpModal';
@@ -18,6 +19,7 @@ export default function TwinWrapper() {
     gains: {},
   });
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const userId = typeof window !== 'undefined' ? (localStorage.getItem('userId') || generateUserId()) : 'temp-user';
 
@@ -33,8 +35,10 @@ export default function TwinWrapper() {
   }, []);
 
   async function loadTwin() {
+    setLoading(true);
     const data = await getTwin(userId);
     setTwin(data);
+    setLoading(false);
     
     // Show onboarding if:
     // 1. No twin exists
@@ -65,11 +69,15 @@ export default function TwinWrapper() {
   return (
     <>
       {/* Twin Mini - Fixed position */}
-      {twin && (
+      {loading ? (
+        <div className="fixed top-20 right-6 z-50">
+          <TwinSkeleton />
+        </div>
+      ) : twin ? (
         <div className="fixed top-20 right-6 z-50">
           <TwinMini twin={twin} onClick={() => setShowTwinFull(true)} />
         </div>
-      )}
+      ) : null}
 
       {/* Modals */}
       {showOnboarding && (

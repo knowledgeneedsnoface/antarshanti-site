@@ -141,7 +141,8 @@ export default function TwinOnboarding({ onComplete, onSkip }: TwinOnboardingPro
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              <h3 className="text-xl font-bold mb-6 text-gray-900">Choose your spiritual path</h3>
+              <h3 className="text-xl font-bold mb-4 text-gray-900">Choose your spiritual path</h3>
+              <p className="text-sm text-gray-600 mb-6">Click on a path to select it, then click Continue</p>
               <div className="grid grid-cols-2 gap-4">
                 {PATHS.map((path) => (
                   <button
