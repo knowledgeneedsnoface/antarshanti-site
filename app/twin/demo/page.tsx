@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Send, Sparkles } from 'lucide-react';
 
 // Try using the free models that don't require credits
-const OPENROUTER_API_KEY = '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';
+const OPENROUTER_API_KEY = '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';
 
 const PATHS = {
   peace: {
