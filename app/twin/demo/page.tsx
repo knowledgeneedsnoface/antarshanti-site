@@ -3,32 +3,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Sparkles } from 'lucide-react';
 
-const OPENROUTER_API_KEY = 'sk-or-v1-free'; // Free tier key
+// Use environment variable for API key, with fallback to free tier
+const OPENROUTER_API_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || 'sk-or-v1-free';
 
 const PATHS = {
   peace: {
     emoji: '🕊️',
     name: 'Path of Peace',
     description: 'Amplifies calmness and emotional balance',
-    systemPrompt: 'You are a gentle spiritual guide focused on inner peace, mindfulness, and tranquility. Help seekers find calm and emotional balance through your wisdom.'
+    systemPrompt: 'You are a gentle spiritual guide focused on inner peace, mindfulness, and tranquility. Help seekers find calm and emotional balance through your wisdom. Keep responses concise and meaningful.'
   },
   strength: {
     emoji: '💪',
     name: 'Path of Strength',
     description: 'Enhances discipline and emotional resilience',
-    systemPrompt: 'You are a warrior-spirited guide focused on discipline, resilience, and inner strength. Empower seekers to face challenges with courage.'
+    systemPrompt: 'You are a warrior-spirited guide focused on discipline, resilience, and inner strength. Empower seekers to face challenges with courage. Keep responses concise and meaningful.'
   },
   devotion: {
     emoji: '🙏',
     name: 'Path of Devotion',
     description: 'Boosts discipline and energy',
-    systemPrompt: 'You are a devoted spiritual guide focused on dedication, commitment, and spiritual energy. Guide practitioners in their devoted practice.'
+    systemPrompt: 'You are a devoted spiritual guide focused on dedication, commitment, and spiritual energy. Guide practitioners in their devoted practice. Keep responses concise and meaningful.'
   },
   light: {
     emoji: '✨',
     name: 'Path of Light',
     description: 'Increases calmness and energy',
-    systemPrompt: 'You are an illuminating guide focused on clarity, insight, and spiritual enlightenment. Help seekers find their inner light.'
+    systemPrompt: 'You are an illuminating guide focused on clarity, insight, and spiritual enlightenment. Help seekers find their inner light. Keep responses concise and meaningful.'
   }
 };
 
@@ -39,6 +40,7 @@ export default function SpiritualTwin() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [memory, setMemory] = useState({ keywords: [] as string[], context: '' });
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,7 +63,6 @@ export default function SpiritualTwin() {
   }, []);
 
   const extractKeywords = (text: string) => {
-    // Simple keyword extraction - remove common words and get meaningful terms
     const stopWords = ['the', 'is', 'at', 'which', 'on', 'a', 'an', 'and', 'or', 'but', 'in', 'with', 'to', 'for', 'of', 'as', 'by', 'i', 'me', 'my', 'myself', 'we', 'you', 'he', 'she', 'it', 'they', 'what', 'how', 'when', 'where', 'why', 'am', 'are', 'was', 'were', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should'];
     
     const words = text.toLowerCase()
@@ -79,7 +80,7 @@ export default function SpiritualTwin() {
     ];
     
     const updatedMemory = {
-      keywords: [...new Set([...memory.keywords, ...newKeywords])].slice(-50), // Keep last 50 keywords
+      keywords: [...new Set([...memory.keywords, ...newKeywords])].slice(-50),
       context: `Previous topics: ${[...new Set([...memory.keywords, ...newKeywords])].slice(-20).join(', ')}`
     };
     
@@ -94,7 +95,6 @@ export default function SpiritualTwin() {
 
   const handlePathSelect = (pathKey: string) => {
     setSelectedPath(pathKey);
-    // Auto-advance to chat after 500ms
     setTimeout(() => {
       setStep('chat');
       setMessages([
@@ -111,19 +111,24 @@ export default function SpiritualTwin() {
 
     const userMessage = { role: 'user', content: input };
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = input;
     setInput('');
     setLoading(true);
+    setError(null);
 
     try {
       const systemPrompt = PATHS[selectedPath as keyof typeof PATHS].systemPrompt;
       const memoryContext = memory.context ? `\n\nContext from previous conversations: ${memory.context}` : '';
+      
+      console.log('Sending request to OpenRouter...');
+      console.log('API Key:', OPENROUTER_API_KEY.substring(0, 10) + '...');
       
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'HTTP-Referer': window.location.href,
+          'HTTP-Referer': typeof window !== 'undefined' ? window.location.href : '',
           'X-Title': 'AntarShanti Digital Twin'
         },
         body: JSON.stringify({
@@ -131,13 +136,20 @@ export default function SpiritualTwin() {
           messages: [
             { role: 'system', content: systemPrompt + memoryContext },
             ...messages.map(m => ({ role: m.role, content: m.content })),
-            { role: 'user', content: input }
+            { role: 'user', content: currentInput }
           ],
-          max_tokens: 500
+          max_tokens: 500,
+          temperature: 0.7
         })
       });
 
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
+      
+      if (!response.ok) {
+        throw new Error(data.error?.message || `API Error: ${response.status}`);
+      }
       
       if (data.choices && data.choices[0]) {
         const aiMessage = {
@@ -145,15 +157,16 @@ export default function SpiritualTwin() {
           content: data.choices[0].message.content
         };
         setMessages(prev => [...prev, aiMessage]);
-        await updateMemory(input, data.choices[0].message.content);
+        await updateMemory(currentInput, data.choices[0].message.content);
       } else {
-        throw new Error('Invalid response from API');
+        throw new Error('Invalid response format from API');
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error: any) {
+      console.error('Error details:', error);
+      setError(error.message);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'I apologize, but I encountered an issue connecting to my spiritual guidance. Please try again in a moment.'
+        content: `I apologize, but I encountered an issue: ${error.message}. Please try again or check your API key.`
       }]);
     } finally {
       setLoading(false);
@@ -268,6 +281,15 @@ export default function SpiritualTwin() {
           <div ref={messagesEndRef} />
         </div>
       </div>
+
+      {/* Error Banner */}
+      {error && (
+        <div className="bg-red-100 border-t border-red-300 px-4 py-2">
+          <div className="max-w-4xl mx-auto text-sm text-red-800">
+            ⚠️ Error: {error}
+          </div>
+        </div>
+      )}
 
       {/* Memory Indicator */}
       {memory.keywords.length > 0 && (
