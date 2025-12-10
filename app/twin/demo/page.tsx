@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Sparkles } from 'lucide-react';
 
-// Use environment variable for API key, with fallback to free tier
-const OPENROUTER_API_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || 'sk-or-v1-free';
+// Hardcode the API key for now since env vars might not be loading
+const OPENROUTER_API_KEY = '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';
 
 const PATHS = {
   peace: {
@@ -121,14 +121,15 @@ export default function SpiritualTwin() {
       const memoryContext = memory.context ? `\n\nContext from previous conversations: ${memory.context}` : '';
       
       console.log('Sending request to OpenRouter...');
-      console.log('API Key:', OPENROUTER_API_KEY.substring(0, 10) + '...');
+      console.log('API Key (first 20 chars):', OPENROUTER_API_KEY.substring(0, 20));
+      console.log('Using site URL:', window.location.origin);
       
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'HTTP-Referer': typeof window !== 'undefined' ? window.location.href : '',
+          'HTTP-Referer': window.location.origin,
           'X-Title': 'AntarShanti Digital Twin'
         },
         body: JSON.stringify({
@@ -145,13 +146,14 @@ export default function SpiritualTwin() {
 
       console.log('Response status:', response.status);
       const data = await response.json();
-      console.log('Response data:', data);
+      console.log('Full response:', JSON.stringify(data, null, 2));
       
       if (!response.ok) {
-        throw new Error(data.error?.message || `API Error: ${response.status}`);
+        const errorMsg = data.error?.message || `API Error (${response.status}): ${JSON.stringify(data)}`;
+        throw new Error(errorMsg);
       }
       
-      if (data.choices && data.choices[0]) {
+      if (data.choices && data.choices[0] && data.choices[0].message) {
         const aiMessage = {
           role: 'assistant',
           content: data.choices[0].message.content
@@ -159,14 +161,14 @@ export default function SpiritualTwin() {
         setMessages(prev => [...prev, aiMessage]);
         await updateMemory(currentInput, data.choices[0].message.content);
       } else {
-        throw new Error('Invalid response format from API');
+        throw new Error(`Invalid response format: ${JSON.stringify(data)}`);
       }
     } catch (error: any) {
-      console.error('Error details:', error);
+      console.error('Full error:', error);
       setError(error.message);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `I apologize, but I encountered an issue: ${error.message}. Please try again or check your API key.`
+        content: `I apologize, but I encountered an issue: ${error.message}. Please check the browser console for more details.`
       }]);
     } finally {
       setLoading(false);
