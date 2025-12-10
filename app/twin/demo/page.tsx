@@ -120,7 +120,7 @@ export default function SpiritualTwin() {
       const memoryContext = memory.context ? `\n\nContext from previous conversations: ${memory.context}` : '';
       
       console.log('=== OpenRouter API Request ===');
-      console.log('Model: google/gemini-2.0-flash-exp:free');
+      console.log('Model: tngtech/deepseek-r1t2-chimera:free');
       console.log('API Key:', OPENROUTER_API_KEY.substring(0, 20) + '...');
       
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
