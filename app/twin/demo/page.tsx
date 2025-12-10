@@ -1,277 +1,304 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import TwinFull from '@/components/twin/TwinFull';
-import TwinOnboarding from '@/components/twin/TwinOnboarding';
-import LevelUpModal from '@/components/twin/LevelUpModal';
-import { getTwin, createTwin, postEvent, syncQueuedEvents, getEventQueue } from '@/lib/twin/twinClient';
-import { SoulTwin, RITUALS, SpiritualPath } from '@/lib/twin/rules';
+import React, { useState, useEffect, useRef } from 'react';
+import { Send, Sparkles } from 'lucide-react';
 
-export default function TwinDemoPage() {
-  const [twin, setTwin] = useState<SoulTwin | null>(null);
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showTwinFull, setShowTwinFull] = useState(false);
-  const [levelUpData, setLevelUpData] = useState<{ isOpen: boolean; newLevel: number; gains: any }>({
-    isOpen: false,
-    newLevel: 1,
-    gains: {},
-  });
-  const [queuedCount, setQueuedCount] = useState(0);
-  const [syncing, setSyncing] = useState(false);
+const OPENROUTER_API_KEY = 'sk-or-v1-free'; // Free tier key
 
-  const userId = 'demo-user-123';
+const PATHS = {
+  peace: {
+    emoji: '🕊️',
+    name: 'Path of Peace',
+    description: 'Amplifies calmness and emotional balance',
+    systemPrompt: 'You are a gentle spiritual guide focused on inner peace, mindfulness, and tranquility. Help seekers find calm and emotional balance through your wisdom.'
+  },
+  strength: {
+    emoji: '💪',
+    name: 'Path of Strength',
+    description: 'Enhances discipline and emotional resilience',
+    systemPrompt: 'You are a warrior-spirited guide focused on discipline, resilience, and inner strength. Empower seekers to face challenges with courage.'
+  },
+  devotion: {
+    emoji: '🙏',
+    name: 'Path of Devotion',
+    description: 'Boosts discipline and energy',
+    systemPrompt: 'You are a devoted spiritual guide focused on dedication, commitment, and spiritual energy. Guide practitioners in their devoted practice.'
+  },
+  light: {
+    emoji: '✨',
+    name: 'Path of Light',
+    description: 'Increases calmness and energy',
+    systemPrompt: 'You are an illuminating guide focused on clarity, insight, and spiritual enlightenment. Help seekers find their inner light.'
+  }
+};
+
+export default function SpiritualTwin() {
+  const [step, setStep] = useState('selection'); // 'selection' or 'chat'
+  const [selectedPath, setSelectedPath] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Array<{role: string; content: string}>>([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [memory, setMemory] = useState({ keywords: [] as string[], context: '' });
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    loadTwin();
-    updateQueueCount();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  useEffect(() => {
+    // Load memory from storage
+    const loadMemory = async () => {
+      try {
+        const result = await (window as any).storage.get('twin-memory');
+        if (result && result.value) {
+          setMemory(JSON.parse(result.value));
+        }
+      } catch (error) {
+        console.log('No previous memory found');
+      }
+    };
+    loadMemory();
   }, []);
 
-  async function loadTwin() {
-    const data = await getTwin(userId);
-    setTwin(data);
-    if (!data) {
-      setShowOnboarding(true);
-    }
-  }
-
-  function updateQueueCount() {
-    const queue = getEventQueue();
-    setQueuedCount(queue.length);
-  }
-
-  async function handleCreateTwin(name: string, path: SpiritualPath, avatarSeed: number) {
-    const newTwin = await createTwin(userId, name, path, avatarSeed);
-    setTwin(newTwin);
-    setShowOnboarding(false);
-  }
-
-  async function handleSimulateRitual(ritualId: string) {
-    if (!twin) return;
-
-    const ritual = RITUALS[ritualId as keyof typeof RITUALS];
-    if (!ritual) return;
-
-    const oldLevel = twin.level;
-
-    const event = {
-      type: 'ritual',
-      ritualId,
-      xp: ritual.xp,
-      changes: ritual.changes,
-      date: new Date().toISOString(),
-    };
-
-    const updatedTwin = await postEvent(userId, event);
+  const extractKeywords = (text: string) => {
+    // Simple keyword extraction - remove common words and get meaningful terms
+    const stopWords = ['the', 'is', 'at', 'which', 'on', 'a', 'an', 'and', 'or', 'but', 'in', 'with', 'to', 'for', 'of', 'as', 'by', 'i', 'me', 'my', 'myself', 'we', 'you', 'he', 'she', 'it', 'they', 'what', 'how', 'when', 'where', 'why', 'am', 'are', 'was', 'were', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should'];
     
-    if (updatedTwin) {
-      setTwin(updatedTwin);
-      updateQueueCount();
+    const words = text.toLowerCase()
+      .replace(/[^\w\s]/g, '')
+      .split(/\s+/)
+      .filter(word => word.length > 3 && !stopWords.includes(word));
+    
+    return [...new Set(words)];
+  };
 
-      // Check for level up
-      if (updatedTwin.level > oldLevel) {
-        setLevelUpData({
-          isOpen: true,
-          newLevel: updatedTwin.level,
-          gains: {
-            calmness: 0,
-            discipline: 0,
-            emotionalStrength: 0,
-            energy: 0,
-          },
-        });
+  const updateMemory = async (userMessage: string, aiResponse: string) => {
+    const newKeywords = [
+      ...extractKeywords(userMessage),
+      ...extractKeywords(aiResponse)
+    ];
+    
+    const updatedMemory = {
+      keywords: [...new Set([...memory.keywords, ...newKeywords])].slice(-50), // Keep last 50 keywords
+      context: `Previous topics: ${[...new Set([...memory.keywords, ...newKeywords])].slice(-20).join(', ')}`
+    };
+    
+    setMemory(updatedMemory);
+    
+    try {
+      await (window as any).storage.set('twin-memory', JSON.stringify(updatedMemory));
+    } catch (error) {
+      console.error('Error saving memory:', error);
+    }
+  };
+
+  const handlePathSelect = (pathKey: string) => {
+    setSelectedPath(pathKey);
+    // Auto-advance to chat after 500ms
+    setTimeout(() => {
+      setStep('chat');
+      setMessages([
+        {
+          role: 'assistant',
+          content: `Welcome to the ${PATHS[pathKey as keyof typeof PATHS].name}. I am your spiritual companion on this journey. ${memory.keywords.length > 0 ? `I remember our conversations about: ${memory.keywords.slice(-5).join(', ')}. ` : ''}How may I guide you today?`
+        }
+      ]);
+    }, 500);
+  };
+
+  const sendMessage = async () => {
+    if (!input.trim() || loading || !selectedPath) return;
+
+    const userMessage = { role: 'user', content: input };
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setLoading(true);
+
+    try {
+      const systemPrompt = PATHS[selectedPath as keyof typeof PATHS].systemPrompt;
+      const memoryContext = memory.context ? `\n\nContext from previous conversations: ${memory.context}` : '';
+      
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'HTTP-Referer': window.location.href,
+          'X-Title': 'AntarShanti Digital Twin'
+        },
+        body: JSON.stringify({
+          model: 'meta-llama/llama-3.2-3b-instruct:free',
+          messages: [
+            { role: 'system', content: systemPrompt + memoryContext },
+            ...messages.map(m => ({ role: m.role, content: m.content })),
+            { role: 'user', content: input }
+          ],
+          max_tokens: 500
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.choices && data.choices[0]) {
+        const aiMessage = {
+          role: 'assistant',
+          content: data.choices[0].message.content
+        };
+        setMessages(prev => [...prev, aiMessage]);
+        await updateMemory(input, data.choices[0].message.content);
+      } else {
+        throw new Error('Invalid response from API');
       }
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'I apologize, but I encountered an issue connecting to my spiritual guidance. Please try again in a moment.'
+      }]);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  async function handleSync() {
-    setSyncing(true);
-    const success = await syncQueuedEvents(userId);
-    if (success) {
-      await loadTwin();
-      updateQueueCount();
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
     }
-    setSyncing(false);
-  }
+  };
 
-  return (
-    <div className="min-h-screen pt-24 pb-20 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Digital Soul Twin Demo
-          </h1>
-          <p className="text-xl text-gray-600">
-            Test the complete Soul Twin system
-          </p>
-        </div>
-
-        {/* Queue Indicator */}
-        {queuedCount > 0 && (
-          <motion.div
-            className="mb-6 p-4 bg-yellow-100 border-2 border-yellow-300 rounded-xl flex items-center justify-between"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">⚠️</span>
-              <div>
-                <p className="font-bold text-yellow-900">Offline Mode</p>
-                <p className="text-sm text-yellow-700">Queued events: {queuedCount}</p>
-              </div>
+  if (step === 'selection') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 mb-4">
+              <span className="text-4xl">🕉️</span>
+              <h1 className="text-4xl font-bold text-orange-900">AntarShanti</h1>
             </div>
-            <button
-              onClick={handleSync}
-              disabled={syncing}
-              className="px-6 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-bold rounded-lg disabled:opacity-50 transition-colors"
-            >
-              {syncing ? 'Syncing...' : 'Force Resync'}
-            </button>
-          </motion.div>
-        )}
+            <p className="text-lg text-gray-700">Your spiritual companion on the journey to inner peace</p>
+            {memory.keywords.length > 0 && (
+              <p className="text-sm text-orange-700 mt-2">
+                ✨ I remember our journey together
+              </p>
+            )}
+          </div>
 
-        {/* Main Content */}
-        {twin ? (
-          <div className="space-y-6">
-            {/* Twin Stats Card */}
-            <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-200">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900">{twin.name}</h2>
-                  <p className="text-gray-600">Path of {twin.path}</p>
-                </div>
-                <button
-                  onClick={() => setShowTwinFull(true)}
-                  className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl hover:shadow-lg transition-all"
-                >
-                  View Full Twin
-                </button>
-              </div>
+          <div className="bg-gradient-to-r from-orange-200 to-amber-200 p-1 rounded-2xl mb-8">
+            <div className="bg-white rounded-xl p-6">
+              <h2 className="text-2xl font-semibold text-center text-orange-900 mb-8">
+                Choose your spiritual path
+              </h2>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="font-bold text-lg mb-4">Level Progress</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span>Level</span>
-                      <span className="font-bold text-amber-600">{twin.level}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>XP</span>
-                      <span className="font-bold text-amber-600">
-                        {twin.xp} / {200 + 100 * (twin.level - 1)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Total Rituals</span>
-                      <span className="font-bold text-amber-600">{twin.history.length}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="font-bold text-lg mb-4">Attributes</h3>
-                  <div className="space-y-3">
-                    {Object.entries(twin.attributes).map(([key, value]) => (
-                      <div key={key} className="flex justify-between">
-                        <span className="capitalize">
-                          {key.replace(/([A-Z])/g, ' $1').trim()}
-                        </span>
-                        <span className="font-bold text-amber-600">{value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Ritual Simulator */}
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl shadow-xl p-8 border-2 border-amber-200">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">🧘 Ritual Simulator</h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                {Object.entries(RITUALS).map(([id, ritual]) => (
+              <div className="grid grid-cols-2 gap-6">
+                {Object.entries(PATHS).map(([key, path]) => (
                   <button
-                    key={id}
-                    onClick={() => handleSimulateRitual(id)}
-                    className="p-6 bg-white hover:bg-amber-100 border-2 border-amber-300 rounded-2xl text-left transition-all hover:shadow-lg"
+                    key={key}
+                    onClick={() => handlePathSelect(key)}
+                    className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-300 rounded-xl p-6 text-left hover:border-orange-500 hover:shadow-lg transition-all transform hover:scale-105 cursor-pointer"
                   >
-                    <h3 className="font-bold text-lg text-gray-900 mb-2">{ritual.name}</h3>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <div className="font-bold text-amber-600">+{ritual.xp} XP</div>
-                      {Object.entries(ritual.changes).map(([attr, value]) => (
-                        value ? (
-                          <div key={attr}>
-                            +{value} {attr.replace(/([A-Z])/g, ' $1').trim()}
-                          </div>
-                        ) : null
-                      ))}
-                    </div>
+                    <div className="text-5xl mb-4">{path.emoji}</div>
+                    <h3 className="text-xl font-semibold text-orange-900 mb-2">{path.name}</h3>
+                    <p className="text-gray-700 text-sm">{path.description}</p>
                   </button>
                 ))}
               </div>
-
-              <div className="mt-6 p-4 bg-blue-100 border-2 border-blue-300 rounded-xl">
-                <p className="text-sm text-blue-900">
-                  💡 <strong>Tip:</strong> Each ritual increases XP and attributes based on your chosen path.
-                  Path multipliers amplify certain attributes!
-                </p>
-              </div>
-            </div>
-
-            {/* Testing Info */}
-            <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">📊 Testing Checklist</h2>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">✅</span>
-                  <span>Twin created and saved</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{twin.history.length > 0 ? '✅' : '⬜'}</span>
-                  <span>Complete at least one ritual</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{twin.level > 1 ? '✅' : '⬜'}</span>
-                  <span>Level up (complete 4+ Daily Pujas)</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{queuedCount > 0 ? '✅' : '⬜'}</span>
-                  <span>Test offline queue (stop server, complete ritual)</span>
-                </div>
-              </div>
             </div>
           </div>
-        ) : (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">🌟</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Loading Twin...</h2>
-            <p className="text-gray-600">If onboarding doesn't appear, the twin is loading</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100">
+      {/* Header */}
+      <div className="bg-white border-b-2 border-orange-200 p-4 shadow-sm">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">{selectedPath ? PATHS[selectedPath as keyof typeof PATHS].emoji : ''}</span>
+            <div>
+              <h2 className="text-xl font-bold text-orange-900">
+                {selectedPath ? PATHS[selectedPath as keyof typeof PATHS].name : ''}
+              </h2>
+              <p className="text-sm text-gray-600">
+                {selectedPath ? PATHS[selectedPath as keyof typeof PATHS].description : ''}
+              </p>
+            </div>
           </div>
-        )}
+          <button
+            onClick={() => setStep('selection')}
+            className="text-sm text-orange-700 hover:text-orange-900 underline"
+          >
+            Change Path
+          </button>
+        </div>
+      </div>
 
-        {/* Modals */}
-        {showOnboarding && (
-          <TwinOnboarding
-            onComplete={handleCreateTwin}
-            onSkip={() => setShowOnboarding(false)}
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="max-w-4xl mx-auto space-y-4">
+          {messages.map((msg, idx) => (
+            <div
+              key={idx}
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div
+                className={`max-w-lg rounded-2xl p-4 ${
+                  msg.role === 'user'
+                    ? 'bg-orange-500 text-white'
+                    : 'bg-white border-2 border-orange-200 text-gray-800'
+                }`}
+              >
+                {msg.content}
+              </div>
+            </div>
+          ))}
+          {loading && (
+            <div className="flex justify-start">
+              <div className="bg-white border-2 border-orange-200 rounded-2xl p-4">
+                <div className="flex gap-2">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" />
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}} />
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}} />
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      </div>
+
+      {/* Memory Indicator */}
+      {memory.keywords.length > 0 && (
+        <div className="bg-orange-100 border-t border-orange-200 px-4 py-2">
+          <div className="max-w-4xl mx-auto flex items-center gap-2 text-sm text-orange-800">
+            <Sparkles className="w-4 h-4" />
+            <span>Memory active: {memory.keywords.length} concepts learned</span>
+          </div>
+        </div>
+      )}
+
+      {/* Input */}
+      <div className="bg-white border-t-2 border-orange-200 p-4">
+        <div className="max-w-4xl mx-auto flex gap-2">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Share your thoughts..."
+            className="flex-1 border-2 border-orange-300 rounded-xl px-4 py-3 focus:outline-none focus:border-orange-500"
+            disabled={loading}
           />
-        )}
-
-        {showTwinFull && twin && (
-          <TwinFull
-            twin={twin}
-            onClose={() => setShowTwinFull(false)}
-            onSimulateRitual={handleSimulateRitual}
-          />
-        )}
-
-        <LevelUpModal
-          isOpen={levelUpData.isOpen}
-          newLevel={levelUpData.newLevel}
-          attributeGains={levelUpData.gains}
-          onClose={() => setLevelUpData({ ...levelUpData, isOpen: false })}
-        />
+          <button
+            onClick={sendMessage}
+            disabled={loading || !input.trim()}
+            className="bg-orange-500 text-white rounded-xl px-6 py-3 hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+          >
+            <Send className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );
