@@ -5,7 +5,7 @@ import TwinMini from '@/components/twin/TwinMini';
 import TwinFull from '@/components/twin/TwinFull';
 import TwinOnboarding from '@/components/twin/TwinOnboarding';
 import LevelUpModal from '@/components/twin/LevelUpModal';
-import { getTwin, createTwin, postEvent, getEventQueue } from '@/lib/twin/twinClient';
+import { getTwin, createTwin, getEventQueue } from '@/lib/twin/twinClient';
 import { SoulTwin, SpiritualPath } from '@/lib/twin/rules';
 
 export default function TwinWrapper() {
@@ -36,9 +36,16 @@ export default function TwinWrapper() {
     const data = await getTwin(userId);
     setTwin(data);
     
-    // Show onboarding if no twin exists
-    if (!data && mounted) {
-      setTimeout(() => setShowOnboarding(true), 1000);
+    // Show onboarding if:
+    // 1. No twin exists
+    // 2. User hasn't dismissed it
+    // 3. Not on demo page (to avoid conflicts)
+    const dismissed = localStorage.getItem('twin_onboarding_dismissed');
+    const isDemo = window.location.pathname === '/twin/demo';
+    
+    if (!data && mounted && !dismissed && !isDemo) {
+      // Delay to avoid conflict with page load
+      setTimeout(() => setShowOnboarding(true), 3000);
     }
   }
 
@@ -46,6 +53,11 @@ export default function TwinWrapper() {
     const newTwin = await createTwin(userId, name, path, avatarSeed);
     setTwin(newTwin);
     setShowOnboarding(false);
+  }
+
+  function handleSkipOnboarding() {
+    setShowOnboarding(false);
+    localStorage.setItem('twin_onboarding_dismissed', 'true');
   }
 
   if (!mounted) return null;
@@ -63,7 +75,7 @@ export default function TwinWrapper() {
       {showOnboarding && (
         <TwinOnboarding
           onComplete={handleCreateTwin}
-          onSkip={() => setShowOnboarding(false)}
+          onSkip={handleSkipOnboarding}
         />
       )}
 
