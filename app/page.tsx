@@ -4,6 +4,7 @@ import HeroSection from "./(components)/HeroSection";
 import HealingPromise from "./(components)/HealingPromise";
 import RitualJourney from "./(components)/RitualJourney";
 import ThirtyDaysGuide from "./(components)/ThirtyDaysGuide";
+import BenefitsSection from "./(components)/BenefitsSection";
 import WhatsInside from "./(components)/WhatsInside";
 import VoicesOfPeace from "./(components)/VoicesOfPeace";
 import ProductCard from "./(components)/ProductCard";
@@ -17,6 +18,7 @@ export default function Home() {
         <HealingPromise />
         <RitualJourney />
         <ThirtyDaysGuide />
+        <BenefitsSection />
         <WhatsInside />
         <ProductCard />
         <VoicesOfPeace />
