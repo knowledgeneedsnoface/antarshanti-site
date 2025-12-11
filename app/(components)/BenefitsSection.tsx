@@ -1,13 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
 import { Sparkles, Flame, Heart, Brain, Shield, Leaf } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const benefits = [
   {
     number: "1",
     title: "Instant Calm the Moment You Open the Box",
-    hook: "A grounding message greets you: "Zyada sochne se pehle… bas khud se shuru karna zaroori hai."",
+    hook: "A grounding message greets you: \"Zyada sochne se pehle… bas khud se shuru karna zaroori hai.\"",
     tagline: "It breaks the mental noise and shifts you into presence.",
     benefits: [
       "Stops overthinking",
@@ -36,7 +35,7 @@ const benefits = [
     benefits: [
       "Reduces stress instantly",
       "Brings comfort and nostalgia",
-      "Marks the transition from "outside world" to "inner self""
+      "Marks the transition from \"outside world\" to \"inner self\""
     ],
     icon: Leaf,
     gradient: "from-amber-500 to-orange-400"
@@ -86,14 +85,14 @@ const benefits = [
       "Reduces anxiety",
       "Creates effortless mindfulness (even for beginners)"
     ],
-    special: "Most users say: "This part becomes addictive."",
+    special: "Most users say: \"This part becomes addictive.\"",
     icon: Flame,
     gradient: "from-amber-500 to-orange-400"
   },
   {
     number: "8",
     title: "A Gentle Closing That Anchors Gratitude",
-    hook: "One deep breath. One soft "thank you." Ritual complete.",
+    hook: "One deep breath. One soft \"thank you.\" Ritual complete.",
     benefits: [
       "Ends your practice with peace",
       "Builds emotional resilience",
@@ -105,8 +104,6 @@ const benefits = [
 ];
 
 export default function BenefitsSection() {
-  const router = useRouter();
-
   const scrollToProduct = () => {
     const productSection = document.getElementById("product-reveal");
     if (productSection) {
