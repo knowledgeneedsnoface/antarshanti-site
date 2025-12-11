@@ -2,31 +2,31 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
-const OPENROUTER_API_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || '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';
+// Using the same API key as Gann Baba chat
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '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';
 
 export async function POST(request: NextRequest) {
   try {
     const { messages, systemPrompt, memoryContext } = await request.json();
 
     console.log('=== Server-side API Request ===');
-    console.log('Model: meta-llama/llama-3.2-3b-instruct:free');
+    console.log('Model: tngtech/deepseek-r1t2-chimera:free');
     
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'HTTP-Referer': request.headers.get('origin') || 'https://antarshanti-site.vercel.app',
+        'HTTP-Referer': 'https://antarshanti-site.vercel.app',
         'X-Title': 'AntarShanti Digital Twin'
       },
       body: JSON.stringify({
-        model: 'meta-llama/llama-3.2-3b-instruct:free',
+        model: 'tngtech/deepseek-r1t2-chimera:free',
         messages: [
           { role: 'system', content: systemPrompt + memoryContext },
           ...messages
         ],
-        temperature: 0.7,
-        max_tokens: 500
+
       })
     });
 
