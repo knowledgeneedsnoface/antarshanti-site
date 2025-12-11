@@ -3,9 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Sparkles } from 'lucide-react';
 
-// Try using the free models that don't require credits
-const OPENROUTER_API_KEY = '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';
-
 const PATHS = {
   peace: {
     emoji: '🕊️',
@@ -119,64 +116,57 @@ export default function SpiritualTwin() {
       const systemPrompt = PATHS[selectedPath as keyof typeof PATHS].systemPrompt;
       const memoryContext = memory.context ? `\n\nContext from previous conversations: ${memory.context}` : '';
       
-      console.log('=== OpenRouter API Request ===');
-      console.log('Model: tngtech/deepseek-r1t2-chimera:free');
-      console.log('API Key:', OPENROUTER_API_KEY.substring(0, 20) + '...');
+      console.log('=== Sending Request to Twin Chat API ===');
       
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const response = await fetch('/api/twin-chat', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'HTTP-Referer': window.location.origin,
-          'X-Title': 'AntarShanti Digital Twin'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.0-flash-exp:free',
-          messages: [
-            { role: 'system', content: systemPrompt + memoryContext },
-            ...messages.slice(-10).map(m => ({ role: m.role, content: m.content })),
+          messages: messages.slice(-10).map(m => ({ role: m.role, content: m.content })).concat([
             { role: 'user', content: currentInput }
-          ]
+          ]),
+          systemPrompt,
+          memoryContext
         })
       });
 
-      console.log('Response status:', response.status);
+      console.log('API Response status:', response.status);
       const data = await response.json();
-      console.log('Response data:', data);
       
       if (!response.ok) {
-        let errorMsg = 'Unknown error';
-        if (data.error) {
-          errorMsg = data.error.message || data.error.code || JSON.stringify(data.error);
-        }
-        
-        // Specific error handling
-        if (errorMsg.includes('User not found') || errorMsg.includes('Invalid API key')) {
-          errorMsg = 'API key issue. Please check your OpenRouter account at https://openrouter.ai/settings/keys and ensure: 1) The key is valid, 2) You have added credits or enabled free tier models.';
-        }
-        
-        throw new Error(errorMsg);
+        throw new Error(data.error || 'Failed to get response');
       }
       
-      if (data.choices && data.choices[0] && data.choices[0].message) {
+      if (data.content) {
         const aiMessage = {
           role: 'assistant',
-          content: data.choices[0].message.content
+          content: data.content
         };
         setMessages(prev => [...prev, aiMessage]);
-        await updateMemory(currentInput, data.choices[0].message.content);
+        await updateMemory(currentInput, data.content);
       } else {
-        throw new Error(`Invalid response format: ${JSON.stringify(data)}`);
+        throw new Error('Invalid response format');
       }
     } catch (error: any) {
       console.error('=== Error Details ===');
       console.error('Error:', error);
       console.error('Message:', error.message);
       setError(error.message);
+      
+      let userMessage = 'I apologize, but I encountered an issue. ';
+      if (error.message.includes('Rate limit')) {
+        userMessage += 'The AI service is currently experiencing high demand. Please wait a moment and try again.';
+      } else if (error.message.includes('Authentication')) {
+        userMessage += 'There was an authentication issue with the AI service.';
+      } else {
+        userMessage += error.message;
+      }
+      
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `I apologize, but I encountered an issue: ${error.message}. ${error.message.includes('API key') ? 'Please visit https://openrouter.ai/settings/keys to check your API key and account status.' : 'Please check the browser console for more details.'}`
+        content: userMessage
       }]);
     } finally {
       setLoading(false);
@@ -230,8 +220,8 @@ export default function SpiritualTwin() {
           </div>
 
           <div className="bg-blue-100 border-2 border-blue-300 rounded-xl p-4 text-sm text-blue-900">
-            <p className="font-bold mb-2">⚠️ Note:</p>
-            <p>This Digital Twin uses OpenRouter AI. If you see an error, please ensure your OpenRouter API key is valid and has credits or free tier access enabled at <a href="https://openrouter.ai/settings/keys" target="_blank" className="underline">openrouter.ai/settings/keys</a></p>
+            <p className="font-bold mb-2">💡 Tip:</p>
+            <p>This Digital Twin uses AI to provide personalized spiritual guidance. Choose a path that resonates with your current journey and start a conversation!</p>
           </div>
         </div>
       </div>
