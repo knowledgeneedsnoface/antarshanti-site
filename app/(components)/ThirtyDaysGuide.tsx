@@ -69,7 +69,7 @@ const ritualSteps = [
   {
     icon: "💭",
     title: "Read the simple Hindi meaning on the card.",
-    description: "This transforms the mantra from "sound" to personal relevance.",
+    description: "This transforms the mantra from \"sound\" to personal relevance.",
     accent: "orange"
   },
   {
@@ -79,7 +79,7 @@ const ritualSteps = [
     points: [
       "Hearing your own voice builds self-belief",
       "The vibration shifts emotional state",
-      "The body "registers" the intention"
+      "The body \"registers\" the intention"
     ],
     accent: "amber"
   }
