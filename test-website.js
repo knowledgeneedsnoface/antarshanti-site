@@ -13,7 +13,7 @@ console.log('=====================================\n');
 // Test 1: Homepage accessibility
 console.log('📍 Test 1: Homepage Load');
 console.log('URL: https://antarshanti-site.vercel.app/');
-console.log('Expected: Page loads with "10 Minutes to Meet Yourself"');
+console.log('Expected: Page loads with "Return to Yourself in Just 10 Minutes."');
 console.log('Result: ✅ PASS - Page accessible');
 testResults.passed.push('Homepage loads with Immersive Hero');
 
