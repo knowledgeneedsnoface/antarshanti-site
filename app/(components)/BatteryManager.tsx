@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { toast } from "sonner"; // Assuming sonner or similar exists, or we create a custom toast dispatch
+
 // Actually, I'll create a custom event or simple toast mechanism if 'sonner' isn't installed.
 // The prompt asks for "Toast component".
 
