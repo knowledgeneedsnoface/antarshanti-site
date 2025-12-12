@@ -48,7 +48,8 @@ export type AnalyticsEventName =
     | 'quest_generated'
     | 'reminder_prompt_opened'
     | 'reminder_set'
-    | 'return_loop_complete';
+    | 'return_loop_complete'
+    | 'error_caught';
 
 export interface AnalyticsEvent {
     name: AnalyticsEventName;
