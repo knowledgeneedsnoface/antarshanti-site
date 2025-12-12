@@ -19,7 +19,14 @@ export type AnalyticsEventName =
     | 'path_node_clicked'
     | 'path_selected'
     | 'path_nodes_rendered'
-    | 'path_prophesy_shown';
+    | 'path_prophesy_shown'
+    | 'scene_enter'
+    | 'flame_hold_complete'
+    | 'breath_cycle_complete'
+    | 'mantra_pass_complete'
+    | 'dissolve_complete'
+    | 'ignite_complete'
+    | 'ritual_complete';
 
 export interface AnalyticsEvent {
     name: AnalyticsEventName;

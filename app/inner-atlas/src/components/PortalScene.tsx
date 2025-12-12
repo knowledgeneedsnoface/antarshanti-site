@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ParticleLayer from './ParticleLayer';
 import SeedInput from './SeedInput';
 import MapReveal from './MapReveal';
+import ChamberSceneManager from './ChamberSceneManager';
 import { useAudio } from '../contexts/AudioContext';
 import { Analytics } from '../lib/Analytics';
 

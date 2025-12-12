@@ -7,6 +7,7 @@ import { Analytics } from '../lib/Analytics';
 interface PersonalizationContextType {
     theme: RitualTheme | null;
     setSeed: (seed: string) => void;
+    setTheme: (theme: RitualTheme | null) => void;
     clearTheme: () => void;
 }
 
@@ -32,7 +33,7 @@ export function PersonalizationProvider({ children }: { children: React.ReactNod
     };
 
     return (
-        <PersonalizationContext.Provider value={{ theme, setSeed, clearTheme }}>
+        <PersonalizationContext.Provider value={{ theme, setSeed, setTheme, clearTheme }}>
             {children}
         </PersonalizationContext.Provider>
     );

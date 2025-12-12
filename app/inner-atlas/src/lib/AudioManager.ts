@@ -98,6 +98,12 @@ class AudioManagerClass {
             this.masterGain.gain.setTargetAtTime(target, this.ctx.currentTime, 0.1);
         }
     }
+
+    setVolume(id: string, volume: number, rampTime = 0.5) {
+        if (!this.gainNodes.has(id) || !this.ctx) return;
+        const gain = this.gainNodes.get(id)!;
+        gain.gain.linearRampToValueAtTime(this.isMuted ? 0 : volume, this.ctx.currentTime + rampTime);
+    }
 }
 
 export const AudioManager = new AudioManagerClass();

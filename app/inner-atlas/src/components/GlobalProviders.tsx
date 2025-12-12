@@ -5,14 +5,18 @@ import { AudioProvider } from '../contexts/AudioContext';
 import { ShrineProvider } from '../contexts/ShrineContext';
 import { PersonalizationProvider } from '../contexts/PersonalizationContext';
 
+import { RitualProvider } from '../contexts/RitualContext';
+
 export default function GlobalProviders({ children }: { children: React.ReactNode }) {
     return (
-        <AudioProvider>
+        <PersonalizationProvider>
             <ShrineProvider>
-                <PersonalizationProvider>
-                    {children}
-                </PersonalizationProvider>
+                <RitualProvider>
+                    <AudioProvider>
+                        {children}
+                    </AudioProvider>
+                </RitualProvider>
             </ShrineProvider>
-        </AudioProvider>
+        </PersonalizationProvider>
     );
 }

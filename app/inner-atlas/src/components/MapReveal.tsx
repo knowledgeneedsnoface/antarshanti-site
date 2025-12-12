@@ -1,20 +1,39 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { usePersonalization } from '../contexts/PersonalizationContext';
+import { useRitual } from '../contexts/RitualContext';
 import { useAudio } from '../contexts/AudioContext';
 import MapTile from './MapTile';
 import PathSelector from './PathSelector';
 import { Analytics } from '../lib/Analytics';
 
+// Define Tile type if it's not already defined elsewhere
+interface Tile {
+    id: string;
+    // Add other properties of a Tile if necessary
+}
+
 interface MapRevealProps {
     onPathSelected: (path: string) => void;
 }
 
-export default function MapReveal({ onPathSelected }: MapRevealProps) {
-    const { theme } = usePersonalization();
+export default function MapReveal({ onPathSelected: onPathSelectedProp }: MapRevealProps) { // Renamed prop to avoid conflict
+    const { theme, setTheme } = usePersonalization();
     const { play } = useAudio();
+    const { startRitual } = useRitual();
+    const [tiles, setTiles] = useState<Tile[]>([]);
+
+    // Define the internal handler for path selection
+    const handlePathSelected = (path: string) => {
+        if (!theme) return;
+        setTheme({ ...theme, path: path as any });
+        // Start the chamber ritual
+        startRitual();
+        // Call the original prop function passed from the parent
+        onPathSelectedProp(path);
+    };
 
     useEffect(() => {
         // Map Assembly Sound
@@ -52,7 +71,7 @@ export default function MapReveal({ onPathSelected }: MapRevealProps) {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 1 }} // Fade in after tiles
             >
-                <PathSelector onPathSelected={onPathSelected} />
+                <PathSelector onPathSelected={handlePathSelected} />
             </motion.div>
 
             {/* Instruction Text */}

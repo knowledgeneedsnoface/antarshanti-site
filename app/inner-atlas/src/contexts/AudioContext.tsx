@@ -7,6 +7,7 @@ interface AudioContextType {
     play: (id: string, volume?: number) => void;
     playLoop: (id: string, volume?: number) => void;
     stopLoop: (id: string) => void;
+    setVolume: (id: string, volume: number) => void;
     toggleMute: () => void;
     isMuted: boolean;
     initAudio: () => void;
@@ -30,9 +31,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     const play = (id: string, volume = 1.0) => AudioManager.playOneShot(id, volume);
     const playLoop = (id: string, volume = 1.0) => AudioManager.playLoop(id, volume);
     const stopLoop = (id: string) => AudioManager.stopLoop(id);
+    const setVolume = (id: string, volume: number) => AudioManager.setVolume(id, volume);
 
     return (
-        <AudioCtx.Provider value={{ play, playLoop, stopLoop, toggleMute, isMuted, initAudio }}>
+        <AudioCtx.Provider value={{ play, playLoop, stopLoop, setVolume, toggleMute, isMuted, initAudio }}>
             {children}
         </AudioCtx.Provider>
     );
