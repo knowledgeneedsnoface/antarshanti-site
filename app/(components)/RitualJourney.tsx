@@ -1,202 +1,207 @@
 "use client";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
 
 const journeySteps = [
   {
-    day: "Day 1",
-    title: "You open your first ritual envelope.",
+    day: 1,
+    icon: "✉️",
+    affirmation: "I am worthy of this peace",
+    title: "You open your first ritual envelope",
     description: "The paper is soft, the scent of sandalwood rises. You sit, breathe, and begin.",
-    visual: "✉️",
-    affirmation: "I am worthy of this peace."
   },
   {
-    day: "Day 5",
-    title: "You start feeling calmer.",
+    day: 5,
+    icon: "🌅",
+    affirmation: "Peace flows through me naturally",
+    title: "You start feeling calmer",
     description: "The morning rush feels different. Your mind is clearer, your heart more open.",
-    visual: "🌅",
-    affirmation: "Peace flows through me naturally."
   },
   {
-    day: "Day 12",
-    title: "Your mind begins anticipating peace.",
+    day: 12,
+    icon: "🧠",
+    affirmation: "I choose peace in every moment",
+    title: "Your mind begins anticipating peace",
     description: "The ritual becomes a gentle friend. Your body knows what comes next.",
-    visual: "🧠",
-    affirmation: "I choose peace in every moment."
   },
   {
-    day: "Day 20",
-    title: "You look forward to the ritual.",
+    day: 20,
+    icon: "💫",
+    affirmation: "Peace is my natural state",
+    title: "You look forward to the ritual",
     description: "What began as discipline has become desire. Peace calls to you.",
-    visual: "💫",
-    affirmation: "Peace is my natural state."
   },
   {
-    day: "Day 30",
-    title: "You complete the cycle of inner reset.",
+    day: 30,
+    icon: "🕉",
+    affirmation: "I am peace embodied",
+    title: "You complete the cycle of inner reset",
     description: "A new rhythm has been established. You carry peace within you always.",
-    visual: "🕉",
-    affirmation: "I am peace embodied."
-  }
+  },
 ];
 
 export default function RitualJourney() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
-  const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   return (
-    <section
-      id="ritual-journey"
-      ref={containerRef}
-      className="py-32 px-6 bg-white relative overflow-hidden"
-    >
-      {/* Background pattern */}
+    <section ref={ref} className="py-24 bg-gradient-to-b from-amber-50/30 to-white relative overflow-hidden">
+      {/* Background decoration */}
       <div className="absolute inset-0 opacity-5">
-        <svg width="60" height="60" className="absolute inset-0">
-          <defs>
-            <pattern id="mandala-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-              <circle cx="30" cy="30" r="25" fill="none" stroke="#D97706" strokeWidth="0.5" opacity="0.3" />
-              <circle cx="30" cy="30" r="15" fill="none" stroke="#D97706" strokeWidth="0.5" opacity="0.4" />
-              <circle cx="30" cy="30" r="5" fill="none" stroke="#D97706" strokeWidth="0.5" opacity="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#mandala-pattern)" />
-        </svg>
+        <div className="absolute top-20 left-10 w-64 h-64 bg-amber-300 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-orange-300 rounded-full blur-3xl" />
       </div>
 
-      <div className="max-w-6xl mx-auto relative">
+      <div className="container mx-auto px-6 relative z-10">
         <motion.div
-          className="text-center mb-20"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-20"
         >
-          <h2 className="text-4xl md:text-6xl font-light text-amber-900 mb-6">
+          <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-4">
             Your 30-Day Ritual Journey
           </h2>
-          <p className="text-xl text-amber-700/80 max-w-3xl mx-auto leading-relaxed">
-            What begins as a simple daily practice transforms into a profound relationship with peace.
+          <p className="text-lg text-gray-600 font-light max-w-2xl mx-auto">
+            What begins as practice transforms into peace.
           </p>
         </motion.div>
 
-        {/* Timeline */}
-        <div className="relative">
-          {/* Central path line */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 bg-gradient-to-b from-amber-200 to-amber-400 h-full" />
-
-          {/* Animated path reveal */}
+        <div className="max-w-4xl mx-auto relative">
+          {/* Animated progress line */}
           <motion.div
-            className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-amber-400 to-amber-600"
-            style={{
-              height: "100%",
-              scaleY: pathLength,
-              transformOrigin: "top",
-            }}
+            initial={{ height: 0 }}
+            animate={isInView ? { height: "100%" } : {}}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute left-8 md:left-12 top-0 w-0.5 bg-gradient-to-b from-amber-300 via-orange-400 to-amber-600"
+            style={{ zIndex: 0 }}
           />
 
-          {/* Journey steps */}
-          <div className="space-y-24">
-            {journeySteps.map((step, index) => (
+          {journeySteps.map((step, index) => {
+            const isExpanded = expandedIndex === index;
+            const stepRef = useRef(null);
+            const stepInView = useInView(stepRef, { once: true, margin: "-80px" });
+
+            return (
               <motion.div
-                key={step.day}
-                className={`flex items-center ${
-                  index % 2 === 0 ? "flex-row" : "flex-row-reverse"
-                }`}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                viewport={{ once: true }}
+                key={index}
+                ref={stepRef}
+                initial={{ opacity: 0, x: -50 }}
+                animate={stepInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: index * 0.15, duration: 0.6 }}
+                className="relative mb-12 last:mb-0"
               >
-                {/* Content */}
-                <div className={`w-1/2 ${index % 2 === 0 ? "pr-12 text-right" : "pl-12 text-left"}`}>
+                {/* Timeline dot */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={stepInView ? { scale: 1 } : {}}
+                  transition={{ delay: index * 0.15 + 0.3, type: "spring", stiffness: 200 }}
+                  className="absolute left-6 md:left-10 w-5 h-5 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg z-10"
+                  style={{ top: "1.5rem" }}
+                >
                   <motion.div
-                    className="bg-white/50 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-amber-100"
-                    whileHover={{ scale: 1.02, y: -5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <div className="flex items-center gap-4 mb-4">
+                    animate={{ 
+                      scale: [1, 1.5, 1],
+                      opacity: [1, 0.5, 1]
+                    }}
+                    transition={{ 
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    className="absolute inset-0 rounded-full bg-amber-400"
+                  />
+                </motion.div>
+
+                {/* Card */}
+                <motion.div
+                  onClick={() => setExpandedIndex(isExpanded ? null : index)}
+                  whileHover={{ scale: 1.02, x: 5 }}
+                  className="ml-16 md:ml-24 cursor-pointer"
+                >
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-amber-100/50 hover:border-amber-200">
+                    <div className="flex items-start gap-4">
                       <motion.div
-                        className="text-4xl"
-                        animate={{
-                          rotate: [0, 5, -5, 0],
+                        animate={{ 
+                          rotate: [0, 10, -10, 0],
+                          scale: [1, 1.1, 1]
                         }}
-                        transition={{
-                          duration: 4,
+                        transition={{ 
+                          duration: 3,
                           repeat: Infinity,
-                          ease: "easeInOut",
+                          ease: "easeInOut"
                         }}
+                        className="text-4xl"
                       >
-                        {step.visual}
+                        {step.icon}
                       </motion.div>
-                      <div>
-                        <h3 className="text-2xl font-semibold text-amber-900">{step.day}</h3>
-                        <p className="text-sm text-amber-600 italic">{step.affirmation}</p>
+
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="text-sm font-medium text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
+                            DAY {step.day}
+                          </span>
+                        </div>
+
+                        <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-2">
+                          {step.affirmation}
+                        </h3>
+
+                        <p className="text-gray-600 font-light mb-3">
+                          {step.title}
+                        </p>
+
+                        <AnimatePresence>
+                          {isExpanded ? (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <p className="text-gray-700 leading-relaxed pt-3 border-t border-amber-100">
+                                {step.description}
+                              </p>
+                              <button className="mt-4 text-sm text-amber-600 hover:text-amber-700 font-medium">
+                                ✕ Close
+                              </button>
+                            </motion.div>
+                          ) : (
+                            <motion.button
+                              whileHover={{ x: 5 }}
+                              className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
+                            >
+                              ↓ Expand to read more
+                            </motion.button>
+                          )}
+                        </AnimatePresence>
                       </div>
                     </div>
-
-                    <h4 className="text-xl font-medium text-gray-900 mb-3">{step.title}</h4>
-                    <p className="text-gray-700 leading-relaxed">{step.description}</p>
-                  </motion.div>
-                </div>
-
-                {/* Timeline node */}
-                <div className="w-1/12 flex justify-center relative">
-                  <motion.div
-                    className="w-6 h-6 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full shadow-lg flex items-center justify-center"
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      boxShadow: [
-                        "0 0 0 0 rgba(245, 158, 11, 0.7)",
-                        "0 0 0 10px rgba(245, 158, 11, 0)",
-                        "0 0 0 0 rgba(245, 158, 11, 0)"
-                      ]
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <div className="w-2 h-2 bg-white rounded-full" />
-                  </motion.div>
-                </div>
-
-                {/* Spacer */}
-                <div className="w-1/2" />
+                  </div>
+                </motion.div>
               </motion.div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
-        {/* Call to action */}
+        {/* CTA */}
         <motion.div
-          className="text-center mt-20"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 1 }}
+          className="text-center mt-16"
         >
-          <p className="text-2xl text-amber-800 mb-8 font-light">
-            Ready to begin your journey?
-          </p>
-          <motion.button
-            className="px-12 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              document.getElementById("product-reveal")?.scrollIntoView({
-                behavior: "smooth",
-              });
-            }}
+          <p className="text-gray-600 mb-6 font-light">Ready to begin your journey?</p>
+          <motion.a
+            href="#product"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 px-8 py-4 text-white font-medium shadow-xl hover:shadow-2xl transition-all"
           >
             Start My Ritual Journey →
-          </motion.button>
+          </motion.a>
         </motion.div>
       </div>
     </section>

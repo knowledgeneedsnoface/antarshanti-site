@@ -1,221 +1,253 @@
 "use client";
-import { motion } from "framer-motion";
-import { useState } from "react";
+
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import Image from "next/image";
 
 const items = [
   {
-    id: "envelopes",
-    name: "30 Ritual Envelopes",
+    icon: "✨",
+    title: "30 Ritual Envelopes",
     description: "Handcrafted paper envelopes, each containing a unique puja sequence.",
-    emoji: "✨",
-    color: "from-amber-100 to-orange-100",
-    position: { top: "20%", left: "10%" },
   },
   {
-    id: "diya",
-    name: "Brass Diya",
+    icon: "🪔",
+    title: "Brass Diya",
     description: "Traditional oil lamp for creating sacred space and intention.",
-    emoji: "🪔",
-    color: "from-yellow-100 to-amber-100",
-    position: { top: "35%", left: "25%" },
   },
   {
-    id: "incense",
-    name: "Handmade Incense",
+    icon: "🌿",
+    title: "Handmade Incense",
     description: "Pure, natural incense sticks for grounding and presence.",
-    emoji: "🌿",
-    color: "from-green-100 to-emerald-100",
-    position: { top: "50%", left: "15%" },
   },
   {
-    id: "thread",
-    name: "Sacred Thread",
+    icon: "🧵",
+    title: "Sacred Thread",
     description: "Red sacred thread for traditional rituals and intention-setting.",
-    emoji: "🧵",
-    color: "from-red-100 to-pink-100",
-    position: { top: "30%", left: "60%" },
   },
   {
-    id: "card",
-    name: "Daily Intention Card",
+    icon: "💌",
+    title: "Daily Intention Card",
     description: "Beautiful card with affirmations and space for personal intentions.",
-    emoji: "💌",
-    color: "from-purple-100 to-indigo-100",
-    position: { top: "45%", left: "70%" },
   },
   {
-    id: "stand",
-    name: "Wooden Deity Stand",
+    icon: "🪵",
+    title: "Wooden Deity Stand",
     description: "Small wooden platform for placing photos or sacred objects.",
-    emoji: "🪵",
-    color: "from-amber-100 to-brown-100",
-    position: { top: "60%", left: "50%" },
   },
 ];
 
 export default function WhatsInside() {
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+  
+  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
   return (
-    <section
-      id="whats-inside"
-      className="py-32 px-6 bg-white relative overflow-hidden"
-    >
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-3">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23D97706' fill-opacity='0.1'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3C/g%3E%3C/svg%3E")`,
-          }}
-        />
-      </div>
-
-      <div className="max-w-7xl mx-auto">
+    <section ref={containerRef} className="py-24 bg-gradient-to-b from-white to-amber-50/30 relative overflow-hidden">
+      <div className="container mx-auto px-6" ref={ref}>
         <motion.div
-          className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-6xl font-light text-amber-900 mb-6">
+          <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-4">
             What's Inside Your Kit
           </h2>
-          <p className="text-xl text-amber-700/80 max-w-3xl mx-auto leading-relaxed">
-            Every element is carefully chosen to support your journey toward inner peace.
+          <p className="text-lg text-gray-600 font-light max-w-2xl mx-auto">
+            Every element supports your journey to peace.
           </p>
         </motion.div>
 
-        {/* Flatlay container */}
-        <div className="relative max-w-4xl mx-auto mb-16">
-          {/* Main kit image */}
+        {/* Desktop: Split layout */}
+        <div className="hidden lg:grid lg:grid-cols-2 gap-12 items-start max-w-7xl mx-auto">
+          {/* Left: Parallax image */}
           <motion.div
-            className="relative"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="sticky top-24"
           >
-            <img
-              src="/flatlay.jpg"
-              alt="AntarShanti Ritual Kit Contents"
-              className="w-full h-auto rounded-3xl shadow-2xl"
-            />
-
-            {/* Overlay glow */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-t from-amber-500/10 to-transparent rounded-3xl"
-              animate={{
-                opacity: [0.3, 0.6, 0.3],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
+              style={{ y: imageY }}
+              className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
+            >
+              <Image
+                src="/flatlay.jpg"
+                alt="AntarShanti Ritual Kit Contents"
+                fill
+                className="object-cover"
+              />
+              
+              {/* Glow overlay */}
+              <motion.div
+                animate={{ 
+                  opacity: [0.2, 0.4, 0.2],
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="absolute inset-0 bg-gradient-to-br from-amber-400/20 to-transparent"
+              />
+            </motion.div>
+
+            {/* Floating badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ delay: 0.5 }}
+              className="absolute -bottom-4 -right-4 bg-white rounded-2xl p-4 shadow-xl border-2 border-amber-200"
+            >
+              <div className="text-sm font-medium text-amber-600">✨ Premium Quality</div>
+            </motion.div>
           </motion.div>
 
-          {/* Interactive items */}
-          {items.map((item, index) => (
-            <motion.div
-              key={item.id}
-              className="absolute cursor-pointer"
-              style={item.position}
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{
-                duration: 0.8,
-                delay: 0.5 + index * 0.1,
-                type: "spring",
-                stiffness: 200
-              }}
-              viewport={{ once: true }}
-              onMouseEnter={() => setHoveredItem(item.id)}
-              onMouseLeave={() => setHoveredItem(null)}
-              onClick={() => setHoveredItem(hoveredItem === item.id ? null : item.id)}
-            >
-              {/* Item emoji */}
-              <motion.div
-                className="text-3xl md:text-4xl mb-2"
-                animate={{
-                  scale: hoveredItem === item.id ? 1.2 : 1,
-                  rotate: hoveredItem === item.id ? [0, -5, 5, 0] : 0,
-                }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                {item.emoji}
-              </motion.div>
+          {/* Right: Item list */}
+          <div className="space-y-6">
+            {items.map((item, index) => {
+              const itemRef = useRef(null);
+              const itemInView = useInView(itemRef, { once: true, margin: "-50px" });
 
-              {/* Hover card */}
-              <motion.div
-                className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-amber-100 p-4 min-w-[200px] z-10 ${
-                  hoveredItem === item.id ? "block" : "hidden"
-                }`}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{
-                  opacity: hoveredItem === item.id ? 1 : 0,
-                  y: hoveredItem === item.id ? 0 : -10,
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">{item.emoji}</span>
-                  <h3 className="font-semibold text-gray-900">{item.name}</h3>
-                </div>
-                <p className="text-sm text-gray-700 leading-relaxed">{item.description}</p>
+              return (
+                <motion.div
+                  key={index}
+                  ref={itemRef}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={itemInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ delay: index * 0.1, duration: 0.6 }}
+                  whileHover={{ x: 10, scale: 1.02 }}
+                  className="group"
+                >
+                  <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-amber-100/50 hover:border-amber-200">
+                    <div className="flex items-start gap-4">
+                      {/* Icon */}
+                      <motion.div
+                        animate={{ 
+                          rotate: [0, 10, -10, 0],
+                          scale: [1, 1.1, 1]
+                        }}
+                        transition={{ 
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: index * 0.2
+                        }}
+                        className="text-5xl flex-shrink-0"
+                      >
+                        {item.icon}
+                      </motion.div>
 
-                {/* Energy particles */}
-                <div className="absolute inset-0 pointer-events-none">
-                  {Array.from({ length: 6 }).map((_, i) => (
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
+                          {item.title}
+                        </h3>
+                        <p className="text-gray-600 font-light leading-relaxed">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Progress bar */}
                     <motion.div
-                      key={i}
-                      className="absolute w-0.5 h-0.5 bg-amber-400 rounded-full"
-                      style={{
-                        left: `${20 + Math.random() * 60}%`,
-                        top: `${20 + Math.random() * 60}%`,
-                      }}
-                      animate={{
-                        scale: [0, 1, 0],
-                        opacity: [0, 1, 0],
-                      }}
-                      transition={{
-                        duration: 2,
-                        delay: i * 0.3,
-                        repeat: Infinity,
-                      }}
+                      initial={{ width: 0 }}
+                      whileHover={{ width: "100%" }}
+                      className="h-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full mt-4"
+                      transition={{ duration: 0.4 }}
                     />
-                  ))}
-                </div>
-              </motion.div>
-            </motion.div>
-          ))}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Bottom CTA */}
+        {/* Mobile: Stacked layout */}
+        <div className="lg:hidden space-y-8">
+          {/* Image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.7 }}
+            className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
+          >
+            <Image
+              src="/flatlay.jpg"
+              alt="AntarShanti Ritual Kit Contents"
+              fill
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-400/20 to-transparent" />
+          </motion.div>
+
+          {/* Items */}
+          <div className="space-y-4">
+            {items.map((item, index) => {
+              const itemRef = useRef(null);
+              const itemInView = useInView(itemRef, { once: true, margin: "-30px" });
+
+              return (
+                <motion.div
+                  key={index}
+                  ref={itemRef}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={itemInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: index * 0.08, duration: 0.5 }}
+                >
+                  <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-amber-100/50">
+                    <div className="flex items-start gap-4">
+                      <motion.div
+                        animate={{ 
+                          scale: [1, 1.1, 1]
+                        }}
+                        transition={{ 
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: index * 0.2
+                        }}
+                        className="text-4xl"
+                      >
+                        {item.icon}
+                      </motion.div>
+
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                          {item.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 font-light">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* CTA */}
         <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.8 }}
+          className="text-center mt-16"
         >
-          <p className="text-2xl text-amber-800 mb-8 font-light">
+          <p className="text-gray-600 mb-6 font-light">
             Ready to receive your sacred tools?
           </p>
-          <motion.button
-            className="px-12 py-6 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold text-xl rounded-full shadow-xl hover:shadow-2xl transition-all duration-300"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              document.getElementById("voices-of-peace")?.scrollIntoView({
-                behavior: "smooth",
-              });
-            }}
+          <motion.a
+            href="#product"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 px-8 py-4 text-white font-medium shadow-xl hover:shadow-2xl transition-all"
           >
             Experience the Ritual →
-          </motion.button>
+          </motion.a>
         </motion.div>
       </div>
     </section>

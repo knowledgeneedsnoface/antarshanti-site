@@ -1,182 +1,117 @@
 "use client";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
 const benefits = [
   {
-    id: "anxiety",
+    icon: "🧘‍♀️",
     title: "Reduce Anxiety",
-    description: "A 10-minute ritual to reset your nervous system.",
-    visual: "🧘‍♀️",
-    color: "from-emerald-100 to-green-100",
-    glowColor: "shadow-emerald-200",
-    image: "/benefit1.jpg"
+    description: "10-minute nervous system reset",
   },
   {
-    id: "focus",
+    icon: "🎯",
     title: "Daily Focus",
-    description: "Clear your mind before the day begins.",
-    visual: "🎯",
-    color: "from-amber-100 to-orange-100",
-    glowColor: "shadow-amber-200",
-    image: "/benefit2.jpg"
+    description: "Clear your mind daily",
   },
   {
-    id: "pause",
-    title: "Screen-Free Pause",
-    description: "An offline moment of care.",
-    visual: "📱",
-    color: "from-indigo-100 to-purple-100",
-    glowColor: "shadow-indigo-200",
-    image: "/benefit3.jpg"
-  }
+    icon: "📱",
+    title: "Screen-Free",
+    description: "Offline moment of care",
+  },
 ];
 
 export default function HealingPromise() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section
-      id="about"
-      ref={containerRef}
-      className="py-24 px-6 bg-gradient-to-b from-white to-amber-50/20"
-    >
-      <div className="max-w-7xl mx-auto">
+    <section ref={ref} className="py-24 bg-gradient-to-b from-white to-amber-50/30">
+      <div className="container mx-auto px-6">
         <motion.div
-          className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-light text-amber-900 mb-6">
+          <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-4">
             The Healing Promise
           </h2>
-          <p className="text-xl text-amber-700/80 max-w-2xl mx-auto leading-relaxed">
-            Each ritual is designed to bring you back to yourself, one breath at a time.
+          <p className="text-lg text-gray-600 font-light">
+            Each ritual brings you back to yourself.
           </p>
         </motion.div>
 
-        {/* Horizontal scroll container */}
-        <div className="relative overflow-x-auto scrollbar-hide">
-          <motion.div
-            className="flex gap-8 px-4 pb-8"
-            style={{ width: "max-content" }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1.5, delay: 0.3 }}
-            viewport={{ once: true }}
-          >
-            {benefits.map((benefit, index) => (
-              <motion.div
-                key={benefit.id}
-                className={`relative min-w-[320px] md:min-w-[400px] bg-gradient-to-br ${benefit.color} rounded-3xl p-8 shadow-xl ${benefit.glowColor} transition-all duration-500 cursor-pointer`}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.2 * index,
-                  
-                }}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {benefits.map((benefit, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+              transition={{ 
+                delay: index * 0.2, 
+                duration: 0.6,
+                ease: [0.19, 1, 0.22, 1]
+              }}
+              whileHover={{ 
+                y: -8, 
+                scale: 1.03,
+                transition: { duration: 0.3 }
+              }}
+              className="relative group"
+            >
+              <div className="bg-white rounded-3xl p-8 shadow-lg border-2 border-amber-100/50 hover:border-amber-200 hover:shadow-2xl transition-all duration-300 h-full">
+                {/* Glow effect on hover */}
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-amber-100/0 to-orange-100/0 group-hover:from-amber-100/50 group-hover:to-orange-100/30 transition-all duration-500 -z-10" />
                 
-                whileHover={{
-                  scale: 1.05,
-                  rotateY: hoveredCard === benefit.id ? 5 : 0,
-                  rotateX: hoveredCard === benefit.id ? -2 : 0,
-                }}
-                onHoverStart={() => setHoveredCard(benefit.id)}
-                onHoverEnd={() => setHoveredCard(null)}
-                onClick={() => {
-                  document.getElementById("ritual-journey")?.scrollIntoView({
-                    behavior: "smooth",
-                  });
-                }}
-                viewport={{ once: true }}
-              >
-                {/* Energy field glow */}
                 <motion.div
-                  className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/20 to-transparent"
-                  animate={{
-                    opacity: hoveredCard === benefit.id ? [0.3, 0.6, 0.3] : 0.1,
+                  animate={{ 
+                    scale: [1, 1.1, 1],
+                    rotate: [0, 5, -5, 0]
                   }}
-                  transition={{
+                  transition={{ 
                     duration: 2,
-                    repeat: hoveredCard === benefit.id ? Infinity : 0,
+                    repeat: Infinity,
+                    ease: "easeInOut"
                   }}
-                />
-
-                {/* Visual */}
-                <motion.div
                   className="text-6xl mb-6"
-                  animate={{
-                    scale: hoveredCard === benefit.id ? [1, 1.1, 1] : 1,
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: hoveredCard === benefit.id ? Infinity : 0,
-                  }}
                 >
-                  {benefit.visual}
+                  {benefit.icon}
                 </motion.div>
 
-                {/* Content */}
-                <motion.h3
-                  className="text-2xl font-semibold text-gray-900 mb-4"
-                  animate={{
-                    color: hoveredCard === benefit.id ? "#059669" : "#111827",
-                  }}
-                >
+                <h3 className="text-2xl font-medium text-gray-900 mb-3">
                   {benefit.title}
-                </motion.h3>
+                </h3>
 
-                <motion.p
-                  className="text-gray-700 leading-relaxed text-lg"
-                  animate={{
-                    color: hoveredCard === benefit.id ? "#047857" : "#374151",
-                  }}
-                >
+                <p className="text-gray-600 font-light leading-relaxed">
                   {benefit.description}
-                </motion.p>
+                </p>
 
-                {/* Energy particles */}
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-1 h-1 bg-amber-400 rounded-full"
-                    style={{
-                      left: `${20 + Math.random() * 60}%`,
-                      top: `${20 + Math.random() * 60}%`,
-                    }}
-                    animate={{
-                      scale: hoveredCard === benefit.id ? [0, 1, 0] : 0,
-                      opacity: hoveredCard === benefit.id ? [0, 1, 0] : 0,
-                    }}
-                    transition={{
-                      duration: 2,
-                      delay: i * 0.2,
-                      repeat: hoveredCard === benefit.id ? Infinity : 0,
-                    }}
-                  />
-                ))}
-              </motion.div>
-            ))}
-          </motion.div>
+                {/* Hover indicator */}
+                <motion.div
+                  initial={{ width: 0 }}
+                  whileHover={{ width: "100%" }}
+                  className="h-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full mt-6"
+                  transition={{ duration: 0.4 }}
+                />
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Scroll hint */}
+        {/* Scroll hint for mobile */}
         <motion.div
-          className="text-center mt-8 text-amber-600"
-          animate={{
-            x: [-10, 10, -10],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.8 }}
+          className="md:hidden text-center mt-8 text-sm text-gray-500"
         >
-          ← Scroll horizontally to explore →
+          <motion.span
+            animate={{ x: [0, 10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            ← Scroll horizontally →
+          </motion.span>
         </motion.div>
       </div>
     </section>
