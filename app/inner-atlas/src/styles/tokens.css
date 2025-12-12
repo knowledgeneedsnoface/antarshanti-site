@@ -5,6 +5,14 @@
    * COLORS
    * ========================================= */
 
+    .inner-atlas-root {
+        background-color: var(--color-void);
+        color: var(--color-text-body);
+        min-height: 100vh;
+    }
+
+    /* Ritual Flame Palette */
+
     /* Ritual Flame Palette */
     --color-flame-core: #FFFFFF;
     --color-flame-inner: #FFEB3B;
@@ -45,8 +53,10 @@
     /* =========================================
    * TYPOGRAPHY
    * ========================================= */
-    --font-display: var(--font-serif), serif;
-    --font-body: var(--font-sans), sans-serif;
+    --font-display: var(--font-serif),
+    serif;
+    --font-body: var(--font-sans),
+    sans-serif;
 
     --text-heading-xl: 3.5rem;
     --text-heading-lg: 2.5rem;

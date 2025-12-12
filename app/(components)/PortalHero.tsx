@@ -2,8 +2,10 @@
 
 import { motion, useMotionValue, useTransform, AnimatePresence, useSpring } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PortalHero() {
+    const router = useRouter();
     const [isHovering, setIsHovering] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
 
@@ -47,7 +49,11 @@ export default function PortalHero() {
                 className="relative mb-12 cursor-pointer group"
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
-                onClick={() => setIsClicked(true)}
+                onMouseLeave={() => setIsHovering(false)}
+                onClick={() => {
+                    setIsClicked(true);
+                    setTimeout(() => router.push('/inner-atlas'), 1500);
+                }}
                 animate={{ scale: isClicked ? 50 : (isHovering ? 1.05 : 1) }}
                 transition={{ duration: isClicked ? 1.5 : 0.8, ease: isClicked ? "circIn" : "easeInOut" }}
             >
@@ -116,7 +122,10 @@ export default function PortalHero() {
                 </motion.p>
 
                 <motion.button
-                    onClick={() => setIsClicked(true)}
+                    onClick={() => {
+                        setIsClicked(true);
+                        setTimeout(() => router.push('/inner-atlas'), 1500);
+                    }}
                     className="pointer-events-auto px-8 py-3 rounded-full border border-amber-500/30 text-amber-500/80 hover:bg-amber-500/10 hover:border-amber-500/60 hover:text-amber-400 transition-all duration-500 uppercase text-sm tracking-widest"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -128,19 +137,10 @@ export default function PortalHero() {
                 </motion.button>
             </div>
 
-            {/* Transition Whiteout Overlay */}
-            <AnimatePresence>
-                {isClicked && (
-                    <motion.div
-                        className="fixed inset-0 bg-white z-[100] pointer-events-none"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 0.5, ease: "easeIn" }}
-                    />
                 )}
-            </AnimatePresence>
+        </AnimatePresence>
 
-        </section>
+        </section >
     );
 }
 
