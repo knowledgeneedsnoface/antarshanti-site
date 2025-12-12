@@ -49,7 +49,6 @@ export default function PortalHero() {
                 className="relative mb-12 cursor-pointer group"
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
-                onMouseLeave={() => setIsHovering(false)}
                 onClick={() => {
                     setIsClicked(true);
                     setTimeout(() => router.push('/inner-atlas'), 1500);
