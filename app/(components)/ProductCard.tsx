@@ -4,6 +4,8 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
 import { Shield, Truck, CreditCard } from "lucide-react";
+import { useCart } from "../(components)/CartContext";
+import { useRouter } from "next/navigation";
 
 const trustBadges = [
   { icon: Shield, text: "7-day peace guarantee" },
@@ -14,6 +16,18 @@ const trustBadges = [
 export default function ProductCard() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const { add } = useCart();
+  const router = useRouter();
+
+  const handleAddToCart = () => {
+    add({
+      id: "ritual-kit-30",
+      name: "AntarShanti 30-Day Ritual Kit",
+      price: 1299,
+      qty: 1,
+    });
+    router.push("/checkout");
+  };
 
   return (
     <section id="product" ref={ref} className="py-24 bg-gradient-to-b from-amber-50/30 to-white relative overflow-hidden">
@@ -44,7 +58,7 @@ export default function ProductCard() {
                   fill
                   className="object-cover"
                 />
-                
+
                 {/* Floating sparkles */}
                 {[...Array(8)].map((_, i) => (
                   <motion.div
@@ -69,11 +83,11 @@ export default function ProductCard() {
 
                 {/* Premium badge */}
                 <motion.div
-                  animate={{ 
+                  animate={{
                     y: [0, -8, 0],
                     rotate: [-1, 1, -1]
                   }}
-                  transition={{ 
+                  transition={{
                     duration: 4,
                     repeat: Infinity,
                     ease: "easeInOut"
@@ -143,10 +157,10 @@ export default function ProductCard() {
                     className="mb-8"
                   >
                     <motion.p
-                      animate={{ 
+                      animate={{
                         scale: [1, 1.05, 1]
                       }}
-                      transition={{ 
+                      transition={{
                         duration: 2,
                         repeat: Infinity,
                         ease: "easeInOut"
@@ -163,17 +177,17 @@ export default function ProductCard() {
                 </div>
 
                 {/* CTA Button */}
-                <motion.a
-                  href="/checkout"
+                <motion.button
+                  onClick={handleAddToCart}
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.9, duration: 0.6 }}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.98 }}
-                  className="relative group"
+                  className="relative group w-full"
                 >
                   <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full blur opacity-30 group-hover:opacity-60 transition duration-300" />
-                  <button className="relative w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-full py-5 px-8 text-lg font-medium shadow-xl hover:shadow-2xl transition-all duration-300">
+                  <div className="relative w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-full py-5 px-8 text-lg font-medium shadow-xl hover:shadow-2xl transition-all duration-300">
                     <span className="flex items-center justify-center gap-2">
                       Start My Ritual Journey
                       <motion.span
@@ -183,8 +197,8 @@ export default function ProductCard() {
                         →
                       </motion.span>
                     </span>
-                  </button>
-                </motion.a>
+                  </div>
+                </motion.button>
 
                 {/* Reassurance text */}
                 <motion.p

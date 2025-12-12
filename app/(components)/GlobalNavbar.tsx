@@ -35,7 +35,7 @@ export default function GlobalNavbar() {
             Twin Demo
           </Link>
           <Link
-            href="/checkout"
+            href="/#product"
             className="px-6 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-full hover:from-amber-600 hover:to-orange-600 transition-all shadow-md"
           >
             Get Started
@@ -106,6 +106,6 @@ export default function GlobalNavbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </nav >
   );
 }
