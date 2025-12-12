@@ -137,8 +137,17 @@ export default function PortalHero() {
                 </motion.button>
             </div>
 
+            {/* Transition Whiteout Overlay */}
+            <AnimatePresence>
+                {isClicked && (
+                    <motion.div
+                        className="fixed inset-0 bg-white z-[100] pointer-events-none"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 1, delay: 0.5, ease: "easeIn" }}
+                    />
                 )}
-        </AnimatePresence>
+            </AnimatePresence>
 
         </section >
     );
