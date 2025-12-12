@@ -3,6 +3,9 @@
 import Image from "next/image";
 import { motion, useMotionValue, useTransform, useScroll } from "framer-motion";
 import { useEffect } from "react";
+import { useTransition } from "./TransitionController";
+import Tooltip from "./Tooltip";
+import { triggerHaptic, hapticPatterns } from "./Haptics";
 
 export default function HeroSection() {
   const MANDALA_OPACITY = 0.15;
@@ -10,6 +13,8 @@ export default function HeroSection() {
   const DRAW_DURATION = 6;
   const GLOW_OPACITY = 0.2;
   const GLOW_DURATION = 4;
+
+  const { startTransition } = useTransition();
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -90,18 +95,20 @@ export default function HeroSection() {
           transition={{ repeat: Infinity, ease: "linear", duration: ROTATION_DURATION }}
           className="will-change-transform relative z-10"
           style={{ width: 260, height: 260 }}
+          role="img"
+          aria-label="Breathing Mandala Animation"
         >
-          <svg viewBox="0 0 200 200" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 200 200" width="240" height="240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <defs>
               <linearGradient id="g1" x1="0" x2="1">
                 <stop offset="0%" stopColor="#FCD34D" stopOpacity="0.9" />
                 <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.6" />
               </linearGradient>
               <filter id="glow">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
                 <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
             </defs>
@@ -202,21 +209,36 @@ export default function HeroSection() {
               className="mt-8 flex flex-col sm:flex-row gap-4"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2, duration: 0.7 }}
+              transition={{ delay: 0.9, duration: 0.7 }}
             >
-              <motion.a
-                href="#product"
-                className="inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 px-8 py-4 text-white font-medium shadow-2xl text-lg"
-                whileHover={{ scale: 1.05, boxShadow: "0 20px 50px rgba(245, 158, 11, 0.4)" }}
-                whileTap={{ scale: 0.97 }}
-              >
-                Start Your Journey →
-              </motion.a>
+              <Tooltip text="The ritual begins when you slow down…">
+                <motion.a
+                  href="#product"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    triggerHaptic(hapticPatterns.ritualStart);
+                    startTransition(() => {
+                      const el = document.querySelector("#product");
+                      el?.scrollIntoView({ behavior: "smooth" });
+                    });
+                  }}
+                  className="relative inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 px-8 py-4 text-white font-medium shadow-2xl text-lg overflow-hidden group"
+                  whileHover={{ scale: 1.05, boxShadow: "0 20px 50px rgba(245, 158, 11, 0.4)" }}
+                  whileTap={{ scale: 0.97 }}
+                  aria-label="Start Your 10 Minute Ritual Journey"
+                >
+                  {/* Shimmer effect */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+                  Start Your Journey →
+                </motion.a>
+              </Tooltip>
 
               <motion.a
                 href="#benefits"
                 className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/40 px-7 py-4 text-white/95 backdrop-blur-md hover:bg-white/10 transition-all"
                 whileHover={{ scale: 1.03, borderColor: "rgba(255,255,255,0.6)" }}
+                aria-label="Learn How the Ritual Works"
               >
                 See How ↓
               </motion.a>
@@ -239,12 +261,12 @@ export default function HeroSection() {
         href="#product"
         className="hidden md:flex items-center gap-2 fixed right-8 bottom-8 z-50 rounded-full bg-white/95 px-5 py-3 shadow-2xl text-sm font-medium backdrop-blur-sm"
         initial={{ opacity: 0, y: 20 }}
-        animate={{ 
-          opacity: 1, 
+        animate={{
+          opacity: 1,
           y: 0,
           boxShadow: ["0 10px 40px rgba(0,0,0,0.1)", "0 15px 60px rgba(245,158,11,0.3)", "0 10px 40px rgba(0,0,0,0.1)"]
         }}
-        transition={{ 
+        transition={{
           opacity: { delay: 2, duration: 0.5 },
           boxShadow: { duration: 3, repeat: Infinity }
         }}

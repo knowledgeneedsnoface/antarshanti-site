@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import Tooltip from "./Tooltip";
+import { Compass, Sparkles, BookOpen, Users } from "lucide-react";
 
 export default function GlobalNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,22 +23,35 @@ export default function GlobalNavbar() {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center gap-8">
-          <Link href="/" className="text-gray-700 hover:text-amber-600 transition-colors font-medium">
-            Home
-          </Link>
-          <a href="#about" className="text-gray-700 hover:text-amber-600 transition-colors font-medium cursor-pointer">
-            About
+        {/* Desktop Navigation Links */}
+        <div className="hidden md:flex items-center gap-6">
+          <Tooltip text="Return directly to the sanctuary entrance">
+            <Link href="/" className="group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-amber-50/50 transition-all">
+              <Compass className="w-4 h-4 text-amber-600/70 group-hover:text-amber-600" />
+              <div>
+                <p className="text-sm font-medium text-gray-700 group-hover:text-amber-700">Inner Atlas</p>
+                <p className="text-[10px] text-gray-400 font-light hidden xl:block">Your 10-minute ritual path</p>
+              </div>
+            </Link>
+          </Tooltip>
+
+          <Tooltip text="Meet your evolving spiritual companion">
+            <Link href="/twin/demo" className="group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-amber-50/50 transition-all">
+              <Sparkles className="w-4 h-4 text-amber-600/70 group-hover:text-amber-600" />
+              <div>
+                <p className="text-sm font-medium text-gray-700 group-hover:text-amber-700">Soul Twin</p>
+                <p className="text-[10px] text-gray-400 font-light hidden xl:block">Your spiritual companion</p>
+              </div>
+            </Link>
+          </Tooltip>
+
+          <a href="#about" className="text-sm font-medium text-gray-600 hover:text-amber-600 transition-colors">
+            Our Story
           </a>
-          <a href="#founder" className="text-gray-700 hover:text-amber-600 transition-colors font-medium cursor-pointer">
-            Founder
-          </a>
-          <Link href="/twin/demo" className="text-gray-700 hover:text-amber-600 transition-colors font-medium">
-            Twin Demo
-          </Link>
+
           <Link
             href="/#product"
-            className="px-6 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-full hover:from-amber-600 hover:to-orange-600 transition-all shadow-md"
+            className="ml-2 px-6 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-sm rounded-full hover:from-amber-600 hover:to-orange-600 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
           >
             Get Started
           </Link>

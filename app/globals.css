@@ -32,6 +32,15 @@ body {
   color: var(--spiritual-black);
 }
 
+/* Accessibility: Hide custom cursor for keyboard users */
+.keyboard-user .cursor-glow {
+  display: none !important;
+}
+
+.keyboard-user * {
+  cursor: auto !important;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -198,4 +207,3 @@ input:focus, textarea:focus, button:focus {
   );
   background-size: 1000px 100%;
 }
-

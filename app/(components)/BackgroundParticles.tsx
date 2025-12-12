@@ -1,7 +1,7 @@
-"use client";
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { usePerformanceMode } from "./PerformanceManager";
 
 interface ParticleSystemProps {
   count?: number;
@@ -21,8 +21,13 @@ function ParticleSystem({
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
+  const { isLiteMode } = usePerformanceMode();
+
+  // Reduce count in lite mode
+  const finalCount = isLiteMode ? Math.max(5, Math.floor(count * 0.3)) : count;
+
   const particles = useMemo(() => {
-    return Array.from({ length: count }, () => ({
+    return Array.from({ length: finalCount }, () => ({
       position: new THREE.Vector3(
         (Math.random() - 0.5) * spread,
         Math.random() * 6 + 1,
@@ -36,7 +41,7 @@ function ParticleSystem({
       life: Math.random() * Math.PI * 2,
       maxLife: Math.random() * 10 + 5
     }));
-  }, [count, spread]);
+  }, [count, spread, finalCount]);
 
   useFrame((state) => {
     if (!meshRef.current) return;
@@ -84,7 +89,7 @@ function ParticleSystem({
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+    <instancedMesh ref={meshRef} args={[undefined, undefined, finalCount]}>
       <sphereGeometry args={[size, 8, 6]} />
       <meshBasicMaterial
         color={color}

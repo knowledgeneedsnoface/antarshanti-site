@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform, useMotionValue, useVelocity, useSpring } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import { triggerHaptic, hapticPatterns } from "./Haptics";
 
 export default function AuraReset() {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -52,6 +53,17 @@ export default function AuraReset() {
             unsubscribeY();
         };
     }, [velocityX, velocityY]);
+
+    useEffect(() => {
+        const unsubscribe = scrollYProgress.on("change", (latest) => {
+            // Trigger haptic when text becomes fully visible (around 0.3)
+            // Use a small range or state to prevent multiple triggers
+            if (latest > 0.28 && latest < 0.32) {
+                triggerHaptic(hapticPatterns.light);
+            }
+        });
+        return () => unsubscribe();
+    }, [scrollYProgress]);
 
     // Map speed to visual properties (Slower = Bigger/Brighter, Faster = Smaller/Dimmer)
     // Speed is roughly 0 to several thousands. 

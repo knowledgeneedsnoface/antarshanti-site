@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import LivePresenceWidget from "./LivePresenceWidget";
 
 export default function CallToContinue() {
     return (
@@ -26,6 +27,10 @@ export default function CallToContinue() {
                     >
                         See the Ritual in Action
                     </motion.a>
+                </div>
+
+                <div className="mt-8">
+                    <LivePresenceWidget />
                 </div>
             </div>
         </section>

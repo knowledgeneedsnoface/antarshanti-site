@@ -4,6 +4,7 @@ import React, { Suspense, useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useTexture, Html } from "@react-three/drei";
 import * as THREE from "three";
+import { usePerformanceMode } from "./PerformanceManager";
 
 /**
  * ANTARSHANTI - SEMI-FPV SHOWROOM EXPERIENCE
@@ -323,8 +324,10 @@ function IncenseParticles() {
     }
   });
 
+  const { isLiteMode } = usePerformanceMode();
+
   const particles = React.useMemo(() => {
-    const count = 100;
+    const count = isLiteMode ? 30 : 100;
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       positions[i * 3] = (Math.random() - 0.5) * 20;
@@ -373,7 +376,7 @@ function JourneyScene({
 }) {
   return (
     <>
-      <SemiCircleCamera onNodeFocus={() => {}} />
+      <SemiCircleCamera onNodeFocus={() => { }} />
       <TempleLighting />
       <SacredGround />
       <IncenseParticles />

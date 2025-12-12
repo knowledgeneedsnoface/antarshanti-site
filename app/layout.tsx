@@ -8,14 +8,20 @@ import GlobalFooter from "./(components)/GlobalFooter";
 import ThemeRenderer from "./(components)/theme-system/ThemeRenderer";
 import ThemeSwitcher from "./(components)/theme-system/ThemeSwitcher";
 import TwinWrapper from "./TwinWrapper";
+import LiteModeToggle from "./(components)/LiteModeToggle";
+import AccessibilityManager from "./(components)/AccessibilityManager";
+import TransitionController from "./(components)/TransitionController";
+import BatteryManager from "./(components)/BatteryManager";
+import Watermark from "./(components)/Watermark";
+import BreathingIndicator from "./(components)/BreathingIndicator";
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap"
 });
 
-const crimsonText = Crimson_Text({ 
+const crimsonText = Crimson_Text({
   weight: ["400", "600"],
   style: ["normal", "italic"],
   subsets: ["latin"],
@@ -36,18 +42,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CartProvider>
             {/* Dynamic spiritual ambience background */}
             <ThemeRenderer />
-            
+
             {/* Theme switcher button */}
             <ThemeSwitcher />
-            
+            <LiteModeToggle />
+
             {/* Soul Twin System */}
             <TwinWrapper />
-            
-            <GlobalNavbar />
-            <div className="min-h-screen relative z-10">
-              {children}
-            </div>
-            <GlobalFooter />
+            <AccessibilityManager />
+            <BatteryManager />
+            <Watermark />
+            <BreathingIndicator />
+            <TransitionController>
+              <GlobalNavbar />
+              <div className="min-h-screen relative z-10">
+                {children}
+              </div>
+              <GlobalFooter />
+            </TransitionController>
           </CartProvider>
         </ThemeProvider>
       </body>
