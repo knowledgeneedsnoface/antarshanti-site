@@ -1,0 +1,88 @@
+/* Inner Atlas Design Tokens */
+
+:root {
+    /* =========================================
+   * COLORS
+   * ========================================= */
+
+    /* Ritual Flame Palette */
+    --color-flame-core: #FFFFFF;
+    --color-flame-inner: #FFEB3B;
+    --color-flame-mid: #FF9800;
+    --color-flame-outer: #FF5722;
+    --color-flame-smoke: rgba(255, 87, 34, 0.1);
+
+    /* Dawn -> Dusk Gradients */
+    --gradient-dawn: linear-gradient(180deg, #0A0502 0%, #2A180E 100%);
+    --gradient-dusk: linear-gradient(180deg, #160F0A 0%, #000000 100%);
+    --gradient-portal: radial-gradient(circle at center, rgba(212, 175, 55, 0.2) 0%, rgba(10, 5, 2, 0) 70%);
+
+    /* Shrine Gold Palette */
+    --color-shrine-gold-100: #FFF9C4;
+    --color-shrine-gold-300: #FFF176;
+    --color-shrine-gold-500: #D4AF37;
+    /* Primary Gold */
+    --color-shrine-gold-700: #8D6E1F;
+    --color-shrine-gold-900: #4A3808;
+
+    /* Calm Neutrals */
+    --color-void: #0A0502;
+    --color-stone: #1C1917;
+    --color-mist: rgba(255, 255, 255, 0.6);
+    --color-text-body: rgba(255, 255, 255, 0.8);
+    --color-text-muted: rgba(255, 255, 255, 0.4);
+
+    /* =========================================
+   * TYPOGRAPHY
+   * ========================================= */
+    --font-display: var(--font-serif), serif;
+    /* Assumes global var map */
+    --font-body: var(--font-sans), sans-serif;
+
+    --text-heading-xl: 3.5rem;
+    --text-heading-lg: 2.5rem;
+    --text-heading-md: 1.75rem;
+
+    --text-ritual-instruction: 1.5rem;
+    /* Large instruction text */
+    --text-body: 1rem;
+    --text-caption: 0.875rem;
+    --text-micro: 0.75rem;
+
+    --leading-tight: 1.1;
+    --leading-relaxed: 1.6;
+
+    /* =========================================
+   * MOTION
+   * ========================================= */
+    --motion-fast: 160ms;
+    --motion-medium: 360ms;
+    --motion-slow: 680ms;
+    --motion-ritual: 2400ms;
+    /* Slow pulse */
+
+    /* Easings */
+    --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+    --ease-soft-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --ease-exhale: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-relic-float: cubic-bezier(0.45, 0, 0.55, 1);
+
+    /* =========================================
+   * SHADOWS & GLOWS
+   * ========================================= */
+    --glow-shrine: 0 0 40px rgba(212, 175, 55, 0.3);
+    --glow-portal: 0 0 60px rgba(255, 152, 0, 0.4);
+    --glow-relic: 0 0 20px rgba(255, 255, 255, 0.5);
+
+    --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --motion-fast: 0ms;
+        --motion-medium: 0ms;
+        --motion-slow: 0ms;
+        --motion-ritual: 0ms;
+    }
+}
