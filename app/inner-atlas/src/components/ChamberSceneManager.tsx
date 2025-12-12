@@ -19,7 +19,20 @@ export default function ChamberSceneManager() {
     const { currentScene, isRitualActive } = useRitual();
     const { theme } = usePersonalization();
 
-    if (!isRitualActive) return null;
+    console.log("[ChamberSceneManager] Render. Active:", isRitualActive, "Scene:", currentScene);
+
+    if (!isRitualActive) {
+        console.log("[ChamberSceneManager] Inactive");
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black text-white">
+                <div className="text-center p-8 border border-red-500">
+                    <h2 className="text-xl mb-4">Ritual Not Active</h2>
+                    <p className="text-sm opacity-50 mb-4">Waiting for context...</p>
+                    <p className="text-xs font-mono">{JSON.stringify({ isRitualActive, currentScene })}</p>
+                </div>
+            </div>
+        );
+    }
 
     const renderScene = () => {
         switch (currentScene) {

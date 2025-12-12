@@ -6,14 +6,17 @@ import App from './src/components/App';
 import PortalScene from './src/components/PortalScene';
 import ChamberSceneManager from './src/components/ChamberSceneManager';
 import ShrineView from './src/components/ShrineView'; // Import
+import MirrorScene from './src/components/MirrorScene'; // Import
 
-type ViewState = 'PORTAL' | 'CHAMBER' | 'SHRINE';
+type ViewState = 'PORTAL' | 'CHAMBER' | 'MIRROR' | 'SHRINE';
 
 export default function InnerAtlasPage() {
     const [view, setView] = useState<ViewState>('PORTAL');
 
+    console.log("[InnerAtlas] Current View:", view);
+
     const handlePortalComplete = (selectedPath: string) => {
-        // Path is set in context by the components themselves
+        console.log("[InnerAtlas] Portal Complete -> Chamber");
         setView('CHAMBER');
     };
 
@@ -38,9 +41,14 @@ export default function InnerAtlasPage() {
                            However, RitualContext handles state.
                            If RitualContext says !isRitualActive, we can show Shrine.
                         */}
-                        <RitualListener onRitualEnd={() => setView('SHRINE')} />
+                        <RitualListener onRitualEnd={() => setView('MIRROR')} />
                     </>
                 )}
+
+                {view === 'MIRROR' && <MirrorScene onComplete={() => {
+                    console.log("[InnerAtlas] Mirror Complete -> Shrine");
+                    setView('SHRINE');
+                }} />}
 
                 {view === 'SHRINE' && <ShrineView />}
             </App>
@@ -63,6 +71,7 @@ function RitualListener({ onRitualEnd }: { onRitualEnd: () => void }) {
             setWasActive(true);
         } else if (wasActive && !isRitualActive) {
             // Ritual just finished
+            console.log("[InnerAtlas] Ritual Finished detected");
             onRitualEnd();
         }
     }, [isRitualActive, wasActive, onRitualEnd]);

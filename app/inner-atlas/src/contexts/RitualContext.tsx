@@ -44,6 +44,7 @@ export function RitualProvider({ children }: { children: React.ReactNode }) {
     const currentScene = sequence[currentSceneIndex];
 
     const startRitual = () => {
+        console.log("[RitualContext] startRitual called. Path:", pathKey);
         setIsRitualActive(true);
         setCurrentSceneIndex(0);
         Analytics.track('chamber_started', { path: pathKey, seed: theme?.seed });

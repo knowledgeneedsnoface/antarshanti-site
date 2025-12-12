@@ -35,7 +35,13 @@ export type AnalyticsEventName =
     | 'relic_rarity'
     | 'relic_added_to_shrine'
     | 'shrine_evolved'
-    | 'shrine_streak_bonus';
+    | 'shrine_streak_bonus'
+    | 'mirror_viewed'
+    | 'mirror_reflection_rendered'
+    | 'mirror_quote_generated'
+    | 'snapshot_started'
+    | 'snapshot_exported'
+    | 'snapshot_shared';
 
 export interface AnalyticsEvent {
     name: AnalyticsEventName;
