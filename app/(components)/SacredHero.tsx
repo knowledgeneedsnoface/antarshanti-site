@@ -1,12 +1,13 @@
 "use client";
 
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 
 export default function SacredHero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHoveringCandle, setIsHoveringCandle] = useState(false);
   const [isHoveringCTA, setIsHoveringCTA] = useState(false);
+  const [showSparkle, setShowSparkle] = useState(false);
 
   // Mouse Physics for Flame Tilt
   const mouseX = useMotionValue(0);
@@ -14,21 +15,24 @@ export default function SacredHero() {
 
   // Smooth spring physics for the flame movement
   const springConfig = { damping: 25, stiffness: 150 };
-  const flameRotate = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), springConfig);
-  const flameX = useSpring(useTransform(mouseX, [-0.5, 0.5], [-15, 15]), springConfig);
+  const flameRotate = useSpring(useTransform(mouseX, [-0.5, 0.5], [-6, 6]), springConfig); // Storyboard: +/- 6deg
+  const flameX = useSpring(useTransform(mouseX, [-0.5, 0.5], [-6, 6]), springConfig); // Storyboard: +/- 6px translation
 
   // Cursor Glow
   const cursorX = useSpring(mouseX, { damping: 20, stiffness: 200 });
   const cursorY = useSpring(mouseY, { damping: 20, stiffness: 200 });
 
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 150]); // Parallax text
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]); // Fade out on scroll
-  const flameScale = useTransform(scrollY, [0, 300], [1, 0.8]); // Flame shrinks slightly on scroll
+  const y1 = useTransform(scrollY, [0, 500], [0, 150]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+
+  // Storyboard: Scroll Transition Out - Scale 1 -> 0.7, Move down 40px
+  const flameScaleScroll = useTransform(scrollY, [0, 300], [1, 0.7]);
+  const flameYScroll = useTransform(scrollY, [0, 300], [0, 40]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
     if (typeof window === "undefined") return;
+    const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
 
     // Normalize coordinates -0.5 to 0.5
@@ -38,6 +42,15 @@ export default function SacredHero() {
     mouseX.set(x);
     mouseY.set(y);
   };
+
+  // Sparkle trigger on hover
+  useEffect(() => {
+    if (isHoveringCandle) {
+      setShowSparkle(true);
+      const timer = setTimeout(() => setShowSparkle(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isHoveringCandle]);
 
   return (
     <section
@@ -69,14 +82,12 @@ export default function SacredHero() {
         style={{ y: y1, opacity }}
         className="relative z-20 flex flex-col items-center justify-center text-center px-6 max-w-5xl"
       >
-        {/* The Living Flame */}
+        {/* The Living Flame - SCENE 1 & 2 */}
         <motion.div
           className="relative mb-14 cursor-pointer group"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 2, ease: "easeOut" }}
           style={{
-            scale: flameScale,
+            scale: flameScaleScroll,
+            y: flameYScroll,
             rotate: flameRotate,
             x: flameX,
             transformOrigin: "bottom center"
@@ -84,42 +95,91 @@ export default function SacredHero() {
           onMouseEnter={() => setIsHoveringCandle(true)}
           onMouseLeave={() => setIsHoveringCandle(false)}
         >
-          {/* Flame Glow - "Breathing" */}
+          {/* Hover Ring Pulse (Storyboard: 16px -> 40px, fade to 0%) */}
+          <AnimatePresence>
+            {isHoveringCandle && (
+              <motion.div
+                initial={{ width: 80, height: 80, opacity: 0.6, borderColor: "rgba(255, 215, 0, 0.8)" }}
+                animate={{
+                  width: 140,
+                  height: 140,
+                  opacity: 0,
+                  borderColor: "rgba(255, 215, 0, 0)"
+                }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="absolute top-16 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-amber-300 blur-sm pointer-events-none"
+              />
+            )}
+          </AnimatePresence>
+
+          {/* Sparkle Particle (from Storyboard) */}
+          <AnimatePresence>
+            {showSparkle && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0, y: 0 }}
+                animate={{ opacity: [0, 1, 0], scale: [0, 1.5, 0], y: -40 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rounded-full blur-[1px] shadow-[0_0_10px_#fff]"
+              />
+            )}
+          </AnimatePresence>
+
+          {/* Flame Glow - Breathing Loop (Scene 2) */}
           <motion.div
-            className="absolute top-10 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-64 bg-orange-400/20 rounded-full blur-[80px]"
+            className="absolute top-10 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full blur-[50px] bg-orange-400/30"
+            initial={{ width: 140, height: 180, opacity: 0.4 }}
             animate={{
-              scale: isHoveringCandle ? 1.4 : [1, 1.15, 1],
-              opacity: isHoveringCandle ? 0.7 : [0.4, 0.6, 0.4],
+              width: isHoveringCandle ? 180 : [140, 160, 140], // Glow radius 8px movement approximated
+              height: isHoveringCandle ? 220 : [180, 200, 180],
+              opacity: isHoveringCandle ? 0.6 : [0.4, 0.52, 0.4], // Brightness +12%
             }}
             transition={{
-              duration: 4, // Slow breathing
+              duration: 1.2, // Storyboard loop length 1.2s
               repeat: Infinity,
               ease: "easeInOut"
             }}
           />
 
           {/* Minimal Candle SVG */}
-          <div className="relative drop-shadow-[0_0_30px_rgba(255,160,50,0.4)]">
+          <div className="relative">
             <svg width="100" height="280" viewBox="0 0 100 280" fill="none" xmlns="http://www.w3.org/2000/svg">
               {/* Flame - The Soul */}
               <motion.path
-                initial={{ opacity: 0.5, scale: 0.8 }}
+                // Scene 1: Soft Emergence
+                initial={{ opacity: 0, scale: 0.92, y: 6 }}
                 animate={{
-                  opacity: 1,
-                  scale: 1,
-                  d: isHoveringCandle
-                    ? "M50 0 C50 0 25 40 25 55 C25 70 36.1929 80 50 80 C63.8071 80 75 70 75 55 C75 40 50 0 50 0 Z"
-                    : [
-                      "M50 5 C50 5 28 45 28 58 C28 72 38 80 50 80 C62 80 72 72 72 58 C72 45 50 5 50 5 Z", // Normal
-                      "M52 2 C52 2 30 42 30 56 C30 70 40 78 52 78 C64 78 74 70 74 56 C74 42 52 2 52 2 Z", // Sway right
-                      "M48 8 C48 8 26 48 26 60 C26 74 36 82 48 82 C60 82 70 74 70 60 C70 48 48 8 48 8 Z", // Sway left
-                      "M50 5 C50 5 28 45 28 58 C28 72 38 80 50 80 C62 80 72 72 72 58 C72 45 50 5 50 5 Z"  // Return
-                    ]
+                  opacity: 0.85,
+                  scale: isHoveringCandle ? 1.12 : [1, 1.06, 1], // Scene 2: 1->1.06, Hover 1.12
+                  y: 0,
+                  rotate: isHoveringCandle ? 0 : [-2, 2, -2], // Scene 2: +/- 2deg sway
+                  d: [
+                    "M50 5 C50 5 28 45 28 58 C28 72 38 80 50 80 C62 80 72 72 72 58 C72 45 50 5 50 5 Z",
+                    "M51 3 C51 3 29 44 29 57 C29 71 39 80 51 80 C63 80 73 71 73 57 C73 44 51 3 51 3 Z", // Subtle organic shift
+                    "M50 5 C50 5 28 45 28 58 C28 72 38 80 50 80 C62 80 72 72 72 58 C72 45 50 5 50 5 Z"
+                  ]
                 }}
                 transition={{
-                  opacity: { delay: 1.5, duration: 1.5 }, // "Inhales" to full brightness
-                  scale: { delay: 1.5, duration: 1.5 },
-                  d: { duration: 6, repeat: Infinity, ease: "linear" } // Organic movement
+                  opacity: { duration: 0.4, ease: "easeOut" }, // Scene 1: 0.4s
+                  y: { duration: 0.4, ease: "easeOut" },
+                  scale: {
+                    delay: 0.4, // Wait for emergence
+                    duration: 1.2, // Loop 1.2s
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  },
+                  rotate: {
+                    delay: 0.4,
+                    duration: 1.2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  },
+                  d: {
+                    duration: 2, // Slower organic morph independent of breath
+                    repeat: Infinity,
+                    ease: "linear"
+                  }
                 }}
                 fill="url(#livingFlameGradient)"
                 style={{ originX: 0.5, originY: 1 }}
@@ -134,7 +194,7 @@ export default function SacredHero() {
 
               <defs>
                 <linearGradient id="livingFlameGradient" x1="50" y1="0" x2="50" y2="80" gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stopColor="#FFFBF2" />
+                  <stop offset="0" stopColor="#FFF7E6" />
                   <stop offset="0.3" stopColor="#FFD858" />
                   <stop offset="0.8" stopColor="#FF9500" />
                   <stop offset="1" stopColor="#FF5C00" opacity="0.8" />
@@ -187,7 +247,7 @@ export default function SacredHero() {
             <motion.div
               className="absolute inset-0 bg-[#FFB02E]"
               animate={{ opacity: [0, 0.5, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} // Synced with flame
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} // Synced with flame loop 1.2s
             />
             <span className="relative z-10 flex items-center gap-2">
               Begin the Ritual
