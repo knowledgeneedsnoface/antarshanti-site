@@ -11,7 +11,13 @@ export type AnalyticsEventName =
     | 'relic_collected'
     | 'shrine_saved'
     | 'snapshot_shared'
-    | 'habit_opt_in';
+    | 'habit_opt_in'
+    | 'portal_viewed'
+    | 'portal_hover'
+    | 'map_generated'
+    | 'path_node_hover'
+    | 'path_node_clicked'
+    | 'path_selected';
 
 export interface AnalyticsEvent {
     name: AnalyticsEventName;

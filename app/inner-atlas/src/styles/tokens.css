@@ -32,11 +32,16 @@
     --color-text-body: rgba(255, 255, 255, 0.8);
     --color-text-muted: rgba(255, 255, 255, 0.4);
 
+    /* Dynamic Theme Variables (Defaults) */
+    --mood-anchor: #8B5E3C;
+    --mood-release: #7CB9E8;
+    --mood-ignite: #E25822;
+    --color-theme-primary: var(--color-shrine-gold-500);
+
     /* =========================================
    * TYPOGRAPHY
    * ========================================= */
     --font-display: var(--font-serif), serif;
-    /* Assumes global var map */
     --font-body: var(--font-sans), sans-serif;
 
     --text-heading-xl: 3.5rem;
@@ -44,7 +49,6 @@
     --text-heading-md: 1.75rem;
 
     --text-ritual-instruction: 1.5rem;
-    /* Large instruction text */
     --text-body: 1rem;
     --text-caption: 0.875rem;
     --text-micro: 0.75rem;
@@ -75,6 +79,13 @@
     --glow-relic: 0 0 20px rgba(255, 255, 255, 0.5);
 
     --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Glass Panel Utility */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Reduced Motion Override */
