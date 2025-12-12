@@ -4,7 +4,7 @@ import React from "react";
 import ScrollProgress from "./(components)/ScrollProgress";
 import HeroSection from "./(components)/HeroSection";
 import HealingPromise from "./(components)/HealingPromise";
-import RitualJourney from "./(components)/RitualJourney";
+
 import ThirtyDaysGuide from "./(components)/ThirtyDaysGuide";
 import DailyRitualSteps from "./(components)/DailyRitualSteps";
 import BenefitsSection from "./(components)/BenefitsSection";
@@ -21,7 +21,7 @@ export default function Home() {
         <HeroSection />
         <main>
           <HealingPromise />
-          <RitualJourney />
+
           <ThirtyDaysGuide />
           <DailyRitualSteps />
           <BenefitsSection />
