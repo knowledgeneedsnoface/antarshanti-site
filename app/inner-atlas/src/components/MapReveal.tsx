@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { usePersonalization } from '../contexts/PersonalizationContext';
 import { useAudio } from '../contexts/AudioContext';
 import MapTile from './MapTile';
-import PathNode from './PathNode';
+import PathSelector from './PathSelector';
 import { Analytics } from '../lib/Analytics';
 
 interface MapRevealProps {
@@ -47,32 +47,12 @@ export default function MapReveal({ onPathSelected }: MapRevealProps) {
 
             {/* 2. Path Choice Overlay */}
             <motion.div
-                className="relative z-10 grid grid-cols-3 gap-12 md:gap-24"
+                className="relative z-10 w-full"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 1 }} // Fade in after tiles
             >
-                <PathNode
-                    type="ANCHOR"
-                    isRecommended={theme.path === 'ANCHOR'}
-                    onSelect={onPathSelected}
-                    color="var(--mood-anchor)"
-                    delay={1.1}
-                />
-                <PathNode
-                    type="RELEASE"
-                    isRecommended={theme.path === 'RELEASE'}
-                    onSelect={onPathSelected}
-                    color="var(--mood-release)"
-                    delay={1.2}
-                />
-                <PathNode
-                    type="IGNITE"
-                    isRecommended={theme.path === 'IGNITE'}
-                    onSelect={onPathSelected}
-                    color="var(--mood-ignite)"
-                    delay={1.3}
-                />
+                <PathSelector onPathSelected={onPathSelected} />
             </motion.div>
 
             {/* Instruction Text */}

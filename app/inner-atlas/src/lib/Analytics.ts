@@ -17,7 +17,9 @@ export type AnalyticsEventName =
     | 'map_generated'
     | 'path_node_hover'
     | 'path_node_clicked'
-    | 'path_selected';
+    | 'path_selected'
+    | 'path_nodes_rendered'
+    | 'path_prophesy_shown';
 
 export interface AnalyticsEvent {
     name: AnalyticsEventName;
