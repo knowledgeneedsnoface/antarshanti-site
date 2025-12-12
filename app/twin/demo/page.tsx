@@ -33,7 +33,7 @@ const PATHS = {
 export default function SpiritualTwin() {
   const [step, setStep] = useState('selection');
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Array<{role: string; content: string}>>([]);
+  const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [memory, setMemory] = useState({ keywords: [] as string[], context: '' });
@@ -47,9 +47,9 @@ export default function SpiritualTwin() {
   useEffect(() => {
     const loadMemory = async () => {
       try {
-        const result = await (window as any).storage.get('twin-memory');
-        if (result && result.value) {
-          setMemory(JSON.parse(result.value));
+        const result = await localStorage.getItem('twin-memory');
+        if (result) {
+          setMemory(JSON.parse(result));
         }
       } catch (error) {
         console.log('No previous memory found');
@@ -60,12 +60,12 @@ export default function SpiritualTwin() {
 
   const extractKeywords = (text: string) => {
     const stopWords = ['the', 'is', 'at', 'which', 'on', 'a', 'an', 'and', 'or', 'but', 'in', 'with', 'to', 'for', 'of', 'as', 'by', 'i', 'me', 'my', 'myself', 'we', 'you', 'he', 'she', 'it', 'they', 'what', 'how', 'when', 'where', 'why', 'am', 'are', 'was', 'were', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should'];
-    
+
     const words = text.toLowerCase()
       .replace(/[^\w\s]/g, '')
       .split(/\s+/)
       .filter(word => word.length > 3 && !stopWords.includes(word));
-    
+
     return [...new Set(words)];
   };
 
@@ -74,16 +74,16 @@ export default function SpiritualTwin() {
       ...extractKeywords(userMessage),
       ...extractKeywords(aiResponse)
     ];
-    
+
     const updatedMemory = {
       keywords: [...new Set([...memory.keywords, ...newKeywords])].slice(-50),
       context: `Previous topics: ${[...new Set([...memory.keywords, ...newKeywords])].slice(-20).join(', ')}`
     };
-    
+
     setMemory(updatedMemory);
-    
+
     try {
-      await (window as any).storage.set('twin-memory', JSON.stringify(updatedMemory));
+      await localStorage.setItem('twin-memory', JSON.stringify(updatedMemory));
     } catch (error) {
       console.error('Error saving memory:', error);
     }
@@ -115,9 +115,9 @@ export default function SpiritualTwin() {
     try {
       const systemPrompt = PATHS[selectedPath as keyof typeof PATHS].systemPrompt;
       const memoryContext = memory.context ? `\n\nContext from previous conversations: ${memory.context}` : '';
-      
+
       console.log('=== Sending Request to Twin Chat API ===');
-      
+
       const response = await fetch('/api/twin-chat', {
         method: 'POST',
         headers: {
@@ -134,11 +134,11 @@ export default function SpiritualTwin() {
 
       console.log('API Response status:', response.status);
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to get response');
       }
-      
+
       if (data.content) {
         const aiMessage = {
           role: 'assistant',
@@ -154,7 +154,7 @@ export default function SpiritualTwin() {
       console.error('Error:', error);
       console.error('Message:', error.message);
       setError(error.message);
-      
+
       let userMessage = 'I apologize, but I encountered an issue. ';
       if (error.message.includes('Rate limit')) {
         userMessage += 'The AI service is currently experiencing high demand. Please wait a moment and try again.';
@@ -163,7 +163,7 @@ export default function SpiritualTwin() {
       } else {
         userMessage += error.message;
       }
-      
+
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: userMessage
@@ -260,11 +260,10 @@ export default function SpiritualTwin() {
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-lg rounded-2xl p-4 ${
-                  msg.role === 'user'
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-white border-2 border-orange-200 text-gray-800'
-                }`}
+                className={`max-w-lg rounded-2xl p-4 ${msg.role === 'user'
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-white border-2 border-orange-200 text-gray-800'
+                  }`}
               >
                 {msg.content}
               </div>
@@ -275,8 +274,8 @@ export default function SpiritualTwin() {
               <div className="bg-white border-2 border-orange-200 rounded-2xl p-4">
                 <div className="flex gap-2">
                   <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}} />
-                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}} />
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
                 </div>
               </div>
             </div>

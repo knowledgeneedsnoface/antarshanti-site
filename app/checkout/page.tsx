@@ -19,7 +19,7 @@ export default function CheckoutPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/order", {
+      const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ customer: { name, phone, address }, items, payment: { method: "COD" }, total: total() }),
@@ -46,9 +46,9 @@ export default function CheckoutPage() {
 
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <form onSubmit={submitOrder} className="space-y-4">
-            <input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Full name" className="w-full rounded border p-3" />
-            <input value={phone} onChange={(e)=>setPhone(e.target.value)} placeholder="Phone number" className="w-full rounded border p-3" />
-            <textarea value={address} onChange={(e)=>setAddress(e.target.value)} placeholder="Full delivery address" className="w-full rounded border p-3" />
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="w-full rounded border p-3" />
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" className="w-full rounded border p-3" />
+            <textarea value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Full delivery address" className="w-full rounded border p-3" />
             <div>
               <label className="flex items-center gap-2">
                 <input defaultChecked type="checkbox" className="accent-amber-600" /> Cash on Delivery (COD)

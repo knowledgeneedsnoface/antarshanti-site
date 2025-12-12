@@ -19,7 +19,7 @@ export default function CallToContinue() {
                     </motion.a>
 
                     <motion.a
-                        href="#demo"
+                        href="/twin/demo"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className="px-8 py-4 bg-white text-gray-600 border border-gray-200 rounded-full font-medium hover:border-amber-400 hover:text-amber-600 transition-all"

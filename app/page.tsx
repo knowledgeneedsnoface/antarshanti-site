@@ -19,6 +19,7 @@ import QuickBuySticky from "./(components)/QuickBuySticky";
 
 import AboutFounderSection from "./(components)/AboutFounderSection";
 import VoicesOfPeace from "./(components)/VoicesOfPeace";
+import ProductCard from "./(components)/ProductCard";
 
 export default function Home() {
   return (
@@ -32,6 +33,7 @@ export default function Home() {
           <LotusTimeline />
           <GratitudeSeal />
           <CallToContinue />
+          <ProductCard />
 
           {/* Supporting sections kept for content completeness */}
           <VoicesOfPeace />

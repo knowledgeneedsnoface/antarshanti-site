@@ -8,7 +8,7 @@ export default function GlobalNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-amber-100 shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-md border-b border-amber-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
@@ -43,7 +43,7 @@ export default function GlobalNavbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <button 
+        <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="md:hidden text-gray-700 p-2"
         >
@@ -67,29 +67,29 @@ export default function GlobalNavbar() {
             exit={{ opacity: 0, height: 0 }}
           >
             <div className="px-6 py-4 space-y-3">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="block text-gray-700 hover:text-amber-600 transition-colors font-medium py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
               </Link>
-              <Link 
-                href="/#about" 
+              <Link
+                href="/#about"
                 className="block text-gray-700 hover:text-amber-600 transition-colors font-medium py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About
               </Link>
-              <Link 
-                href="/#founder" 
+              <Link
+                href="/#founder"
                 className="block text-gray-700 hover:text-amber-600 transition-colors font-medium py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Founder
               </Link>
-              <Link 
-                href="/twin/demo" 
+              <Link
+                href="/twin/demo"
                 className="block text-gray-700 hover:text-amber-600 transition-colors font-medium py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
