@@ -1,255 +1,204 @@
 "use client";
-import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
+
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function SacredHero() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHoveringCandle, setIsHoveringCandle] = useState(false);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Set canvas size
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // Mandala drawing function
-    const drawMandala = (time: number) => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      const baseRadius = Math.min(canvas.width, canvas.height) * 0.15;
-
-      // Breathing effect
-      const breath = Math.sin(time * 0.002) * 0.1 + 0.9;
-      const radius = baseRadius * breath;
-
-      // Draw mandala rings
-      for (let ring = 0; ring < 8; ring++) {
-        const ringRadius = radius * (1 - ring * 0.1);
-        const alpha = 0.1 + (ring * 0.05);
-
-        ctx.strokeStyle = `rgba(245, 158, 11, ${alpha})`;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Add subtle rotation
-        const rotation = time * 0.0005 * (ring + 1);
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate(rotation);
-
-        // Draw petals
-        for (let petal = 0; petal < 12; petal++) {
-          const angle = (petal / 12) * Math.PI * 2;
-          const petalX = Math.cos(angle) * ringRadius;
-          const petalY = Math.sin(angle) * ringRadius;
-
-          ctx.beginPath();
-          ctx.arc(petalX, petalY, 3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(245, 158, 11, ${alpha * 0.5})`;
-          ctx.fill();
-        }
-
-        ctx.restore();
-      }
-    };
-
-    // Animation loop
-    let animationId: number;
-    const animate = () => {
-      drawMandala(Date.now());
-      animationId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  // Mouse parallax effect
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const { clientX, clientY } = e;
+    const { innerWidth, innerHeight } = window;
+    const x = (clientX - innerWidth / 2) / 50;
+    const y = (clientY - innerHeight / 2) / 50;
+    setMousePosition({ x, y });
+  };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Saffron gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50/30 to-amber-100/20" />
-
-      {/* Animated mandala canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 pointer-events-none opacity-30"
+    <section
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="relative w-full h-screen min-h-[800px] overflow-hidden bg-[#0a0502] text-white flex flex-col items-center justify-center"
+    >
+      {/* Ambient Background - Warm Void */}
+      <div
+        className="absolute inset-0 z-0 opacity-60"
+        style={{
+          background: "radial-gradient(circle at 50% 40%, #451a03 0%, #1c0a03 40%, #000000 100%)"
+        }}
       />
 
-      {/* Floating particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 20 }).map((_, i) => (
+      {/* Floating Dust Particles */}
+      <div className="absolute inset-0 pointer-events-none z-10">
+        {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-amber-300 rounded-full"
+            className="absolute rounded-full bg-amber-200/20"
+            style={{
+              width: Math.random() * 3 + 1,
+              height: Math.random() * 3 + 1,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
             animate={{
-              x: [0, Math.random() * 100 - 50],
-              y: [0, Math.random() * 100 - 50],
-              opacity: [0, 0.6, 0],
+              y: [0, -100],
+              opacity: [0, 0.5, 0],
             }}
             transition={{
-              duration: 8 + Math.random() * 4,
+              duration: Math.random() * 5 + 5,
               repeat: Infinity,
-              delay: Math.random() * 8,
-            }}
-            style={{
-              left: `${20 + Math.random() * 60}%`,
-              top: `${20 + Math.random() * 60}%`,
+              ease: "linear",
+              delay: Math.random() * 5,
             }}
           />
         ))}
       </div>
 
-      {/* Diya flame animation */}
+      {/* Main Content */}
       <motion.div
-        className="absolute"
-        style={{
-          left: "50%",
-          top: "60%",
-          transform: "translateX(-50%)",
-        }}
-        animate={{
-          scale: [1, 1.1, 1],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+        style={{ y: y1, opacity }}
+        className="relative z-20 flex flex-col items-center justify-center text-center px-6 max-w-4xl"
       >
-        <div className="relative">
-          {/* Flame */}
+        {/* The Candle - Central Visual Anchor */}
+        <motion.div
+          className="relative mb-12 cursor-pointer group"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          onMouseEnter={() => setIsHoveringCandle(true)}
+          onMouseLeave={() => setIsHoveringCandle(false)}
+          whileHover={{ scale: 1.05 }}
+        >
+          {/* Flame Glow */}
           <motion.div
-            className="w-2 h-8 bg-gradient-to-t from-amber-400 to-orange-300 rounded-t-full"
+            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-orange-500/20 rounded-full blur-[60px]"
             animate={{
-              height: [32, 40, 32],
-              opacity: [0.8, 1, 0.8],
+              scale: isHoveringCandle ? 1.5 : [1, 1.2, 1],
+              opacity: isHoveringCandle ? 0.6 : [0.3, 0.5, 0.3],
             }}
             transition={{
               duration: 2,
               repeat: Infinity,
-              ease: "easeInOut",
+              ease: "easeInOut"
             }}
           />
-          {/* Wick */}
-          <div className="w-0.5 h-2 bg-amber-900 mx-auto" />
-        </div>
-      </motion.div>
 
-      {/* Main content */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5, delay: 0.5 }}
-        >
-          <motion.h1
-            className="text-6xl md:text-8xl font-light text-amber-900 mb-6 leading-tight"
-            style={{
-              fontFamily: "'Times New Roman', serif",
-              letterSpacing: "0.02em",
-            }}
-            animate={{
-              opacity: [0.9, 1, 0.9],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            10 Minutes of Puja.
-            <br />
-            <span className="text-amber-700">A Whole Day of Inner Peace.</span>
-          </motion.h1>
+          {/* Candle Body SVG */}
+          <svg width="120" height="200" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-2xl">
+            {/* Candle Base */}
+            <path d="M20 60 H100 V180 C100 191.046 91.0457 200 80 200 H40 C28.9543 200 20 191.046 20 180 V60 Z" fill="#E8DBC6" />
+            <path d="M20 60 C20 54.4772 37.9086 50 60 50 C82.0914 50 100 54.4772 100 60 C100 65.5228 82.0914 70 60 70 C37.9086 70 20 65.5228 20 60 Z" fill="#F5EFE6" />
 
-          <motion.p
-            className="text-xl md:text-2xl text-amber-800/80 mb-12 font-light leading-relaxed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5, delay: 1.5 }}
-          >
-            Your daily self-therapy ritual, delivered to your door.
-          </motion.p>
+            {/* Wick */}
+            <line x1="60" y1="50" x2="60" y2="35" stroke="#1A1A1A" strokeWidth="2" strokeLinecap="round" />
 
-          <motion.div
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 2 }}
-          >
-            <motion.button
-              className="px-12 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                document.getElementById("healing-promise")?.scrollIntoView({
-                  behavior: "smooth",
-                });
+            {/* Flame */}
+            <motion.path
+              d="M60 10 C60 10 45 35 45 45 C45 53.2843 51.7157 60 60 60 C68.2843 60 75 53.2843 75 45 C75 35 60 10 60 10 Z"
+              fill="url(#flameGradient)"
+              animate={{
+                d: isHoveringCandle
+                  ? "M60 5 C60 5 42 35 42 45 C42 55 50 63 60 63 C70 63 78 55 78 45 C78 35 60 5 60 5 Z"
+                  : [
+                    "M60 10 C60 10 45 35 45 45 C45 53.2843 51.7157 60 60 60 C68.2843 60 75 53.2843 75 45 C75 35 60 10 60 10 Z",
+                    "M62 8 C62 8 48 34 48 44 C48 52.2843 54.7157 59 63 59 C71.2843 59 78 52.2843 78 44 C78 34 62 8 62 8 Z",
+                    "M58 12 C58 12 42 36 42 46 C42 54.2843 48.7157 61 57 61 C65.2843 61 72 54.2843 72 46 C72 36 58 12 58 12 Z",
+                    "M60 10 C60 10 45 35 45 45 C45 53.2843 51.7157 60 60 60 C68.2843 60 75 53.2843 75 45 C75 35 60 10 60 10 Z"
+                  ],
+                filter: isHoveringCandle ? "drop-shadow(0 0 15px #FF9500)" : "drop-shadow(0 0 5px #FF9500)"
               }}
-            >
-              🟠 Start My Healing
-            </motion.button>
-
-            <motion.button
-              className="px-12 py-4 border-2 border-amber-400 text-amber-700 font-medium rounded-full text-lg bg-white/50 backdrop-blur-sm hover:bg-white/80 transition-all duration-300"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                document.getElementById("ritual-journey")?.scrollIntoView({
-                  behavior: "smooth",
-                });
+              transition={{
+                duration: isHoveringCandle ? 0.3 : 4,
+                repeat: Infinity,
+                ease: "easeInOut"
               }}
-            >
-              ⚪ How It Works
-            </motion.button>
-          </motion.div>
+              style={{
+                originX: 0.5,
+                originY: 1,
+              }}
+            />
+
+            <defs>
+              <linearGradient id="flameGradient" x1="60" y1="10" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stopColor="#FFF7E6" />
+                <stop offset="0.4" stopColor="#FFCC00" />
+                <stop offset="1" stopColor="#FF6600" />
+              </linearGradient>
+            </defs>
+          </svg>
         </motion.div>
-      </div>
+
+        {/* Headline */}
+        <div className="overflow-hidden">
+          <motion.h1
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+            className="text-5xl md:text-7xl font-light tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 mb-6 drop-shadow-sm"
+          >
+            10 Minutes to Meet Yourself.
+          </motion.h1>
+        </div>
+
+        {/* Subhead */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 0.8 }}
+          className="text-lg md:text-2xl text-amber-100/60 font-light max-w-2xl leading-relaxed mb-10"
+        >
+          A daily ritual box. A 30-day inner reset. <br className="hidden md:block" />
+          <span className="text-amber-100">No screens, just peace.</span>
+        </motion.p>
+
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.5, duration: 0.8 }}
+          className="flex flex-col sm:flex-row gap-6 items-center"
+        >
+          <motion.a
+            href="#product"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            className="px-10 py-4 bg-gradient-to-r from-amber-600 to-orange-700 rounded-full text-white font-medium text-lg shadow-[0_4px_30px_rgba(245,158,11,0.3)] hover:shadow-[0_8px_40px_rgba(245,158,11,0.5)] transition-shadow duration-300"
+          >
+            Start Your Ritual
+          </motion.a>
+
+          <motion.a
+            href="#immersive-guide"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            className="px-8 py-4 text-white/50 hover:text-white transition-colors duration-300 font-light tracking-wide text-lg"
+          >
+            See the Box
+          </motion.a>
+        </motion.div>
+      </motion.div>
 
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        animate={{
-          y: [0, 10, 0],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2.5, duration: 1 }}
+        className="absolute bottom-12 flex flex-col items-center gap-3 opacity-40 z-20"
       >
-        <div className="w-6 h-10 border-2 border-amber-400 rounded-full flex justify-center">
-          <motion.div
-            className="w-1 h-3 bg-amber-400 rounded-full mt-2"
-            animate={{
-              opacity: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        </div>
+        <span className="text-xs uppercase tracking-[0.2em]">Begin</span>
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="w-[1px] h-16 bg-gradient-to-b from-white/0 via-white/50 to-white/0"
+        />
       </motion.div>
     </section>
   );

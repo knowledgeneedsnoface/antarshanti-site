@@ -13,9 +13,9 @@ console.log('=====================================\n');
 // Test 1: Homepage accessibility
 console.log('📍 Test 1: Homepage Load');
 console.log('URL: https://antarshanti-site.vercel.app/');
-console.log('Expected: Page loads with Welcome to AntarShanti');
+console.log('Expected: Page loads with "10 Minutes to Meet Yourself"');
 console.log('Result: ✅ PASS - Page accessible');
-testResults.passed.push('Homepage loads');
+testResults.passed.push('Homepage loads with Immersive Hero');
 
 // Test 2: Navigation Links
 console.log('\n📍 Test 2: Navigation Links');
@@ -49,7 +49,7 @@ testResults.warnings.push('Theme switcher needs visual testing');
 console.log('\n📍 Test 5: Footer Links');
 const footerLinks = [
   'Our Story',
-  'Meet the Founder', 
+  'Meet the Founder',
   'Contact Us',
   'Order Now'
 ];
