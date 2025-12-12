@@ -26,7 +26,16 @@ export type AnalyticsEventName =
     | 'mantra_pass_complete'
     | 'dissolve_complete'
     | 'ignite_complete'
-    | 'ritual_complete';
+    | 'ritual_complete'
+    | 'shrine_viewed'
+    | 'shrine_level_up'
+    | 'relic_hover'
+    | 'relic_clicked'
+    | 'relic_shared'
+    | 'relic_rarity'
+    | 'relic_added_to_shrine'
+    | 'shrine_evolved'
+    | 'shrine_streak_bonus';
 
 export interface AnalyticsEvent {
     name: AnalyticsEventName;

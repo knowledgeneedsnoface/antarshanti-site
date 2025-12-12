@@ -25,6 +25,10 @@
     --color-shrine-gold-700: #8D6E1F;
     --color-shrine-gold-900: #4A3808;
 
+    /* Aliases used in components */
+    --color-gold: var(--color-shrine-gold-500);
+    --color-bg-void: var(--color-void);
+
     /* Calm Neutrals */
     --color-void: #0A0502;
     --color-stone: #1C1917;
