@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAudio } from '../contexts/AudioContext';
 import { usePersonalization } from '../contexts/PersonalizationContext';
 import { Analytics } from '../lib/Analytics';
+import FrequencyDial from './FrequencyDial';
 
 interface SeedInputProps {
     onSeedSubmitted: () => void;
@@ -49,36 +50,31 @@ export default function SeedInput({ onSeedSubmitted }: SeedInputProps) {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8 }}
                         transition={{ duration: 0.5 }}
-                        className="w-full max-w-md text-center"
+                        className="w-full max-w-md text-center flex flex-col items-center"
                     >
-                        <label htmlFor="seed-input" className="block text-white/60 text-lg mb-6 font-light">
-                            One word about your day.
-                        </label>
-
-                        <div className="relative group">
-                            <input
-                                id="seed-input"
-                                type="text"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                placeholder="e.g. still, tired, hopeful..."
-                                className="w-full bg-transparent border-b border-white/20 text-center text-4xl text-white py-4 focus:outline-none focus:border-amber-500/50 transition-colors placeholder:text-white/10 font-serif"
-                                autoFocus
-                                autoComplete="off"
-                            />
-                            {/* Glow effect on focus */}
-                            <div className="absolute -inset-4 bg-amber-500/5 rounded-full blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
-                        </div>
+                        <FrequencyDial
+                            onFrequencyChange={(val) => {
+                                // Optional: Update background gradient based on val
+                            }}
+                            onFrequencySelected={(val, label) => {
+                                setInputValue(label); // Use the label (e.g. "Stillness") as the seed
+                                // Auto-submit after a brief delay or let user click?
+                                // Let's auto-confirm for maximum "tuner" feel, but waiting for user to let go is handled by onFrequencySelected (onMouseUp)
+                                // We'll add a confirm button that appears after tuning, or just a delay.
+                                // User plan: "Submit the mapped word as the seed."
+                            }}
+                        />
 
                         <motion.button
                             onClick={submitSeed}
-                            disabled={!inputValue.trim()}
+                            disabled={!inputValue}
                             className="mt-12 px-8 py-3 rounded-full border border-white/10 text-white/40 hover:text-white hover:bg-white/5 hover:border-amber-500/30 transition-all disabled:opacity-0"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: inputValue ? 1 : 0 }}
                         >
-                            Plant My Word
+                            Enter The Atlas
                         </motion.button>
                     </motion.div>
                 ) : (
