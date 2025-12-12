@@ -1,43 +1,46 @@
 "use client";
 
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { useState, useRef } from "react";
+import { motion, useMotionValue, useTransform, AnimatePresence, useSpring } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
 
 export default function PortalHero() {
     const [isHovering, setIsHovering] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
 
+    // Mouse tracking for "Curtain Parting" effect
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (typeof window === "undefined") return;
+        const { clientX, clientY } = e;
+        const { innerWidth, innerHeight } = window;
+        mouseX.set(clientX / innerWidth - 0.5);
+        mouseY.set(clientY / innerHeight - 0.5);
+    };
+
     // Particles generator
-    const particles = Array.from({ length: 20 });
+    const particles = Array.from({ length: 30 });
 
     return (
-        <section className="relative w-full h-screen min-h-[800px] overflow-hidden bg-[#0a0502] text-white flex flex-col items-center justify-center z-50">
+        <section
+            onMouseMove={handleMouseMove}
+            className="relative w-full h-screen min-h-[800px] overflow-hidden bg-[#0a0502] text-white flex flex-col items-center justify-center z-50 cursor-none" // hidden cursor for immersion if desired, or just custom
+        >
 
-            {/* Floating Embers */}
-            {particles.map((_, i) => (
-                <motion.div
-                    key={i}
-                    className="absolute rounded-full bg-amber-500/40 blur-[1px]"
-                    initial={{
-                        x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1000),
-                        y: typeof window !== "undefined" ? window.innerHeight + 100 : 1000,
-                        scale: Math.random() * 0.5 + 0.2,
-                        opacity: 0
-                    }}
-                    animate={{
-                        y: -100,
-                        opacity: [0, 0.6, 0],
-                        x: `+=${Math.random() * 100 - 50}`
-                    }}
-                    transition={{
-                        duration: Math.random() * 10 + 10,
-                        repeat: Infinity,
-                        ease: "linear",
-                        delay: Math.random() * 10
-                    }}
-                    style={{ width: Math.random() * 6 + 2, height: Math.random() * 6 + 2 }}
-                />
-            ))}
+            {/* Floating Embers with "Curtain Parting" Repulsion */}
+            {particles.map((_, i) => {
+                // Random initial positions
+                const initialX = Math.random() < 0.5 ? -1 : 1; // Left or Right side bias
+
+                return (
+                    <Particle
+                        key={i}
+                        mouseX={mouseX}
+                        initialSide={initialX}
+                    />
+                );
+            })}
 
             {/* The Portal Ring */}
             <motion.div
@@ -82,17 +85,19 @@ export default function PortalHero() {
                     </defs>
                 </svg>
 
-                {/* Center Text specific to portal */}
+                {/* Center Text specific to portal - "come in..." Whisper */}
                 <motion.div
-                    className="absolute inset-0 flex items-center justify-center text-xs tracking-[0.2em] text-amber-500/60 uppercase font-light"
-                    animate={{ opacity: isHovering ? 1 : 0 }}
+                    className="absolute inset-0 flex items-center justify-center text-sm tracking-[0.2em] text-amber-200/80 italic font-serif"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: isHovering ? 1 : 0, scale: isHovering ? 1 : 0.9 }}
+                    transition={{ duration: 0.5 }}
                 >
-                    Enter
+                    come in...
                 </motion.div>
             </motion.div>
 
             {/* Main Copy */}
-            <div className="z-10 text-center max-w-2xl px-6">
+            <div className="z-10 text-center max-w-2xl px-6 pointer-events-none select-none">
                 <motion.h1
                     className="text-4xl md:text-5xl font-light text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 mb-6 tracking-wide"
                     initial={{ opacity: 0, y: 20 }}
@@ -112,7 +117,7 @@ export default function PortalHero() {
 
                 <motion.button
                     onClick={() => setIsClicked(true)}
-                    className="px-8 py-3 rounded-full border border-amber-500/30 text-amber-500/80 hover:bg-amber-500/10 hover:border-amber-500/60 hover:text-amber-400 transition-all duration-500 uppercase text-sm tracking-widest"
+                    className="pointer-events-auto px-8 py-3 rounded-full border border-amber-500/30 text-amber-500/80 hover:bg-amber-500/10 hover:border-amber-500/60 hover:text-amber-400 transition-all duration-500 uppercase text-sm tracking-widest"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0 }}
@@ -137,4 +142,54 @@ export default function PortalHero() {
 
         </section>
     );
+}
+
+function Particle({ mouseX, initialSide }: { mouseX: any, initialSide: number }) {
+    // "Parting curtains" effect:
+    // If initialSide is -1 (left), moving mouse moves it further left.
+    // We use a spring for smooth repulsion.
+
+    // xOffset is driven by mouseX. 
+    // If mouseX goes -0.5 (left edge), we want particles to move AWAY from center or follow?
+    // User said: "Drift away (like parting curtains)". 
+    // Usually means moving cursor into them pushes them away.
+    // Let's make them move away from the cursor broadly.
+
+    const xRepulsion = useTransform(mouseX, [-0.5, 0.5], [initialSide * -50, initialSide * 50]);
+    const springX = useSpring(xRepulsion, { stiffness: 50, damping: 20 });
+
+    const randomDelay = Math.random() * 5;
+    const randomDuration = Math.random() * 10 + 10;
+
+    return (
+        <motion.div
+            className="absolute rounded-full bg-amber-500/40 blur-[1px]"
+            initial={{
+                x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1000),
+                y: typeof window !== "undefined" ? window.innerHeight + 100 : 1000,
+                scale: Math.random() * 0.5 + 0.2,
+                opacity: 0
+            }}
+            style={{ x: springX }} // Apply repulsion
+            animate={{
+                y: -100,
+                opacity: [0, 0.6, 0],
+            }}
+            transition={{
+                y: {
+                    duration: randomDuration,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: randomDelay
+                },
+                opacity: {
+                    duration: randomDuration,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: randomDelay
+                }
+            }}
+        // Only re-calc basic positions occasionally
+        />
+    )
 }

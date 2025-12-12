@@ -1,17 +1,16 @@
 "use client";
 
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
-import { useState, useRef } from "react";
+import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
 
-// This is the "Heart of the Practice" - repurposed from the previous "Living Flame" Hero
+// The Heart of the Practice - Digital Temple Edition
 export default function FlameMeditation() {
     const containerRef = useRef<HTMLDivElement>(null);
     const [isHovering, setIsHovering] = useState(false);
+    const [phase, setPhase] = useState<"hold" | "inhale" | "exhale">("hold");
 
     // Mouse Physics for Flame Tilt
     const mouseX = useMotionValue(0);
-
-    // Smooth spring physics for the flame movement
     const springConfig = { damping: 25, stiffness: 150 };
     const flameRotate = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), springConfig);
 
@@ -24,14 +23,32 @@ export default function FlameMeditation() {
         mouseX.set(x);
     };
 
+    // Breath Cycle Logic
+    useEffect(() => {
+        const cycle = async () => {
+            setPhase("inhale");
+            await new Promise(r => setTimeout(r, 4000));
+            setPhase("hold");
+            await new Promise(r => setTimeout(r, 2000));
+            setPhase("exhale");
+            await new Promise(r => setTimeout(r, 4000));
+            cycle();
+        }
+        cycle(); // Start breath cycle
+    }, []);
+
     return (
         <section
             ref={containerRef}
             onMouseMove={handleMouseMove}
             className="relative w-full py-40 bg-[#160f0a] text-white flex flex-col items-center justify-center overflow-hidden"
         >
-            {/* Background Ambience */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#160f0a] via-[#2a180e] to-[#160f0a] opacity-80" />
+            {/* Background Ambience with Breath Pulse */}
+            <motion.div
+                className="absolute inset-0 bg-gradient-to-b from-[#160f0a] via-[#2a180e] to-[#160f0a] opacity-80"
+                animate={{ opacity: phase === "inhale" ? 0.9 : 0.7 }}
+                transition={{ duration: 4 }}
+            />
 
             {/* Content Container */}
             <div className="relative z-10 text-center max-w-3xl px-6">
@@ -45,23 +62,23 @@ export default function FlameMeditation() {
 
                 {/* The Candle Focus Object */}
                 <motion.div
-                    className="relative mx-auto w-24 h-64 mb-16 cursor-crosshair"
+                    className="relative mx-auto w-24 h-64 mb-16 cursor-crosshair group"
                     style={{ rotate: flameRotate, transformOrigin: "bottom center" }}
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                 >
-                    {/* Flame Glow */}
+                    {/* Flame Glow - Syncs with Breath */}
                     <motion.div
                         className="absolute top-8 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-56 bg-orange-500/20 rounded-full blur-[60px]"
                         animate={{
-                            opacity: isHovering ? 0.6 : [0.3, 0.5, 0.3],
-                            scale: isHovering ? 1.2 : [0.95, 1.05, 0.95]
+                            opacity: phase === "inhale" ? 0.7 : 0.3,
+                            scale: phase === "inhale" ? 1.3 : 1.0
                         }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                        transition={{ duration: 4, ease: "easeInOut" }}
                     />
 
-                    {/* SVG Flame */}
-                    <svg width="100" height="280" viewBox="0 0 100 280" fill="none" className="drop-shadow-2xl">
+                    {/* SVG Flame - Sharpens on Focus (Hover) */}
+                    <svg width="100" height="280" viewBox="0 0 100 280" fill="none" className={`drop-shadow-2xl transition-all duration-700 ${isHovering ? 'filter-none' : 'blur-[1px]'}`}>
                         <motion.path
                             animate={{
                                 d: [
@@ -88,29 +105,30 @@ export default function FlameMeditation() {
                     </svg>
                 </motion.div>
 
-                {/* Guided Text */}
-                <div className="space-y-8">
-                    <motion.h3
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="text-3xl md:text-4xl font-light text-white"
-                    >
-                        "The flame becomes your anchor."
-                    </motion.h3>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: 0.6 }}
-                        className="text-white/50 text-xl font-light"
-                    >
-                        Close your eyes for 5 seconds...
-                    </motion.p>
+                {/* Guided Text - Context Aware */}
+                <div className="space-y-4 h-32 flex flex-col items-center justify-center">
+                    <AnimatePresence mode="wait">
+                        {phase === "inhale" && (
+                            <motion.h3 key="inhale" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="text-3xl font-light text-white">
+                                Take a deep breath...
+                            </motion.h3>
+                        )}
+                        {phase === "hold" && (
+                            <motion.h3 key="hold" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="text-3xl font-light text-white">
+                                Hold... focus on the flame.
+                            </motion.h3>
+                        )}
+                        {phase === "exhale" && (
+                            <motion.h3 key="exhale" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="text-3xl font-light text-white">
+                                Exhale slowly...
+                            </motion.h3>
+                        )}
+                    </AnimatePresence>
+
                     <motion.div
-                        initial={{ width: "0%" }}
-                        whileInView={{ width: "100px" }}
-                        transition={{ delay: 1, duration: 2 }}
-                        className="h-[1px] bg-amber-500/50 mx-auto"
+                        animate={{ width: phase === "inhale" ? "200px" : "100px", opacity: phase === "hold" ? 1 : 0.5 }}
+                        transition={{ duration: 4 }}
+                        className="h-[1px] bg-amber-500/50"
                     />
                 </div>
             </div>
