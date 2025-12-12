@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ParticleLayer from './ParticleLayer';
 import SeedInput from './SeedInput';
 import MapReveal from './MapReveal';
-import ChamberSceneManager from './ChamberSceneManager';
 import { useAudio } from '../contexts/AudioContext';
 import { Analytics } from '../lib/Analytics';
 
@@ -39,6 +38,8 @@ export default function PortalScene({ onComplete }: { onComplete: (path: string)
 
             {/* 1. Ambient Background */}
             <ParticleLayer />
+
+            {/* Chamber Ritual Overlay has been moved to page.tsx */}
 
             {/* 2. Portal Ring (Lottie Placeholder or Pulse Div) */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-50">
