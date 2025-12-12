@@ -5,10 +5,11 @@ import GlobalProviders from './src/components/GlobalProviders';
 import App from './src/components/App';
 import PortalScene from './src/components/PortalScene';
 import ChamberSceneManager from './src/components/ChamberSceneManager';
-import ShrineView from './src/components/ShrineView'; // Import
-import MirrorScene from './src/components/MirrorScene'; // Import
+import ShrineView from './src/components/ShrineView';
+import MirrorScene from './src/components/MirrorScene';
+import FinalJourneyPage from './src/components/FinalJourneyPage';
 
-type ViewState = 'PORTAL' | 'CHAMBER' | 'MIRROR' | 'SHRINE';
+type ViewState = 'PORTAL' | 'CHAMBER' | 'MIRROR' | 'JOURNEY' | 'SHRINE';
 
 export default function InnerAtlasPage() {
     const [view, setView] = useState<ViewState>('PORTAL');
@@ -46,7 +47,12 @@ export default function InnerAtlasPage() {
                 )}
 
                 {view === 'MIRROR' && <MirrorScene onComplete={() => {
-                    console.log("[InnerAtlas] Mirror Complete -> Shrine");
+                    console.log("[InnerAtlas] Mirror Complete -> Journey");
+                    setView('JOURNEY');
+                }} />}
+
+                {view === 'JOURNEY' && <FinalJourneyPage onComplete={() => {
+                    console.log("[InnerAtlas] Journey Complete -> Shrine");
                     setView('SHRINE');
                 }} />}
 

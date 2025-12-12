@@ -41,7 +41,14 @@ export type AnalyticsEventName =
     | 'mirror_quote_generated'
     | 'snapshot_started'
     | 'snapshot_exported'
-    | 'snapshot_shared';
+    | 'snapshot_shared'
+    | 'journey_page_viewed'
+    | 'streak_displayed'
+    | 'microhabit_generated'
+    | 'quest_generated'
+    | 'reminder_prompt_opened'
+    | 'reminder_set'
+    | 'return_loop_complete';
 
 export interface AnalyticsEvent {
     name: AnalyticsEventName;
