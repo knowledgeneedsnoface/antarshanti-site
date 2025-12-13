@@ -1,216 +1,214 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import GlobalProviders from './src/components/GlobalProviders';
-import App from './src/components/App';
-import PortalScene from './src/components/PortalScene';
-import ChamberSceneManager from './src/components/ChamberSceneManager';
-import ShrineView from './src/components/ShrineView';
-import MirrorScene from './src/components/MirrorScene';
-import FinalJourneyPage from './src/components/FinalJourneyPage';
-import { ErrorBoundary } from './src/components/ErrorBoundary';
-import { useVisitManager } from './src/hooks/useVisitManager';
-import { useA11yRouteManager, useReducedMotion } from './src/hooks/useA11yRouteManager';
-import { AssetPrefetcher, ASSET_MANIFEST } from './src/lib/AssetPrefetcher';
-import { viewTransitions, reducedMotionVariants, getTransitionChoreography } from './src/lib/TransitionChoreography';
-import { Analytics } from './src/lib/Analytics';
-import { useRitual } from './src/contexts/RitualContext';
+import React, { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import ChariotArrival from "@/components/InnerAtlas/ChariotArrival";
+import MindRealm, { MindStateKey } from "@/components/InnerAtlas/MindRealm";
+import HeartRealm, { HeartStateKey } from "@/components/InnerAtlas/HeartRealm";
+import ShadowRealm, { ShadowStateKey } from "@/components/InnerAtlas/ShadowRealm";
+import KurukshetraSelection, { BattleKey } from "@/components/InnerAtlas/KurukshetraSelection";
+import PowerObjectsSelector, { DhanushKey, ChakraKey, RathKey } from "@/components/InnerAtlas/PowerObjectsSelector";
+import CosmicGitaMoment from "@/components/InnerAtlas/CosmicGitaMoment";
+import InnerAtlasResults from "@/components/InnerAtlas/InnerAtlasResults";
+import ProgressIndicator from "@/components/InnerAtlas/ProgressIndicator";
 
-type ViewState = 'PORTAL' | 'CHAMBER' | 'MIRROR' | 'JOURNEY' | 'SHRINE';
+import AudioProvider, { useAudio } from "@/components/InnerAtlas/AudioController";
 
-export default function InnerAtlasPage() {
-    const [view, setView] = useState<ViewState>('PORTAL');
-    const [isReady, setIsReady] = useState(false);
-    const reducedMotion = useReducedMotion();
-    const { isFirstVisit, markVisited, canResume, getResumeState } = useVisitManager();
-    const { announceRef } = useA11yRouteManager(view);
+function InnerAtlasContent() {
+    const { playAmbient, playSelect, playHover, playTransition, playReveal } = useAudio();
+    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "KURUKSHETRA" | "POWER_OBJECTS" | "COSMIC_GITA" | "RESULTS">("ARRIVAL");
+    const [selectedMind, setSelectedMind] = useState<MindStateKey | null>(null);
+    const [selectedHeart, setSelectedHeart] = useState<HeartStateKey | null>(null);
+    const [selectedShadow, setSelectedShadow] = useState<ShadowStateKey | null>(null);
+    const [selectedBattle, setSelectedBattle] = useState<BattleKey | null>(null);
+    const [selectedPowerObjects, setSelectedPowerObjects] = useState<{ dhanush: DhanushKey; chakra: ChakraKey; rath: RathKey } | null>(null);
 
-    console.log("[InnerAtlas] Current View:", view);
-
-    // Initialize and prefetch portal assets
+    // Initial Ambience
     useEffect(() => {
-        // Initialize audio context on first user interaction
-        const initAudio = () => {
-            AssetPrefetcher.initAudioContext();
-            document.removeEventListener('click', initAudio);
-        };
-        document.addEventListener('click', initAudio);
+        playAmbient("calm");
+    }, [playAmbient]);
 
-        // Prefetch portal assets
-        AssetPrefetcher.prefetchLotties(ASSET_MANIFEST.portal.lotties).catch(console.error);
-        AssetPrefetcher.prefetchAudio(ASSET_MANIFEST.portal.audio).catch(console.error);
-
-        setIsReady(true);
-
-        return () => document.removeEventListener('click', initAudio);
-    }, []);
-
-    // Handle view transitions with choreography
-    const handleViewTransition = (from: ViewState, to: ViewState) => {
-        const choreography = getTransitionChoreography(from, to);
-
-        if (choreography) {
-            console.log(`[Transition] ${from} → ${to}`, choreography);
-
-            // Execute prefetch steps
-            const prefetchStep = choreography.steps.find(s => s.action === 'prefetch');
-            if (prefetchStep && prefetchStep.payload) {
-                const assetKey = prefetchStep.payload as keyof typeof ASSET_MANIFEST;
-                const assets = ASSET_MANIFEST[assetKey];
-                if (assets) {
-                    if ('lotties' in assets && assets.lotties) {
-                        AssetPrefetcher.prefetchLotties(assets.lotties).catch(console.error);
-                    }
-                    if ('audio' in assets && assets.audio) {
-                        AssetPrefetcher.prefetchAudio(assets.audio).catch(console.error);
-                    }
-                }
-            }
-
-            // Track analytics
-            const analyticsStep = choreography.steps.find(s => s.action === 'analytics');
-            if (analyticsStep) {
-                setTimeout(() => {
-                    Analytics.track(analyticsStep.payload as any);
-                }, analyticsStep.delay);
-            }
-        }
-
-        setView(to);
+    const handleStartAtlas = () => {
+        playSelect();
+        playTransition();
+        setStep("MIND");
     };
 
-    const handlePortalComplete = (selectedPath: string) => {
-        console.log("[InnerAtlas] Portal Complete -> Chamber");
-        handleViewTransition('PORTAL', 'CHAMBER');
-
-        // Mark as visited after first completion
-        if (isFirstVisit()) {
-            markVisited();
-        }
+    const handleMindSelection = (state: MindStateKey) => {
+        playSelect();
+        setSelectedMind(state);
+        setTimeout(() => {
+            playTransition();
+            setStep("HEART");
+        }, 500);
     };
 
-    // Get appropriate transition variants
-    const getVariants = (viewName: string) => {
-        return reducedMotion ? reducedMotionVariants.default : viewTransitions[viewName];
+    const handleHeartSelection = (state: HeartStateKey) => {
+        playSelect();
+        setSelectedHeart(state);
+        setTimeout(() => {
+            playTransition();
+            setStep("SHADOW");
+        }, 500);
     };
 
-    if (!isReady) {
-        return (
-            <div className="min-h-screen bg-black flex items-center justify-center">
-                <div className="text-white/40 text-sm">Loading...</div>
-            </div>
-        );
-    }
+    const handleShadowSelection = (state: ShadowStateKey) => {
+        playSelect();
+        setSelectedShadow(state);
+        playAmbient("battle"); // Switch ambience for Battle
+        setTimeout(() => {
+            playTransition();
+            setStep("KURUKSHETRA");
+        }, 500);
+    };
+
+    const handleKurukshetraSelection = (battle: BattleKey) => {
+        playSelect();
+        setSelectedBattle(battle);
+        playAmbient("cosmic"); // Switch ambience for Cosmic/Power
+        playTransition();
+        setStep("POWER_OBJECTS");
+    };
+
+    const handlePowerObjectsSelection = (selections: { dhanush: DhanushKey; chakra: ChakraKey; rath: RathKey }) => {
+        playSelect();
+        setSelectedPowerObjects(selections);
+        playReveal();
+        setStep("COSMIC_GITA");
+    };
+
+    const handleGitaMomentComplete = () => {
+        playTransition();
+        setStep("RESULTS");
+    };
+
+    const handleReset = () => {
+        setStep("ARRIVAL");
+        setSelectedMind(null);
+        setSelectedHeart(null);
+        setSelectedShadow(null);
+        setSelectedBattle(null);
+        setSelectedPowerObjects(null);
+    };
 
     return (
-        <ErrorBoundary>
-            <GlobalProviders>
-                <App>
-                    {/* Screen reader announcements */}
-                    <div
-                        ref={announceRef}
-                        className="sr-only"
-                        role="status"
-                        aria-live="polite"
-                        aria-atomic="true"
-                    />
+        <main className="w-full h-screen bg-black overflow-hidden relative">
+            {/* Progress Indicator */}
+            <ProgressIndicator currentStep={step} />
 
-                    {/* View transitions */}
-                    <AnimatePresence mode="wait" initial={false}>
-                        {view === 'PORTAL' && (
-                            <motion.div
-                                key="portal"
-                                variants={getVariants('PORTAL')}
-                                initial="initial"
-                                animate="animate"
-                                exit="exit"
-                                className="absolute inset-0"
-                            >
-                                <PortalScene onComplete={handlePortalComplete} />
-                            </motion.div>
-                        )}
+            <AnimatePresence mode="wait">
+                {step === "ARRIVAL" && (
+                    <motion.div
+                        key="arrival"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 1 } }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <ChariotArrival onStartInnerAtlas={handleStartAtlas} />
+                    </motion.div>
+                )}
 
-                        {view === 'CHAMBER' && (
-                            <motion.div
-                                key="chamber"
-                                variants={getVariants('CHAMBER')}
-                                initial="initial"
-                                animate="animate"
-                                exit="exit"
-                                className="absolute inset-0"
-                            >
-                                <ChamberSceneManager />
-                                <RitualListener onRitualEnd={() => {
-                                    console.log("[InnerAtlas] Ritual Finished detected");
-                                    handleViewTransition('CHAMBER', 'MIRROR');
-                                }} />
-                            </motion.div>
-                        )}
+                {step === "MIND" && (
+                    <motion.div
+                        key="mind"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <MindRealm onMindSelection={handleMindSelection} />
+                    </motion.div>
+                )}
 
-                        {view === 'MIRROR' && (
-                            <motion.div
-                                key="mirror"
-                                variants={getVariants('MIRROR')}
-                                initial="initial"
-                                animate="animate"
-                                exit="exit"
-                                className="absolute inset-0"
-                            >
-                                <MirrorScene onComplete={() => {
-                                    console.log("[InnerAtlas] Mirror Complete -> Journey");
-                                    handleViewTransition('MIRROR', 'JOURNEY');
-                                }} />
-                            </motion.div>
-                        )}
+                {step === "HEART" && (
+                    <motion.div
+                        key="heart"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <HeartRealm onHeartSelection={handleHeartSelection} />
+                    </motion.div>
+                )}
 
-                        {view === 'JOURNEY' && (
-                            <motion.div
-                                key="journey"
-                                variants={getVariants('JOURNEY')}
-                                initial="initial"
-                                animate="animate"
-                                exit="exit"
-                                className="absolute inset-0"
-                            >
-                                <FinalJourneyPage onComplete={() => {
-                                    console.log("[InnerAtlas] Journey Complete -> Shrine");
-                                    handleViewTransition('JOURNEY', 'SHRINE');
-                                }} />
-                            </motion.div>
-                        )}
+                {step === "SHADOW" && (
+                    <motion.div
+                        key="shadow"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <ShadowRealm onShadowSelection={handleShadowSelection} />
+                    </motion.div>
+                )}
 
-                        {view === 'SHRINE' && (
-                            <motion.div
-                                key="shrine"
-                                variants={getVariants('SHRINE')}
-                                initial="initial"
-                                animate="animate"
-                                exit="exit"
-                                className="absolute inset-0"
-                            >
-                                <ShrineView />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </App>
-            </GlobalProviders>
-        </ErrorBoundary>
+                {step === "KURUKSHETRA" && (
+                    <motion.div
+                        key="kurukshetra"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <KurukshetraSelection onKurukshetraSelection={handleKurukshetraSelection} />
+                    </motion.div>
+                )}
+
+                {step === "POWER_OBJECTS" && (
+                    <motion.div
+                        key="power-objects"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <PowerObjectsSelector onPowerObjectsSelection={handlePowerObjectsSelection} />
+                    </motion.div>
+                )}
+
+                {step === "COSMIC_GITA" && selectedBattle && (
+                    <motion.div
+                        key="cosmic-gita"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 1 } }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <CosmicGitaMoment
+                            kurukshetraBattleKey={selectedBattle}
+                            onGitaMomentComplete={handleGitaMomentComplete}
+                        />
+                    </motion.div>
+                )}
+
+                {step === "RESULTS" && selectedMind && selectedHeart && selectedShadow && (
+                    <motion.div
+                        key="results"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <InnerAtlasResults
+                            mindState={selectedMind}
+                            heartState={selectedHeart}
+                            shadowState={selectedShadow}
+                            onContinue={handleReset}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </main>
     );
 }
 
-// Helper component to listen for ritual end
-function RitualListener({ onRitualEnd }: { onRitualEnd: () => void }) {
-    const { isRitualActive } = useRitual();
-    const [wasActive, setWasActive] = useState(false);
-
-    useEffect(() => {
-        if (isRitualActive) {
-            setWasActive(true);
-        } else if (wasActive && !isRitualActive) {
-            onRitualEnd();
-        }
-    }, [isRitualActive, wasActive, onRitualEnd]);
-
-    return null;
+export default function InnerAtlasPage() {
+    return (
+        <AudioProvider>
+            <InnerAtlasContent />
+        </AudioProvider>
+    );
 }
