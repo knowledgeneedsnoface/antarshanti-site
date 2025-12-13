@@ -180,7 +180,7 @@ function GetStartedContent() {
         return (
             <DailyRitualHome
                 assignedRitualKey={ritualKey}
-                onStartRitual={(key) => window.location.href = `/ritual/player?id=${key}`}
+                onStartRitual={(key, mood) => window.location.href = `/ritual/player?id=${key}${mood ? `&mood=${mood}` : ''}`}
             />
         );
     }

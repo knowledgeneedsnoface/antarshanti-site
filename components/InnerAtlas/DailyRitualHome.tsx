@@ -7,7 +7,7 @@ import { Sparkles, Play, Sun } from "lucide-react";
 interface DailyRitualHomeProps {
     assignedRitualKey: string;
     gitaLine?: string;
-    onStartRitual: (key: string) => void;
+    onStartRitual: (key: string, mood?: string | null) => void;
 }
 
 // Ritual Data Mapping (Keyed by the ID passed in URL)
@@ -133,7 +133,7 @@ export default function DailyRitualHome({
                     transition={{ type: "spring", stiffness: 100, damping: 20 }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => onStartRitual(assignedRitualKey)}
+                    onClick={() => onStartRitual(assignedRitualKey, selectedMood)}
                     className="w-full relative aspect-[3/4] max-h-[400px] rounded-[30px] overflow-hidden shadow-2xl shadow-[#D4A94A]/20 cursor-pointer group my-6"
                 >
                     <img src={ritual.img} alt={ritual.name} className="absolute inset-0 w-full h-full object-cover" />
@@ -211,7 +211,7 @@ export default function DailyRitualHome({
                 <motion.button
                     whileHover={{ scale: 1.05, boxShadow: "0 10px 30px -10px rgba(212,169,74,0.5)" }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => onStartRitual(assignedRitualKey)}
+                    onClick={() => onStartRitual(assignedRitualKey, selectedMood)}
                     className="w-full py-4 bg-gradient-to-r from-[#D4A94A] to-[#B8860B] text-white rounded-full font-bold text-lg shadow-lg flex items-center justify-center gap-2 mb-4"
                 >
                     <Play fill="currentColor" size={20} />
