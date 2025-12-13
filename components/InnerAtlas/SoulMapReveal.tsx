@@ -129,7 +129,7 @@ export default function SoulMapReveal({
     const rath = RATH_MAP[powerObjects.rath];
 
     return (
-        <div className="relative w-full min-h-screen bg-[#0b1020] overflow-y-auto overflow-x-hidden font-sans pb-20">
+        <div className="relative w-full h-full bg-[#0b1020] overflow-y-auto overflow-x-hidden font-sans pb-20">
 
             {/* 
         -------------------------------------------------------------
