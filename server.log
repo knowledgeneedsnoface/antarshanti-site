@@ -1,0 +1,13 @@
+
+> antarshanti-site@0.1.0 dev
+> next dev
+
+   ▲ Next.js 16.0.7 (Turbopack)
+   - Local:         http://localhost:3000
+   - Network:       http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 1031ms
+ ○ Compiling / ...
+ GET / 200 in 9.7s (compile: 8.9s, render: 828ms)
+ GET /noise.png 404 in 1720ms (compile: 1558ms, render: 162ms)
