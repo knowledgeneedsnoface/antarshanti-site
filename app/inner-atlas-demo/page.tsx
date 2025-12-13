@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ChariotArrival from "@/components/InnerAtlas/ChariotArrival";
 import MindRealm, { MindStateKey } from "@/components/InnerAtlas/MindRealm";
+import HeartRealm, { HeartStateKey } from "@/components/InnerAtlas/HeartRealm";
 
 export default function InnerAtlasDemo() {
-    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "COMPLETE">("ARRIVAL");
+    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "COMPLETE">("ARRIVAL");
     const [selectedMind, setSelectedMind] = useState<MindStateKey | null>(null);
+    const [selectedHeart, setSelectedHeart] = useState<HeartStateKey | null>(null);
 
     const handleStartAtlas = () => {
         setStep("MIND");
@@ -15,6 +17,11 @@ export default function InnerAtlasDemo() {
 
     const handleMindSelection = (state: MindStateKey) => {
         setSelectedMind(state);
+        setStep("HEART");
+    };
+
+    const handleHeartSelection = (state: HeartStateKey) => {
+        setSelectedHeart(state);
         setStep("COMPLETE");
     };
 
@@ -45,6 +52,18 @@ export default function InnerAtlasDemo() {
                     </motion.div>
                 )}
 
+                {step === "HEART" && (
+                    <motion.div
+                        key="heart"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <HeartRealm onHeartSelection={handleHeartSelection} />
+                    </motion.div>
+                )}
+
                 {step === "COMPLETE" && (
                     <motion.div
                         key="complete"
@@ -54,11 +73,18 @@ export default function InnerAtlasDemo() {
                     >
                         <div className="text-center">
                             <h2 className="text-3xl font-bold mb-4">Journey Begun</h2>
+                            <p className="text-xl text-gray-400 mb-2">
+                                Mind State: <span className="text-[#d4a94a]">{selectedMind}</span>
+                            </p>
                             <p className="text-xl text-gray-400">
-                                Selected Mind State: <span className="text-[#d4a94a]">{selectedMind}</span>
+                                Heart State: <span className="text-pink-400">{selectedHeart}</span>
                             </p>
                             <button
-                                onClick={() => setStep("ARRIVAL")}
+                                onClick={() => {
+                                    setStep("ARRIVAL");
+                                    setSelectedMind(null);
+                                    setSelectedHeart(null);
+                                }}
                                 className="mt-8 text-sm underline opacity-50 hover:opacity-100"
                             >
                                 Reset Demo
