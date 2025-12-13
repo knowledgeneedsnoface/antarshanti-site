@@ -290,10 +290,10 @@ export default function ShadowRealm({ onShadowSelection }: ShadowRealmProps) {
 
                 {/* 
           -------------------------------------------------------------
-          4. Continue CTA
+          4. Continue CTA - FIXED AT BOTTOM
           -------------------------------------------------------------
         */}
-                <div className="w-full flex items-center justify-center py-6 md:py-8">
+                <div className="fixed bottom-8 left-0 right-0 flex items-center justify-center z-50">
                     <AnimatePresence>
                         {selectedState && (
                             <motion.button
@@ -308,7 +308,6 @@ export default function ShadowRealm({ onShadowSelection }: ShadowRealmProps) {
                   bg-gradient-to-r from-[#bfa76a] to-[#8b7355] 
                   text-[#0a0a0f] font-bold text-base md:text-lg rounded-xl
                   shadow-[0_0_25px_rgba(191,167,106,0.4)]
-                  relative z-30
                 "
                             >
                                 Continue

@@ -240,10 +240,10 @@ export default function MindRealm({ onMindSelection }: MindRealmProps) {
 
                 {/* 
           -------------------------------------------------------------
-          4. Continue CTA - FIXED POSITIONING
+          4. Continue CTA - FIXED AT BOTTOM
           -------------------------------------------------------------
         */}
-                <div className="w-full flex items-center justify-center py-6 md:py-8">
+                <div className="fixed bottom-8 left-0 right-0 flex items-center justify-center z-50">
                     <AnimatePresence>
                         {selectedState && (
                             <motion.button
@@ -259,7 +259,6 @@ export default function MindRealm({ onMindSelection }: MindRealmProps) {
                   text-[#0b1020] font-bold text-base md:text-lg rounded-full 
                   shadow-[0_0_20px_rgba(212,169,74,0.4)]
                   hover:shadow-[0_0_30px_rgba(212,169,74,0.6)]
-                  relative z-30
                 "
                             >
                                 Continue

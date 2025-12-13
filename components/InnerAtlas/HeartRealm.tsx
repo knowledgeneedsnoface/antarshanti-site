@@ -265,10 +265,10 @@ export default function HeartRealm({ onHeartSelection }: HeartRealmProps) {
 
                 {/* 
           -------------------------------------------------------------
-          4. Continue CTA
+          4. Continue CTA - FIXED AT BOTTOM
           -------------------------------------------------------------
         */}
-                <div className="w-full flex items-center justify-center py-6 md:py-8">
+                <div className="fixed bottom-8 left-0 right-0 flex items-center justify-center z-50">
                     <AnimatePresence>
                         {selectedState && (
                             <motion.button
@@ -283,7 +283,6 @@ export default function HeartRealm({ onHeartSelection }: HeartRealmProps) {
                   bg-gradient-to-r from-[#d4a94a] to-[#b8860b] 
                   text-[#3e1d2f] font-bold text-base md:text-lg rounded-full 
                   shadow-[0_0_25px_rgba(212,169,74,0.4)]
-                  relative z-30
                 "
                             >
                                 Continue
