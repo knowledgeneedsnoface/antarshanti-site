@@ -51,7 +51,7 @@ export default function PortalHero() {
                 onMouseLeave={() => setIsHovering(false)}
                 onClick={() => {
                     setIsClicked(true);
-                    setTimeout(() => router.push('/inner-atlas'), 1500);
+                    setTimeout(() => router.push('/inner-atlas-demo'), 1500);
                 }}
                 animate={{ scale: isClicked ? 50 : (isHovering ? 1.05 : 1) }}
                 transition={{ duration: isClicked ? 1.5 : 0.8, ease: isClicked ? "circIn" : "easeInOut" }}
@@ -123,7 +123,7 @@ export default function PortalHero() {
                 <motion.button
                     onClick={() => {
                         setIsClicked(true);
-                        setTimeout(() => router.push('/inner-atlas'), 1500);
+                        setTimeout(() => router.push('/inner-atlas-demo'), 1500);
                     }}
                     className="pointer-events-auto px-8 py-3 rounded-full border border-amber-500/30 text-amber-500/80 hover:bg-amber-500/10 hover:border-amber-500/60 hover:text-amber-400 transition-all duration-500 uppercase text-sm tracking-widest mb-6"
                     whileHover={{ scale: 1.05 }}
