@@ -25,8 +25,8 @@ export default function GlobalNavbar() {
         {/* Desktop Navigation Links */}
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center gap-6">
-          <Tooltip text="Return directly to the sanctuary entrance">
-            <Link href="/" className="group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-amber-50/50 transition-all">
+          <Tooltip text="Begin your 10-minute journey">
+            <Link href="/inner-atlas" className="group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-amber-50/50 transition-all">
               <Compass className="w-4 h-4 text-amber-600/70 group-hover:text-amber-600" />
               <div>
                 <p className="text-sm font-medium text-gray-700 group-hover:text-amber-700">Inner Atlas</p>
@@ -88,6 +88,13 @@ export default function GlobalNavbar() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
+              </Link>
+              <Link
+                href="/inner-atlas"
+                className="block text-gray-700 hover:text-amber-600 transition-colors font-medium py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Inner Atlas
               </Link>
               <Link
                 href="/#about"

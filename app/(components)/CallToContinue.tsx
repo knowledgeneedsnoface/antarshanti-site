@@ -20,6 +20,15 @@ export default function CallToContinue() {
                     </motion.a>
 
                     <motion.a
+                        href="/inner-atlas"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-8 py-4 bg-gray-900 text-amber-500 border border-gray-900 rounded-full font-medium hover:bg-gray-800 transition-all flex items-center gap-2"
+                    >
+                        Start Inner Atlas
+                    </motion.a>
+
+                    <motion.a
                         href="/twin/demo"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}

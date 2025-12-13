@@ -51,7 +51,7 @@ export default function PortalHero() {
                 onMouseLeave={() => setIsHovering(false)}
                 onClick={() => {
                     setIsClicked(true);
-                    setTimeout(() => router.push('/inner-atlas-demo'), 1500);
+                    setTimeout(() => router.push('/inner-atlas'), 1500);
                 }}
                 animate={{ scale: isClicked ? 50 : (isHovering ? 1.05 : 1) }}
                 transition={{ duration: isClicked ? 1.5 : 0.8, ease: isClicked ? "circIn" : "easeInOut" }}
@@ -97,7 +97,7 @@ export default function PortalHero() {
                     animate={{ opacity: isHovering ? 1 : 0, scale: isHovering ? 1 : 0.9 }}
                     transition={{ duration: 0.5 }}
                 >
-                    come in...
+                    begin...
                 </motion.div>
             </motion.div>
 
@@ -109,7 +109,7 @@ export default function PortalHero() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 1 }}
                 >
-                    Enter Your 10-Minute Sanctuary.
+                    Discover Your Inner Atlas.
                 </motion.h1>
                 <motion.p
                     className="text-white/40 font-light text-lg tracking-wide mb-10"
@@ -117,13 +117,13 @@ export default function PortalHero() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1, duration: 1 }}
                 >
-                    A place made for your breath, your peace, your becoming.
+                    A cinematic journey into your Mind, Heart, and Shadow.
                 </motion.p>
 
                 <motion.button
                     onClick={() => {
                         setIsClicked(true);
-                        setTimeout(() => router.push('/inner-atlas-demo'), 1500);
+                        setTimeout(() => router.push('/inner-atlas'), 1500);
                     }}
                     className="pointer-events-auto px-8 py-3 rounded-full border border-amber-500/30 text-amber-500/80 hover:bg-amber-500/10 hover:border-amber-500/60 hover:text-amber-400 transition-all duration-500 uppercase text-sm tracking-widest mb-6"
                     whileHover={{ scale: 1.05 }}
@@ -132,7 +132,7 @@ export default function PortalHero() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.5 }}
                 >
-                    Open the Ritual
+                    Enter the Atlas
                 </motion.button>
 
                 <motion.a
