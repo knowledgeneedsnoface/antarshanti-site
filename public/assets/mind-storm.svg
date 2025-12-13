@@ -1,0 +1,7 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1e293b"/>
+  <path d="M50 80 Q100 20 150 80 T250 80 T350 80" stroke="#475569" stroke-width="20"/>
+  <path d="M100 200 L120 250 L140 220 L160 260" stroke="#cbd5e1" stroke-width="2"/>
+  <rect width="400" height="300" fill="black" fill-opacity="0.2"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="sans-serif" font-size="24">Stormy Sky</text>
+</svg>
