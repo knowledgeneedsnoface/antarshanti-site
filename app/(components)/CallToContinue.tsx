@@ -11,10 +11,10 @@ export default function CallToContinue() {
 
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                     <motion.a
-                        href="#product"
+                        href="/get-started" // Modified to link to our new pre-sell flow
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="px-8 py-4 bg-amber-500 text-white rounded-full font-medium shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 transition-all"
+                        className="px-8 py-4 bg-amber-500 text-white rounded-full font-medium shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 transition-all flex items-center gap-2"
                     >
                         Get My AntarShanti Kit
                     </motion.a>
@@ -23,9 +23,9 @@ export default function CallToContinue() {
                         href="/twin/demo"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="px-8 py-4 bg-white text-gray-600 border border-gray-200 rounded-full font-medium hover:border-amber-400 hover:text-amber-600 transition-all"
+                        className="px-8 py-4 bg-white text-gray-600 border border-gray-200 rounded-full font-medium hover:border-amber-400 hover:text-amber-600 transition-all group"
                     >
-                        See the Ritual in Action
+                        Try the Twin Demo <span className="text-xs text-amber-500 ml-2 font-bold px-2 py-0.5 bg-amber-50 rounded-full">30s</span>
                     </motion.a>
                 </div>
 

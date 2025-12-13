@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 const trustBadges = [
   { icon: Shield, text: "7-day peace guarantee" },
   { icon: Truck, text: "Free delivery" },
-  { icon: CreditCard, text: "COD available" },
+  { icon: CreditCard, text: "SSL Secure Checkout" },
 ];
 
 export default function ProductCard() {
@@ -189,6 +189,7 @@ export default function ProductCard() {
                   <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full blur opacity-30 group-hover:opacity-60 transition duration-300" />
                   <div className="relative w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-full py-5 px-8 text-lg font-medium shadow-xl hover:shadow-2xl transition-all duration-300">
                     <span className="flex items-center justify-center gap-2">
+                      <span className="text-xl">🔒</span>
                       Start My Ritual Journey
                       <motion.span
                         animate={{ x: [0, 5, 0] }}
@@ -200,12 +201,18 @@ export default function ProductCard() {
                   </div>
                 </motion.button>
 
+                {/* Micro-text security assurance */}
+                <div className="flex justify-center gap-4 mt-4 text-[10px] text-gray-400 uppercase tracking-widest">
+                  <span className="flex items-center gap-1">🔒 SSL Encrypted</span>
+                  <span className="flex items-center gap-1">🛡️ Privacy Guaranteed</span>
+                </div>
+
                 {/* Reassurance text */}
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={isInView ? { opacity: 1 } : {}}
                   transition={{ delay: 1, duration: 0.6 }}
-                  className="text-xs text-center text-gray-500 mt-4 italic"
+                  className="text-xs text-center text-gray-500 mt-2 italic"
                 >
                   Join thousands finding their daily peace
                 </motion.p>

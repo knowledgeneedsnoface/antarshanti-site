@@ -72,6 +72,17 @@ export default function ShrineView() {
             {/* RELIC COLLECTION */}
             <section className="px-6 max-w-5xl mx-auto">
                 <RelicGallery onRelicClick={handleRelicClick} />
+
+                {/* Funnel: Link to Twin Demo */}
+                <div className="mt-12 mb-8 text-center">
+                    <p className="text-white/40 text-xs uppercase tracking-widest mb-4">The Shrine is just the beginning</p>
+                    <a
+                        href="/twin/demo"
+                        className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--color-gold)] text-[var(--color-gold)] rounded-full hover:bg-[var(--color-gold)] hover:text-black transition-all duration-300 font-serif"
+                    >
+                        <span>🔮</span> Explore your Spiritual Twin
+                    </a>
+                </div>
             </section>
 
             {/* MODAL FOR SELECTED RELIC */}

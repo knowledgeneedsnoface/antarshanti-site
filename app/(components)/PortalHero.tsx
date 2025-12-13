@@ -125,7 +125,7 @@ export default function PortalHero() {
                         setIsClicked(true);
                         setTimeout(() => router.push('/inner-atlas'), 1500);
                     }}
-                    className="pointer-events-auto px-8 py-3 rounded-full border border-amber-500/30 text-amber-500/80 hover:bg-amber-500/10 hover:border-amber-500/60 hover:text-amber-400 transition-all duration-500 uppercase text-sm tracking-widest"
+                    className="pointer-events-auto px-8 py-3 rounded-full border border-amber-500/30 text-amber-500/80 hover:bg-amber-500/10 hover:border-amber-500/60 hover:text-amber-400 transition-all duration-500 uppercase text-sm tracking-widest mb-6"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0 }}
@@ -134,6 +134,16 @@ export default function PortalHero() {
                 >
                     Open the Ritual
                 </motion.button>
+
+                <motion.a
+                    href="/twin/demo"
+                    className="pointer-events-auto block text-xs text-white/30 hover:text-amber-400 transition-colors uppercase tracking-widest border-b border-transparent hover:border-amber-400/50 pb-0.5"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 2 }}
+                >
+                    Or try the Twin Demo <span className="text-[10px] ml-1 opacity-50">→ 30s</span>
+                </motion.a>
             </div>
 
             {/* Transition Whiteout Overlay */}

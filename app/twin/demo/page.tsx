@@ -184,7 +184,12 @@ export default function SpiritualTwin() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 relative">
+            {/* Step Indicator */}
+            <div className="absolute top-0 right-0 lg:right-[-60px] hidden md:block text-xs font-semibold text-orange-400 uppercase tracking-widest">
+              Step 1 of 2
+            </div>
+
             <div className="inline-flex items-center gap-2 mb-4">
               <span className="text-4xl">🕉️</span>
               <h1 className="text-4xl font-bold text-orange-900">AntarShanti</h1>
@@ -219,10 +224,14 @@ export default function SpiritualTwin() {
             </div>
           </div>
 
-          <div className="bg-blue-100 border-2 border-blue-300 rounded-xl p-4 text-sm text-blue-900">
-            <p className="font-bold mb-2">💡 Tip:</p>
-            <p>This Digital Twin uses AI to provide personalized spiritual guidance. Choose a path that resonates with your current journey and start a conversation!</p>
+          {/* New Pre-Sell CTA if already tried */}
+          <div className="text-center mt-12">
+            <p className="text-gray-600 mb-4 text-sm">Mind feels clearer?</p>
+            <a href="/get-started" className="inline-flex items-center gap-2 bg-orange-900 text-white px-8 py-3 rounded-full hover:bg-orange-800 transition-colors">
+              Get your starter ritual <Sparkles className="w-4 h-4" />
+            </a>
           </div>
+
         </div>
       </div>
     );
@@ -243,12 +252,18 @@ export default function SpiritualTwin() {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => setStep('selection')}
-            className="text-sm text-orange-700 hover:text-orange-900 underline"
-          >
-            Change Path
-          </button>
+
+          <div className="flex items-center gap-4">
+            <a href="/get-started" className="hidden md:flex items-center gap-2 text-sm font-medium text-orange-900 bg-orange-100 px-4 py-2 rounded-full hover:bg-orange-200 transition-colors">
+              Get Ritual Kit <Sparkles className="w-3 h-3" />
+            </a>
+            <button
+              onClick={() => setStep('selection')}
+              className="text-sm text-orange-700 hover:text-orange-900 underline"
+            >
+              Change Path
+            </button>
+          </div>
         </div>
       </div>
 
@@ -294,9 +309,15 @@ export default function SpiritualTwin() {
 
       {memory.keywords.length > 0 && (
         <div className="bg-orange-100 border-t border-orange-200 px-4 py-2">
-          <div className="max-w-4xl mx-auto flex items-center gap-2 text-sm text-orange-800">
-            <Sparkles className="w-4 h-4" />
-            <span>Memory active: {memory.keywords.length} concepts learned</span>
+          <div className="max-w-4xl mx-auto flex items-center justify-between gap-2 text-sm text-orange-800">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              <span>Memory active: {memory.keywords.length} concepts learned</span>
+            </div>
+            {/* Mobile CTA */}
+            <a href="/get-started" className="md:hidden text-xs font-bold underline">
+              Get Ritual Kit →
+            </a>
           </div>
         </div>
       )}
