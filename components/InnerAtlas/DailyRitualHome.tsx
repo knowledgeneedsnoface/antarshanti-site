@@ -69,7 +69,8 @@ const TWIN_REACTIONS: Record<string, string> = {
 
 import DailyDashboard, { MoodHistoryItem, RitualHistoryItem } from "./DailyDashboard";
 import SoulTwinReaction from "./SoulTwinReaction";
-import { BarChart3 } from "lucide-react";
+import DailySurpriseGenerator, { SurpriseItem } from "./DailySurpriseGenerator";
+import { BarChart3, Gift } from "lucide-react";
 
 // MOCK DATA FOR DASHBOARD
 const MOCK_MOOD_HISTORY: MoodHistoryItem[] = [
@@ -99,10 +100,17 @@ export default function DailyRitualHome({
 }: DailyRitualHomeProps) {
     const [selectedMood, setSelectedMood] = useState<string | null>(null);
     const [showDashboard, setShowDashboard] = useState(false);
+    const [showSurprise, setShowSurprise] = useState(false);
+    const [lastSurpriseDate, setLastSurpriseDate] = useState<number | null>(null);
 
     // Default to Karma Yoga if key invalid
     const ritual = RITUAL_DATA[assignedRitualKey] || RITUAL_DATA["karma_yoga"];
     const twinText = selectedMood ? TWIN_REACTIONS[selectedMood] : "Kaisa mehsoos kar rahe ho aaj?";
+
+    const handleSurpriseGenerated = (surprise: SurpriseItem) => {
+        setLastSurpriseDate(Date.now());
+        console.log("Surprise Unlocked:", surprise);
+    };
 
     if (showDashboard) {
         return (
@@ -118,6 +126,15 @@ export default function DailyRitualHome({
 
     return (
         <div className="relative min-h-screen bg-gradient-to-b from-[#FFF5E1] via-[#FFFBF2] to-[#FFFFFF] font-sans text-gray-900 overflow-hidden flex flex-col items-center">
+
+            {/* Surprise Overlay */}
+            {showSurprise && (
+                <DailySurpriseGenerator
+                    lastSurpriseDate={lastSurpriseDate}
+                    onSurpriseGenerated={handleSurpriseGenerated}
+                    onClose={() => setShowSurprise(false)}
+                />
+            )}
 
             {/* Background Ambience */}
             <div className="absolute inset-0 pointer-events-none">
@@ -137,6 +154,14 @@ export default function DailyRitualHome({
 
                 {/* Header */}
                 <header className="text-center mt-4 w-full relative">
+                    <button
+                        onClick={() => setShowSurprise(true)}
+                        className="absolute left-0 top-0 p-2 text-purple-700/60 hover:text-purple-700 hover:bg-purple-100/50 rounded-full transition-all"
+                    >
+                        <Gift size={24} />
+                        {/* Notification Dot */}
+                        {!lastSurpriseDate && <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />}
+                    </button>
                     <button
                         onClick={() => setShowDashboard(true)}
                         className="absolute right-0 top-0 p-2 text-amber-700/60 hover:text-amber-700 hover:bg-amber-100/50 rounded-full transition-all"
