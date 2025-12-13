@@ -1,0 +1,12 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="armorGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bfa76a" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0a0a0f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="150" cy="150" r="100" fill="url(#armorGlow)"/>
+  <path d="M150 80 Q120 100 120 140 L120 180 Q120 200 150 220 Q180 200 180 180 L180 140 Q180 100 150 80 Z" fill="#1f2633" stroke="#bfa76a" stroke-width="2"/>
+  <path d="M150 100 L150 200" stroke="#bfa76a" stroke-width="1" opacity="0.5"/>
+  <path d="M135 120 L165 120 M135 150 L165 150 M135 180 L165 180" stroke="#bfa76a" stroke-width="1" opacity="0.4"/>
+</svg>

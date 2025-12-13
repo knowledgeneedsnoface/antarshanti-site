@@ -1,0 +1,14 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="maskGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c5295" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0a0a0f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="150" cy="150" r="100" fill="url(#maskGlow)"/>
+  <ellipse cx="150" cy="150" rx="60" ry="75" fill="#1f2633" stroke="#bfa76a" stroke-width="2"/>
+  <ellipse cx="130" cy="135" rx="12" ry="18" fill="#0a0a0f"/>
+  <ellipse cx="170" cy="135" rx="12" ry="18" fill="#0a0a0f"/>
+  <path d="M120 170 Q150 185 180 170" stroke="#bfa76a" stroke-width="2" fill="none"/>
+  <path d="M100 120 Q150 100 200 120" stroke="#bfa76a" stroke-width="1.5" opacity="0.5" fill="none"/>
+</svg>
