@@ -140,7 +140,7 @@ export default function HeartRealm({ onHeartSelection }: HeartRealmProps) {
     };
 
     return (
-        <div className="relative min-h-screen w-full bg-[#3e1d2f] text-white font-sans overflow-x-hidden selection:bg-[#d4a94a] selection:text-black flex flex-col items-center py-10 md:py-16">
+        <div className="relative min-h-screen w-full bg-[#3e1d2f] text-white font-sans overflow-y-auto overflow-x-hidden selection:bg-[#d4a94a] selection:text-black">
 
             {/* 
         -------------------------------------------------------------
@@ -173,7 +173,7 @@ export default function HeartRealm({ onHeartSelection }: HeartRealmProps) {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#3e1d2f]/70 via-pink-900/5 to-transparent" />
             </div>
 
-            <div className="relative z-10 w-full max-w-7xl px-4 flex flex-col items-center">
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-10 md:py-16 flex flex-col items-center min-h-screen">
 
                 {/* 
           -------------------------------------------------------------
@@ -184,12 +184,12 @@ export default function HeartRealm({ onHeartSelection }: HeartRealmProps) {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1 }}
-                    className="text-center mb-12"
+                    className="text-center mb-8 md:mb-12"
                 >
-                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-[#d4a94a] to-pink-200 mb-2 tracking-wide font-sans drop-shadow-[0_0_20px_rgba(212,169,74,0.3)]">
+                    <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-[#d4a94a] to-pink-200 mb-2 tracking-wide font-sans drop-shadow-[0_0_20px_rgba(212,169,74,0.3)]">
                         Hridaya Mandir — The Realm of Your Heart
                     </h1>
-                    <p className="text-gray-300 text-lg md:text-xl font-light">
+                    <p className="text-gray-300 text-base md:text-xl font-light px-4">
                         Yeh visuals tumhari current emotional feeling ko dikhate hain. Jo sabse zyada connect ho… woh choose karo.
                     </p>
                 </motion.div>
@@ -268,7 +268,7 @@ export default function HeartRealm({ onHeartSelection }: HeartRealmProps) {
           4. Continue CTA
           -------------------------------------------------------------
         */}
-                <div className="h-24 flex items-center justify-center w-full">
+                <div className="w-full flex items-center justify-center py-6 md:py-8">
                     <AnimatePresence>
                         {selectedState && (
                             <motion.button
@@ -279,9 +279,9 @@ export default function HeartRealm({ onHeartSelection }: HeartRealmProps) {
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleContinue}
                                 className="
-                  flex items-center gap-3 px-12 py-4 
+                  flex items-center gap-3 px-8 md:px-12 py-3 md:py-4 
                   bg-gradient-to-r from-[#d4a94a] to-[#b8860b] 
-                  text-[#3e1d2f] font-bold text-lg rounded-full 
+                  text-[#3e1d2f] font-bold text-base md:text-lg rounded-full 
                   shadow-[0_0_25px_rgba(212,169,74,0.4)]
                   relative z-30
                 "

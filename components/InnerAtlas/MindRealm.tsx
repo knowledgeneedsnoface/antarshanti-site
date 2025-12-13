@@ -122,7 +122,7 @@ export default function MindRealm({ onMindSelection }: MindRealmProps) {
     };
 
     return (
-        <div className="relative min-h-screen w-full bg-[#0b1020] text-white font-sans overflow-x-hidden selection:bg-[#d4a94a] selection:text-black flex flex-col items-center py-10 md:py-20">
+        <div className="relative min-h-screen w-full bg-[#0b1020] text-white font-sans overflow-y-auto overflow-x-hidden selection:bg-[#d4a94a] selection:text-black">
 
             {/* 
         -------------------------------------------------------------
@@ -152,7 +152,7 @@ export default function MindRealm({ onMindSelection }: MindRealmProps) {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0b1020]/80 via-transparent to-transparent z-0" />
             </div>
 
-            <div className="relative z-10 w-full max-w-7xl px-4 flex flex-col items-center">
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-10 md:py-16 flex flex-col items-center min-h-screen">
 
                 {/* 
           -------------------------------------------------------------
@@ -163,12 +163,12 @@ export default function MindRealm({ onMindSelection }: MindRealmProps) {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1 }}
-                    className="text-center mb-12"
+                    className="text-center mb-8 md:mb-12"
                 >
-                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-[#d4a94a] to-white mb-2 tracking-wide font-sans">
+                    <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-[#d4a94a] to-white mb-2 tracking-wide font-sans">
                         Manas Bhoomi — The Realm of Your Mind
                     </h1>
-                    <p className="text-gray-400 text-lg md:text-xl font-light">
+                    <p className="text-gray-400 text-base md:text-xl font-light px-4">
                         In visuals ka istemaal karke choose karo… aaj tumhara mind kaisa mehsoos ho raha hai?
                     </p>
                 </motion.div>
@@ -182,7 +182,7 @@ export default function MindRealm({ onMindSelection }: MindRealmProps) {
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl place-items-center"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl place-items-center mb-6"
                 >
                     {MIND_STATES.map((state) => {
                         const isSelected = selectedState === state.id;
@@ -227,11 +227,11 @@ export default function MindRealm({ onMindSelection }: MindRealmProps) {
                                 </div>
 
                                 {/* Card Content */}
-                                <div className="absolute bottom-0 left-0 right-0 p-5 pt-10 bg-gradient-to-t from-[#0b1020] to-transparent">
-                                    <h3 className={`text-xl font-semibold transition-colors duration-300 ${isSelected ? "text-[#d4a94a]" : "text-white"}`}>
+                                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 pt-8 md:pt-10 bg-gradient-to-t from-[#0b1020] to-transparent">
+                                    <h3 className={`text-lg md:text-xl font-semibold transition-colors duration-300 ${isSelected ? "text-[#d4a94a]" : "text-white"}`}>
                                         {state.title}
                                     </h3>
-                                    <p className="text-gray-400 text-sm mt-1">{state.subtitle}</p>
+                                    <p className="text-gray-400 text-xs md:text-sm mt-1">{state.subtitle}</p>
                                 </div>
                             </motion.div>
                         );
@@ -240,10 +240,10 @@ export default function MindRealm({ onMindSelection }: MindRealmProps) {
 
                 {/* 
           -------------------------------------------------------------
-          4. Continue CTA
+          4. Continue CTA - FIXED POSITIONING
           -------------------------------------------------------------
         */}
-                <div className="h-24 flex items-center justify-center mt-8 w-full">
+                <div className="w-full flex items-center justify-center py-6 md:py-8">
                     <AnimatePresence>
                         {selectedState && (
                             <motion.button
@@ -254,11 +254,12 @@ export default function MindRealm({ onMindSelection }: MindRealmProps) {
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleContinue}
                                 className="
-                  flex items-center gap-3 px-10 py-4 
+                  flex items-center gap-3 px-8 md:px-10 py-3 md:py-4 
                   bg-gradient-to-r from-[#d4a94a] to-[#b8860b] 
-                  text-[#0b1020] font-bold text-lg rounded-full 
+                  text-[#0b1020] font-bold text-base md:text-lg rounded-full 
                   shadow-[0_0_20px_rgba(212,169,74,0.4)]
-                  animate-pulse-slow relative z-20
+                  hover:shadow-[0_0_30px_rgba(212,169,74,0.6)]
+                  relative z-30
                 "
                             >
                                 Continue
