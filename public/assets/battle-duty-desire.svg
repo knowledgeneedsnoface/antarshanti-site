@@ -1,0 +1,23 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="dutyGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d4a94a" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Background glow -->
+  <circle cx="150" cy="150" r="100" fill="url(#dutyGlow)"/>
+  <!-- Left side: Duty (Scale/Balance) -->
+  <g transform="translate(80, 140)">
+    <rect x="30" y="0" width="4" height="60" fill="#d4a94a" opacity="0.7"/>
+    <circle cx="32" cy="0" r="8" fill="#d4a94a"/>
+    <rect x="10" y="10" width="20" height="3" fill="#d4a94a" opacity="0.6"/>
+    <rect x="34" y="10" width="20" height="3" fill="#d4a94a" opacity="0.6"/>
+  </g>
+  <!-- Right side: Desire (Heart) -->
+  <g transform="translate(180, 140)">
+    <path d="M20 15 Q20 5, 30 5 Q40 5, 40 15 Q40 30, 20 45 Q0 30, 0 15 Q0 5, 10 5 Q20 5, 20 15 Z" fill="#ff69b4" opacity="0.7"/>
+  </g>
+  <!-- VS divider -->
+  <line x1="150" y1="120" x2="150" y2="180" stroke="#d4a94a" stroke-width="2" opacity="0.5"/>
+</svg>

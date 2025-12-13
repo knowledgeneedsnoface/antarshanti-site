@@ -1,0 +1,24 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="chaosGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c5295" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="150" cy="150" r="100" fill="url(#chaosGlow)"/>
+  <!-- Left: Chaos (Scattered lines) -->
+  <g transform="translate(60, 130)">
+    <line x1="5" y1="10" x2="35" y2="25" stroke="#7c5295" stroke-width="2" opacity="0.7"/>
+    <line x1="10" y1="30" x2="30" y2="5" stroke="#7c5295" stroke-width="2" opacity="0.7"/>
+    <line x1="20" y1="35" x2="5" y2="20" stroke="#7c5295" stroke-width="2" opacity="0.7"/>
+    <line x1="30" y1="15" x2="15" y2="35" stroke="#7c5295" stroke-width="2" opacity="0.7"/>
+  </g>
+  <!-- Right: Focus (Target/Crosshair) -->
+  <g transform="translate(200, 145)">
+    <circle cx="15" cy="15" r="20" fill="none" stroke="#d4a94a" stroke-width="2"/>
+    <circle cx="15" cy="15" r="12" fill="none" stroke="#d4a94a" stroke-width="2"/>
+    <circle cx="15" cy="15" r="4" fill="#d4a94a"/>
+  </g>
+  <!-- VS -->
+  <line x1="150" y1="120" x2="150" y2="180" stroke="#d4a94a" stroke-width="2" opacity="0.5"/>
+</svg>

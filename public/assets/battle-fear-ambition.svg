@@ -1,0 +1,22 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="fearGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6b7280" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="150" cy="150" r="100" fill="url(#fearGlow)"/>
+  <!-- Left: Fear (Chain) -->
+  <g transform="translate(70, 130)">
+    <circle cx="10" cy="10" r="8" fill="none" stroke="#6b7280" stroke-width="3"/>
+    <circle cx="10" cy="30" r="8" fill="none" stroke="#6b7280" stroke-width="3"/>
+    <circle cx="10" cy="50" r="8" fill="none" stroke="#6b7280" stroke-width="3"/>
+  </g>
+  <!-- Right: Ambition (Rising Arrow) -->
+  <g transform="translate(200, 170)">
+    <line x1="0" y1="40" x2="0" y2="0" stroke="#d4a94a" stroke-width="4"/>
+    <polygon points="0,0 -8,12 8,12" fill="#d4a94a"/>
+  </g>
+  <!-- VS -->
+  <line x1="150" y1="120" x2="150" y2="180" stroke="#d4a94a" stroke-width="2" opacity="0.5"/>
+</svg>

@@ -6,14 +6,16 @@ import ChariotArrival from "@/components/InnerAtlas/ChariotArrival";
 import MindRealm, { MindStateKey } from "@/components/InnerAtlas/MindRealm";
 import HeartRealm, { HeartStateKey } from "@/components/InnerAtlas/HeartRealm";
 import ShadowRealm, { ShadowStateKey } from "@/components/InnerAtlas/ShadowRealm";
+import KurukshetraSelection, { BattleKey } from "@/components/InnerAtlas/KurukshetraSelection";
 import InnerAtlasResults from "@/components/InnerAtlas/InnerAtlasResults";
 import ProgressIndicator from "@/components/InnerAtlas/ProgressIndicator";
 
 export default function InnerAtlasDemo() {
-    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "RESULTS">("ARRIVAL");
+    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "KURUKSHETRA" | "RESULTS">("ARRIVAL");
     const [selectedMind, setSelectedMind] = useState<MindStateKey | null>(null);
     const [selectedHeart, setSelectedHeart] = useState<HeartStateKey | null>(null);
     const [selectedShadow, setSelectedShadow] = useState<ShadowStateKey | null>(null);
+    const [selectedBattle, setSelectedBattle] = useState<BattleKey | null>(null);
 
     const handleStartAtlas = () => {
         setStep("MIND");
@@ -31,6 +33,11 @@ export default function InnerAtlasDemo() {
 
     const handleShadowSelection = (state: ShadowStateKey) => {
         setSelectedShadow(state);
+        setStep("KURUKSHETRA");
+    };
+
+    const handleKurukshetraSelection = (battle: BattleKey) => {
+        setSelectedBattle(battle);
         setStep("RESULTS");
     };
 
@@ -39,6 +46,7 @@ export default function InnerAtlasDemo() {
         setSelectedMind(null);
         setSelectedHeart(null);
         setSelectedShadow(null);
+        setSelectedBattle(null);
     };
 
     return (
@@ -92,6 +100,18 @@ export default function InnerAtlasDemo() {
                         className="absolute inset-0 z-10"
                     >
                         <ShadowRealm onShadowSelection={handleShadowSelection} />
+                    </motion.div>
+                )}
+
+                {step === "KURUKSHETRA" && (
+                    <motion.div
+                        key="kurukshetra"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <KurukshetraSelection onKurukshetraSelection={handleKurukshetraSelection} />
                     </motion.div>
                 )}
 

@@ -1,0 +1,19 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="loveGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff69b4" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="150" cy="150" r="100" fill="url(#loveGlow)"/>
+  <!-- Left: Love (Heart) -->
+  <g transform="translate(70, 130)">
+    <path d="M20 10 Q20 0, 30 0 Q40 0, 40 10 Q40 25, 20 40 Q0 25, 0 10 Q0 0, 10 0 Q20 0, 20 10 Z" fill="#ff69b4" opacity="0.8"/>
+  </g>
+  <!-- Right: Boundaries (Shield) -->
+  <g transform="translate(190, 130)">
+    <path d="M20 0 L40 10 L40 35 Q40 45, 20 50 Q0 45, 0 35 L0 10 Z" fill="#d4a94a" opacity="0.7"/>
+  </g>
+  <!-- VS -->
+  <line x1="150" y1="120" x2="150" y2="180" stroke="#d4a94a" stroke-width="2" opacity="0.5"/>
+</svg>
