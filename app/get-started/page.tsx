@@ -1,12 +1,14 @@
 "use client";
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Clock, CheckCircle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Sparkles, CheckCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import QuickBuySticky from '../(components)/QuickBuySticky';
+import DailyRitualHome from '@/components/InnerAtlas/DailyRitualHome';
 
-export default function GetStartedPage() {
+function SalesLanding() {
     return (
         <div className="min-h-screen bg-[#faf9f6]">
             {/* Header */}
@@ -169,3 +171,28 @@ export default function GetStartedPage() {
         </div>
     );
 }
+
+function GetStartedContent() {
+    const searchParams = useSearchParams();
+    const ritualKey = searchParams.get('ritual');
+
+    if (ritualKey) {
+        return (
+            <DailyRitualHome
+                assignedRitualKey={ritualKey}
+                onStartRitual={(key) => window.location.href = `/ritual/player?id=${key}`}
+            />
+        );
+    }
+
+    return <SalesLanding />;
+}
+
+export default function GetStartedPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-white" />}>
+            <GetStartedContent />
+        </Suspense>
+    );
+}
+
