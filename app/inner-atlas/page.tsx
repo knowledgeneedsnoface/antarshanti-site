@@ -9,10 +9,19 @@ import ShadowRealm, { ShadowStateKey } from "@/components/InnerAtlas/ShadowRealm
 import KurukshetraSelection, { BattleKey } from "@/components/InnerAtlas/KurukshetraSelection";
 import PowerObjectsSelector, { DhanushKey, ChakraKey, RathKey } from "@/components/InnerAtlas/PowerObjectsSelector";
 import CosmicGitaMoment from "@/components/InnerAtlas/CosmicGitaMoment";
-import InnerAtlasResults from "@/components/InnerAtlas/InnerAtlasResults";
+import SoulMapReveal from "@/components/InnerAtlas/SoulMapReveal";
 import ProgressIndicator from "@/components/InnerAtlas/ProgressIndicator";
 
 import AudioProvider, { useAudio } from "@/components/InnerAtlas/AudioController";
+
+// Mappings for Gita Line (Duplicated from CosmicGitaMoment for state management)
+const GITA_MAPPINGS: Record<BattleKey, string> = {
+    duty_vs_desire: "Jo tumhara sachcha raasta hai… wahi tumhara dharma hai.",
+    fear_vs_ambition: "Himmat ka matlab darr na hona nahin… darr ke bawajood aage badhna hai.",
+    love_vs_boundaries: "Pyaar tab tak sundar hai jab tak tum khud ko nahi khona.",
+    truth_vs_comfort: "Sach ki taraf uthaya ek kadam… poori zindagi badal deta hai.",
+    chaos_vs_focus: "Jahan tumhara dhyaan jaata hai… wahan tumhari zindagi banti hai."
+};
 
 function InnerAtlasContent() {
     const { playAmbient, playSelect, playHover, playTransition, playReveal } = useAudio();
@@ -82,13 +91,10 @@ function InnerAtlasContent() {
         setStep("RESULTS");
     };
 
-    const handleReset = () => {
-        setStep("ARRIVAL");
-        setSelectedMind(null);
-        setSelectedHeart(null);
-        setSelectedShadow(null);
-        setSelectedBattle(null);
-        setSelectedPowerObjects(null);
+    const handleSoulMapComplete = () => {
+        // Here we would typically redirect to the Ritual or onboarding
+        // For now, let's just log or maybe redirect to home/ritual start
+        window.location.href = "/get-started";
     };
 
     return (
@@ -184,7 +190,7 @@ function InnerAtlasContent() {
                     </motion.div>
                 )}
 
-                {step === "RESULTS" && selectedMind && selectedHeart && selectedShadow && (
+                {step === "RESULTS" && selectedMind && selectedHeart && selectedShadow && selectedBattle && selectedPowerObjects && (
                     <motion.div
                         key="results"
                         initial={{ opacity: 0 }}
@@ -192,11 +198,14 @@ function InnerAtlasContent() {
                         exit={{ opacity: 0 }}
                         className="absolute inset-0 z-10"
                     >
-                        <InnerAtlasResults
-                            mindState={selectedMind}
-                            heartState={selectedHeart}
-                            shadowState={selectedShadow}
-                            onContinue={handleReset}
+                        <SoulMapReveal
+                            mindStateKey={selectedMind}
+                            heartStateKey={selectedHeart}
+                            shadowStateKey={selectedShadow}
+                            kurukshetraBattleKey={selectedBattle}
+                            powerObjects={selectedPowerObjects}
+                            gitaLine={GITA_MAPPINGS[selectedBattle] || GITA_MAPPINGS.truth_vs_comfort}
+                            onSoulMapComplete={handleSoulMapComplete}
                         />
                     </motion.div>
                 )}
