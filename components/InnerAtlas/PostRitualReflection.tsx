@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Flame, ArrowRight } from "lucide-react";
+import SoulTwinReaction from "./SoulTwinReaction";
 
 interface PostRitualReflectionProps {
     assignedRitualKey: string;
@@ -167,6 +168,16 @@ export default function PostRitualReflection({
                             />
                         ))}
                     </div>
+                </div>
+
+                {/* Twin Reaction */}
+                <div className="flex justify-center -mt-2">
+                    <SoulTwinReaction
+                        eventType="streak_updated"
+                        eventPayload={{ streak: streakCount }}
+                        characterMode="mira_maya" // Celebratory mode
+                        className="bg-white/60 p-2 pr-4 rounded-3xl"
+                    />
                 </div>
 
                 {/* 

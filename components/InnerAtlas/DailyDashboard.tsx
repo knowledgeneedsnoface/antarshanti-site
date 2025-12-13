@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import { X, Flame, TrendingUp, Activity, ArrowUpRight, ArrowRight, Minus, ArrowDownRight } from "lucide-react";
+import SoulTwinReaction from "./SoulTwinReaction";
 
 // Types
 export type MoodHistoryItem = {
@@ -124,6 +125,13 @@ export default function DailyDashboard({
             </header>
 
             <div className="p-6 space-y-6 max-w-md mx-auto w-full pb-24">
+
+                {/* Twin Welcome */}
+                <SoulTwinReaction
+                    eventType="dashboard_opened"
+                    characterMode="gann_baba"
+                    className="mb-2"
+                />
 
                 {/* 
                     SECTION 1: STREAK CARD

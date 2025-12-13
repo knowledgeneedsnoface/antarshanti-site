@@ -68,6 +68,7 @@ const TWIN_REACTIONS: Record<string, string> = {
 };
 
 import DailyDashboard, { MoodHistoryItem, RitualHistoryItem } from "./DailyDashboard";
+import SoulTwinReaction from "./SoulTwinReaction";
 import { BarChart3 } from "lucide-react";
 
 // MOCK DATA FOR DASHBOARD
@@ -203,22 +204,16 @@ export default function DailyRitualHome({
                         </div>
                     </div>
 
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={selectedMood || "default"}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="flex items-center gap-3 bg-[#2D2438] text-white p-3 rounded-full shadow-lg max-w-[90%] mx-auto"
-                        >
-                            <div className="w-10 h-10 rounded-full bg-white/10 p-1 flex-shrink-0">
-                                <img src="/assets/soul-twin-avatar.svg" alt="Twin" className="w-full h-full rounded-full" />
-                            </div>
-                            <p className="text-sm font-medium pr-2">
-                                {twinText}
-                            </p>
-                        </motion.div>
-                    </AnimatePresence>
+                    {/* Twin Presence */}
+                    <div className="flex justify-center w-full">
+                        <SoulTwinReaction
+                            eventType={selectedMood ? "mood_selected" : "random_idle"}
+                            eventPayload={{ mood: selectedMood }}
+                            characterMode="duo"
+                            onTwinTapped={() => { }} // Optional interaction
+                            className="bg-white/40 p-2 pr-6 rounded-full backdrop-blur-sm"
+                        />
+                    </div>
                 </div>
 
                 {/* Start CTA */}
