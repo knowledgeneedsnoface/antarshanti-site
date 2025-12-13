@@ -10,6 +10,7 @@ import KurukshetraSelection, { BattleKey } from "@/components/InnerAtlas/Kuruksh
 import PowerObjectsSelector, { DhanushKey, ChakraKey, RathKey } from "@/components/InnerAtlas/PowerObjectsSelector";
 import CosmicGitaMoment from "@/components/InnerAtlas/CosmicGitaMoment";
 import SoulMapReveal from "@/components/InnerAtlas/SoulMapReveal";
+import RitualAssignment from "@/components/InnerAtlas/RitualAssignment";
 import ProgressIndicator from "@/components/InnerAtlas/ProgressIndicator";
 
 import AudioProvider, { useAudio } from "@/components/InnerAtlas/AudioController";
@@ -25,7 +26,7 @@ const GITA_MAPPINGS: Record<BattleKey, string> = {
 
 function InnerAtlasContent() {
     const { playAmbient, playSelect, playHover, playTransition, playReveal } = useAudio();
-    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "KURUKSHETRA" | "POWER_OBJECTS" | "COSMIC_GITA" | "RESULTS">("ARRIVAL");
+    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "KURUKSHETRA" | "POWER_OBJECTS" | "COSMIC_GITA" | "RESULTS" | "RITUAL_ASSIGNMENT">("ARRIVAL");
     const [selectedMind, setSelectedMind] = useState<MindStateKey | null>(null);
     const [selectedHeart, setSelectedHeart] = useState<HeartStateKey | null>(null);
     const [selectedShadow, setSelectedShadow] = useState<ShadowStateKey | null>(null);
@@ -92,15 +93,22 @@ function InnerAtlasContent() {
     };
 
     const handleSoulMapComplete = () => {
-        // Here we would typically redirect to the Ritual or onboarding
-        // For now, let's just log or maybe redirect to home/ritual start
-        window.location.href = "/get-started";
+        playSelect();
+        playTransition();
+        setStep("RITUAL_ASSIGNMENT");
+    };
+
+    const handleRitualAssigned = (assignedRitualKey: string) => {
+        // Redirect to ritual onboarding or dashboard with the assigned ritual
+        console.log("Assigned Ritual:", assignedRitualKey);
+        // For now, redirect to Get Started page
+        window.location.href = `/get-started?ritual=${assignedRitualKey}`;
     };
 
     return (
         <main className="w-full h-screen bg-black overflow-hidden relative">
             {/* Progress Indicator */}
-            <ProgressIndicator currentStep={step} />
+            {step !== "RITUAL_ASSIGNMENT" && <ProgressIndicator currentStep={step === "RESULTS" ? "RESULTS" : step as any} />}
 
             <AnimatePresence mode="wait">
                 {step === "ARRIVAL" && (
@@ -206,6 +214,25 @@ function InnerAtlasContent() {
                             powerObjects={selectedPowerObjects}
                             gitaLine={GITA_MAPPINGS[selectedBattle] || GITA_MAPPINGS.truth_vs_comfort}
                             onSoulMapComplete={handleSoulMapComplete}
+                        />
+                    </motion.div>
+                )}
+
+                {step === "RITUAL_ASSIGNMENT" && selectedBattle && selectedMind && selectedHeart && selectedShadow && selectedPowerObjects && (
+                    <motion.div
+                        key="ritual"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <RitualAssignment
+                            kurukshetraBattleKey={selectedBattle}
+                            mindStateKey={selectedMind}
+                            heartStateKey={selectedHeart}
+                            shadowStateKey={selectedShadow}
+                            powerObjects={selectedPowerObjects}
+                            onRitualAssigned={handleRitualAssigned}
                         />
                     </motion.div>
                 )}

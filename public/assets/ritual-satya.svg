@@ -1,0 +1,12 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="satyaGrad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3498DB" />
+      <stop offset="1" stop-color="#2C3E50" />
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="90" stroke="url(#satyaGrad)" stroke-width="2" stroke-opacity="0.3" />
+  <!-- Compass/North Star -->
+  <path d="M100 40 L115 85 L160 100 L115 115 L100 160 L85 115 L40 100 L85 85 Z" fill="url(#satyaGrad)" fill-opacity="0.8"/>
+  <circle cx="100" cy="100" r="5" fill="#fff" />
+</svg>

@@ -1,0 +1,14 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="karmaGrad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D4A94A" />
+      <stop offset="1" stop-color="#8B7355" />
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="90" stroke="url(#karmaGrad)" stroke-width="2" stroke-opacity="0.3" />
+  <circle cx="100" cy="100" r="60" stroke="url(#karmaGrad)" stroke-width="1" stroke-dasharray="4 4" />
+  <!-- Hand giving/acting -->
+  <path d="M70 120 C70 120 90 140 100 140 C110 140 130 120 130 120" stroke="url(#karmaGrad)" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="100" cy="90" r="10" fill="url(#karmaGrad)" />
+  <path d="M100 100 V120" stroke="url(#karmaGrad)" stroke-width="2"/>
+</svg>

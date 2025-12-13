@@ -1,0 +1,12 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tapasyaGrad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF6B6B" />
+      <stop offset="1" stop-color="#C0392B" />
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="90" stroke="url(#tapasyaGrad)" stroke-width="2" stroke-opacity="0.3" />
+  <!-- Fire Symbol -->
+  <path d="M100 150 C80 140 60 110 60 90 C60 60 100 40 100 40 C100 40 140 60 140 90 C140 110 120 140 100 150 Z" stroke="url(#tapasyaGrad)" stroke-width="2" fill="url(#tapasyaGrad)" fill-opacity="0.2"/>
+  <path d="M100 130 C90 120 80 100 80 90 C80 70 100 60 100 60 C100 60 120 70 120 90 C120 100 110 120 100 130 Z" fill="url(#tapasyaGrad)"/>
+</svg>
