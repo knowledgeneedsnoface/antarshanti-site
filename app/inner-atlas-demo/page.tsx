@@ -7,6 +7,7 @@ import MindRealm, { MindStateKey } from "@/components/InnerAtlas/MindRealm";
 import HeartRealm, { HeartStateKey } from "@/components/InnerAtlas/HeartRealm";
 import ShadowRealm, { ShadowStateKey } from "@/components/InnerAtlas/ShadowRealm";
 import InnerAtlasResults from "@/components/InnerAtlas/InnerAtlasResults";
+import ProgressIndicator from "@/components/InnerAtlas/ProgressIndicator";
 
 export default function InnerAtlasDemo() {
     const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "RESULTS">("ARRIVAL");
@@ -42,6 +43,9 @@ export default function InnerAtlasDemo() {
 
     return (
         <main className="w-full h-screen bg-black overflow-hidden relative">
+            {/* Progress Indicator */}
+            <ProgressIndicator currentStep={step} />
+
             <AnimatePresence mode="wait">
                 {step === "ARRIVAL" && (
                     <motion.div
