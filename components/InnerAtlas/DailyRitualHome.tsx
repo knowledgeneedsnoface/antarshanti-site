@@ -67,30 +67,60 @@ const TWIN_REACTIONS: Record<string, string> = {
     drained: "Chalo 10 minute ka ritual tumhe thoda grounded karega."
 };
 
+import DailyDashboard, { MoodHistoryItem, RitualHistoryItem } from "./DailyDashboard";
+import { BarChart3 } from "lucide-react";
+
+// MOCK DATA FOR DASHBOARD
+const MOCK_MOOD_HISTORY: MoodHistoryItem[] = [
+    { date: Date.now() - 86400000 * 6, previousMood: "low", afterMood: "neutral" },
+    { date: Date.now() - 86400000 * 5, previousMood: "neutral", afterMood: "ok" },
+    { date: Date.now() - 86400000 * 4, previousMood: "low", afterMood: "low" },
+    { date: Date.now() - 86400000 * 3, previousMood: "neutral", afterMood: "ok" },
+    { date: Date.now() - 86400000 * 2, previousMood: "ok", afterMood: "energized" },
+    { date: Date.now() - 86400000 * 1, previousMood: "ok", afterMood: "energized" },
+    { date: Date.now(), previousMood: "neutral", afterMood: "ok" }
+];
+
+const MOCK_RITUAL_HISTORY: RitualHistoryItem[] = [
+    { date: Date.now() - 86400000 * 6, ritualKey: "karma_yoga" },
+    { date: Date.now() - 86400000 * 5, ritualKey: "tapasya" },
+    { date: Date.now() - 86400000 * 4, ritualKey: "bhakti" },
+    { date: Date.now() - 86400000 * 3, ritualKey: "karma_yoga" },
+    { date: Date.now() - 86400000 * 2, ritualKey: "karma_yoga" },
+    { date: Date.now() - 86400000 * 1, ritualKey: "dhyana" },
+    { date: Date.now(), ritualKey: "karma_yoga" }
+];
+
 export default function DailyRitualHome({
     assignedRitualKey,
     gitaLine,
     onStartRitual
 }: DailyRitualHomeProps) {
     const [selectedMood, setSelectedMood] = useState<string | null>(null);
+    const [showDashboard, setShowDashboard] = useState(false);
 
     // Default to Karma Yoga if key invalid
     const ritual = RITUAL_DATA[assignedRitualKey] || RITUAL_DATA["karma_yoga"];
     const twinText = selectedMood ? TWIN_REACTIONS[selectedMood] : "Kaisa mehsoos kar rahe ho aaj?";
 
+    if (showDashboard) {
+        return (
+            <DailyDashboard
+                streakCount={12}
+                weeklyCompletion={[true, true, false, true, true, true, true]}
+                moodHistory={MOCK_MOOD_HISTORY}
+                ritualHistory={MOCK_RITUAL_HISTORY}
+                onCloseDashboard={() => setShowDashboard(false)}
+            />
+        );
+    }
+
     return (
         <div className="relative min-h-screen bg-gradient-to-b from-[#FFF5E1] via-[#FFFBF2] to-[#FFFFFF] font-sans text-gray-900 overflow-hidden flex flex-col items-center">
 
-            {/* 
-        -------------------------------------------------------------
-        Background Ambience
-        -------------------------------------------------------------
-      */}
+            {/* Background Ambience */}
             <div className="absolute inset-0 pointer-events-none">
-                {/* Subtle Sun Glow / Silhouette */}
                 <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80vw] h-[40vh] bg-gradient-to-b from-[#FFE4B5] to-transparent opacity-40 blur-[80px] rounded-full" />
-
-                {/* Particles */}
                 {Array.from({ length: 8 }).map((_, i) => (
                     <motion.div
                         key={i}
@@ -105,7 +135,13 @@ export default function DailyRitualHome({
             <div className="relative z-10 w-full max-w-md px-6 py-8 flex flex-col items-center h-full min-h-screen justify-between">
 
                 {/* Header */}
-                <header className="text-center mt-4">
+                <header className="text-center mt-4 w-full relative">
+                    <button
+                        onClick={() => setShowDashboard(true)}
+                        className="absolute right-0 top-0 p-2 text-amber-700/60 hover:text-amber-700 hover:bg-amber-100/50 rounded-full transition-all"
+                    >
+                        <BarChart3 size={24} />
+                    </button>
                     <h3 className="text-xs font-bold tracking-widest text-[#8B7355] uppercase mb-1 flex items-center justify-center gap-1">
                         <Sun size={14} /> Your Daily Ritual
                     </h3>
@@ -122,11 +158,7 @@ export default function DailyRitualHome({
                     )}
                 </header>
 
-                {/* 
-            -------------------------------------------------------------
-            The Big Ritual Card
-            -------------------------------------------------------------
-        */}
+                {/* Big Ritual Card */}
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -137,10 +169,7 @@ export default function DailyRitualHome({
                     className="w-full relative aspect-[3/4] max-h-[400px] rounded-[30px] overflow-hidden shadow-2xl shadow-[#D4A94A]/20 cursor-pointer group my-6"
                 >
                     <img src={ritual.img} alt={ritual.name} className="absolute inset-0 w-full h-full object-cover" />
-
-                    {/* Gradient Overlay for Text Visibility */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
                     <div className="absolute bottom-8 left-6 right-6 text-white">
                         <motion.div
                             animate={{ y: [0, -5, 0] }}
@@ -152,19 +181,10 @@ export default function DailyRitualHome({
                         <h2 className="text-3xl font-bold font-serif mb-1">{ritual.name}</h2>
                         <p className="text-white/80 text-sm">{ritual.desc}</p>
                     </div>
-
-                    {/* Shine Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ transform: 'skewX(-20deg) translateX(-150%)' }} />
                 </motion.div>
 
-                {/* 
-            -------------------------------------------------------------
-            Mood & Twin Section
-            -------------------------------------------------------------
-        */}
+                {/* Mood & Twin Section */}
                 <div className="w-full space-y-6 mb-4">
-
-                    {/* Mood Selector */}
                     <div className="bg-white/60 backdrop-blur-md rounded-2xl p-4 border border-white/40 shadow-sm">
                         <p className="text-center text-xs font-bold text-[#5A4A3A] mb-3 uppercase tracking-wide">How are you feeling today?</p>
                         <div className="flex justify-between items-center text-2xl">
@@ -183,7 +203,6 @@ export default function DailyRitualHome({
                         </div>
                     </div>
 
-                    {/* Twin Presence */}
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={selectedMood || "default"}
@@ -200,14 +219,9 @@ export default function DailyRitualHome({
                             </p>
                         </motion.div>
                     </AnimatePresence>
-
                 </div>
 
-                {/* 
-            -------------------------------------------------------------
-            Start CTA
-            -------------------------------------------------------------
-        */}
+                {/* Start CTA */}
                 <motion.button
                     whileHover={{ scale: 1.05, boxShadow: "0 10px 30px -10px rgba(212,169,74,0.5)" }}
                     whileTap={{ scale: 0.95 }}
@@ -217,7 +231,6 @@ export default function DailyRitualHome({
                     <Play fill="currentColor" size={20} />
                     Start Ritual (10 min)
                 </motion.button>
-
             </div>
         </div>
     );
