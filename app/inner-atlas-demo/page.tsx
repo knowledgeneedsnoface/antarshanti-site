@@ -8,11 +8,12 @@ import HeartRealm, { HeartStateKey } from "@/components/InnerAtlas/HeartRealm";
 import ShadowRealm, { ShadowStateKey } from "@/components/InnerAtlas/ShadowRealm";
 import KurukshetraSelection, { BattleKey } from "@/components/InnerAtlas/KurukshetraSelection";
 import PowerObjectsSelector, { DhanushKey, ChakraKey, RathKey } from "@/components/InnerAtlas/PowerObjectsSelector";
+import CosmicGitaMoment from "@/components/InnerAtlas/CosmicGitaMoment";
 import InnerAtlasResults from "@/components/InnerAtlas/InnerAtlasResults";
 import ProgressIndicator from "@/components/InnerAtlas/ProgressIndicator";
 
 export default function InnerAtlasDemo() {
-    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "KURUKSHETRA" | "POWER_OBJECTS" | "RESULTS">("ARRIVAL");
+    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "KURUKSHETRA" | "POWER_OBJECTS" | "COSMIC_GITA" | "RESULTS">("ARRIVAL");
     const [selectedMind, setSelectedMind] = useState<MindStateKey | null>(null);
     const [selectedHeart, setSelectedHeart] = useState<HeartStateKey | null>(null);
     const [selectedShadow, setSelectedShadow] = useState<ShadowStateKey | null>(null);
@@ -45,6 +46,10 @@ export default function InnerAtlasDemo() {
 
     const handlePowerObjectsSelection = (selections: { dhanush: DhanushKey; chakra: ChakraKey; rath: RathKey }) => {
         setSelectedPowerObjects(selections);
+        setStep("COSMIC_GITA");
+    };
+
+    const handleGitaMomentComplete = () => {
         setStep("RESULTS");
     };
 
@@ -132,6 +137,21 @@ export default function InnerAtlasDemo() {
                         className="absolute inset-0 z-10"
                     >
                         <PowerObjectsSelector onPowerObjectsSelection={handlePowerObjectsSelection} />
+                    </motion.div>
+                )}
+
+                {step === "COSMIC_GITA" && selectedBattle && (
+                    <motion.div
+                        key="cosmic-gita"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 1 } }}
+                        className="absolute inset-0 z-10"
+                    >
+                        <CosmicGitaMoment
+                            kurukshetraBattleKey={selectedBattle}
+                            onGitaMomentComplete={handleGitaMomentComplete}
+                        />
                     </motion.div>
                 )}
 
