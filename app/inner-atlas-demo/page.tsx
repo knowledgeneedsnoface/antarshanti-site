@@ -6,9 +6,10 @@ import ChariotArrival from "@/components/InnerAtlas/ChariotArrival";
 import MindRealm, { MindStateKey } from "@/components/InnerAtlas/MindRealm";
 import HeartRealm, { HeartStateKey } from "@/components/InnerAtlas/HeartRealm";
 import ShadowRealm, { ShadowStateKey } from "@/components/InnerAtlas/ShadowRealm";
+import InnerAtlasResults from "@/components/InnerAtlas/InnerAtlasResults";
 
 export default function InnerAtlasDemo() {
-    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "COMPLETE">("ARRIVAL");
+    const [step, setStep] = useState<"ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "RESULTS">("ARRIVAL");
     const [selectedMind, setSelectedMind] = useState<MindStateKey | null>(null);
     const [selectedHeart, setSelectedHeart] = useState<HeartStateKey | null>(null);
     const [selectedShadow, setSelectedShadow] = useState<ShadowStateKey | null>(null);
@@ -29,7 +30,14 @@ export default function InnerAtlasDemo() {
 
     const handleShadowSelection = (state: ShadowStateKey) => {
         setSelectedShadow(state);
-        setStep("COMPLETE");
+        setStep("RESULTS");
+    };
+
+    const handleReset = () => {
+        setStep("ARRIVAL");
+        setSelectedMind(null);
+        setSelectedHeart(null);
+        setSelectedShadow(null);
     };
 
     return (
@@ -83,38 +91,20 @@ export default function InnerAtlasDemo() {
                     </motion.div>
                 )}
 
-                {step === "COMPLETE" && (
+                {step === "RESULTS" && selectedMind && selectedHeart && selectedShadow && (
                     <motion.div
-                        key="complete"
+                        key="results"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="absolute inset-0 z-20 flex items-center justify-center bg-[#0b1020] text-white"
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-10"
                     >
-                        <div className="text-center">
-                            <h2 className="text-3xl font-bold mb-6">Inner Atlas Complete</h2>
-                            <div className="space-y-3 text-lg">
-                                <p className="text-gray-400">
-                                    Mind State: <span className="text-[#d4a94a]">{selectedMind}</span>
-                                </p>
-                                <p className="text-gray-400">
-                                    Heart State: <span className="text-pink-400">{selectedHeart}</span>
-                                </p>
-                                <p className="text-gray-400">
-                                    Shadow: <span className="text-[#bfa76a]">{selectedShadow}</span>
-                                </p>
-                            </div>
-                            <button
-                                onClick={() => {
-                                    setStep("ARRIVAL");
-                                    setSelectedMind(null);
-                                    setSelectedHeart(null);
-                                    setSelectedShadow(null);
-                                }}
-                                className="mt-8 text-sm underline opacity-50 hover:opacity-100"
-                            >
-                                Reset Demo
-                            </button>
-                        </div>
+                        <InnerAtlasResults
+                            mindState={selectedMind}
+                            heartState={selectedHeart}
+                            shadowState={selectedShadow}
+                            onContinue={handleReset}
+                        />
                     </motion.div>
                 )}
             </AnimatePresence>
