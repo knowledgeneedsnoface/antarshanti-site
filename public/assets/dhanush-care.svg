@@ -1,0 +1,12 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="careGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4ecdc4" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="80" fill="url(#careGlow)"/>
+  <path d="M70 100 Q70 60, 100 50 Q130 60, 130 100 Q130 140, 100 150 Q70 140, 70 100" stroke="#4ecdc4" stroke-width="3" fill="none"/>
+  <!-- Heart shape arrow -->
+  <path d="M100 80 Q90 70, 85 75 Q80 80, 85 90 Q95 100, 100 110 Q105 100, 115 90 Q120 80, 115 75 Q110 70, 100 80" fill="#4ecdc4" opacity="0.7"/>
+</svg>

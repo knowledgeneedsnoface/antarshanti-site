@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 // Types
 // ============================================================================
 
-type Step = "ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "KURUKSHETRA" | "RESULTS";
+type Step = "ARRIVAL" | "MIND" | "HEART" | "SHADOW" | "KURUKSHETRA" | "POWER_OBJECTS" | "RESULTS";
 
 interface ProgressIndicatorProps {
     currentStep: Step;
@@ -29,7 +29,8 @@ const STEPS: StepConfig[] = [
     { id: "HEART", label: "Heart", index: 2 },
     { id: "SHADOW", label: "Shadow", index: 3 },
     { id: "KURUKSHETRA", label: "Battle", index: 4 },
-    { id: "RESULTS", label: "Insight", index: 5 },
+    { id: "POWER_OBJECTS", label: "Power", index: 5 },
+    { id: "RESULTS", label: "Insight", index: 6 },
 ];
 
 // ============================================================================

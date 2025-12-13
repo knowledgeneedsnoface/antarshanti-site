@@ -1,0 +1,13 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="wisdomGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#9b59b6" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="80" fill="url(#wisdomGlow)"/>
+  <path d="M65 100 Q65 55, 100 40 Q135 55, 135 100 Q135 145, 100 160 Q65 145, 65 100" stroke="#9b59b6" stroke-width="3" fill="none"/>
+  <!-- Eye symbol for wisdom -->
+  <ellipse cx="100" cy="100" rx="15" ry="10" stroke="#9b59b6" stroke-width="2" fill="none"/>
+  <circle cx="100" cy="100" r="5" fill="#9b59b6"/>
+</svg>

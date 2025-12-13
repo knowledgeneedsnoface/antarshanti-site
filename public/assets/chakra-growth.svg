@@ -1,0 +1,11 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="growthGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2ecc71" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="80" fill="url(#growthGlow)"/>
+  <path d="M100 140 L100 80 M100 80 L85 95 M100 80 L115 95" stroke="#2ecc71" stroke-width="3"/>
+  <circle cx="100" cy="100" r="40" stroke="#2ecc71" stroke-width="2" fill="none"/>
+</svg>

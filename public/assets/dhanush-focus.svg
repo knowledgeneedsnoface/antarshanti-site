@@ -1,0 +1,15 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="focusGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d4a94a" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="80" fill="url(#focusGlow)"/>
+  <!-- Bow shape -->
+  <path d="M60 100 Q60 50, 100 30 Q140 50, 140 100 Q140 150, 100 170 Q60 150, 60 100" stroke="#d4a94a" stroke-width="3" fill="none"/>
+  <!-- Arrow pointing forward (focus) -->
+  <line x1="100" y1="100" x2="160" y2="100" stroke="#d4a94a" stroke-width="2"/>
+  <polygon points="160,100 150,95 150,105" fill="#d4a94a"/>
+  <circle cx="160" cy="100" r="4" fill="#d4a94a"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="fireGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e74c3c" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="80" fill="url(#fireGlow)"/>
+  <path d="M60 100 Q60 45, 100 25 Q140 45, 140 100 Q140 155, 100 175 Q60 155, 60 100" stroke="#e74c3c" stroke-width="4" fill="none"/>
+  <!-- Flame arrows -->
+  <path d="M90 80 Q85 65, 90 60 L90 80 Q100 70, 110 80 L110 60 Q115 65, 110 80" fill="#e74c3c" opacity="0.8"/>
+</svg>

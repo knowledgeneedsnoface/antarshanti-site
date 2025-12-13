@@ -1,0 +1,12 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="strengthGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6b6b" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="80" fill="url(#strengthGlow)"/>
+  <!-- Heavy bow -->
+  <path d="M70 100 Q70 40, 100 20 Q130 40, 130 100 Q130 160, 100 180 Q70 160, 70 100" stroke="#ff6b6b" stroke-width="5" fill="none"/>
+  <line x1="100" y1="100" x2="150" y2="100" stroke="#ff6b6b" stroke-width="3"/>
+</svg>

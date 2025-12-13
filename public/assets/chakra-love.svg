@@ -1,0 +1,10 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="loveGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff69b4" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="80" fill="url(#loveGlow)"/>
+  <path d="M100 70 Q80 50, 60 70 Q40 90, 60 110 Q80 130, 100 150 Q120 130, 140 110 Q160 90, 140 70 Q120 50, 100 70" fill="#ff69b4" opacity="0.7"/>
+</svg>
