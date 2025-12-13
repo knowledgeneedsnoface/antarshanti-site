@@ -83,11 +83,10 @@ export default function ProgressIndicator({ currentStep }: ProgressIndicatorProp
                                 <motion.div
                                     initial={false}
                                     animate={{
-                                        width: window.innerWidth < 768 ? "12px" : "24px",
                                         backgroundColor: isComplete ? "#6b7280" : "#1f2937"
                                     }}
                                     transition={{ duration: 0.3 }}
-                                    className="h-[2px] rounded-full"
+                                    className="h-[2px] rounded-full w-3 md:w-6"
                                 />
                             )}
                         </React.Fragment>
