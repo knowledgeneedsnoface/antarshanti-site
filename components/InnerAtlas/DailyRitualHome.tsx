@@ -70,7 +70,8 @@ const TWIN_REACTIONS: Record<string, string> = {
 import DailyDashboard, { MoodHistoryItem, RitualHistoryItem } from "./DailyDashboard";
 import SoulTwinReaction from "./SoulTwinReaction";
 import DailySurpriseGenerator, { SurpriseItem } from "./DailySurpriseGenerator";
-import { BarChart3, Gift } from "lucide-react";
+import LoreBook from "./LoreBook";
+import { BarChart3, Gift, BookOpen } from "lucide-react";
 
 // MOCK DATA FOR DASHBOARD
 const MOCK_MOOD_HISTORY: MoodHistoryItem[] = [
@@ -101,6 +102,7 @@ export default function DailyRitualHome({
     const [selectedMood, setSelectedMood] = useState<string | null>(null);
     const [showDashboard, setShowDashboard] = useState(false);
     const [showSurprise, setShowSurprise] = useState(false);
+    const [showLore, setShowLore] = useState(false);
     const [lastSurpriseDate, setLastSurpriseDate] = useState<number | null>(null);
 
     // Default to Karma Yoga if key invalid
@@ -122,6 +124,10 @@ export default function DailyRitualHome({
                 onCloseDashboard={() => setShowDashboard(false)}
             />
         );
+    }
+
+    if (showLore) {
+        return <LoreBook onCloseLoreBook={() => setShowLore(false)} />;
     }
 
     return (
@@ -162,12 +168,22 @@ export default function DailyRitualHome({
                         {/* Notification Dot */}
                         {!lastSurpriseDate && <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />}
                     </button>
-                    <button
-                        onClick={() => setShowDashboard(true)}
-                        className="absolute right-0 top-0 p-2 text-amber-700/60 hover:text-amber-700 hover:bg-amber-100/50 rounded-full transition-all"
-                    >
-                        <BarChart3 size={24} />
-                    </button>
+
+                    <div className="absolute right-0 top-0 flex gap-2">
+                        <button
+                            onClick={() => setShowLore(true)}
+                            className="p-2 text-indigo-700/60 hover:text-indigo-700 hover:bg-indigo-100/50 rounded-full transition-all"
+                        >
+                            <BookOpen size={24} />
+                        </button>
+                        <button
+                            onClick={() => setShowDashboard(true)}
+                            className="p-2 text-amber-700/60 hover:text-amber-700 hover:bg-amber-100/50 rounded-full transition-all"
+                        >
+                            <BarChart3 size={24} />
+                        </button>
+                    </div>
+
                     <h3 className="text-xs font-bold tracking-widest text-[#8B7355] uppercase mb-1 flex items-center justify-center gap-1">
                         <Sun size={14} /> Your Daily Ritual
                     </h3>
