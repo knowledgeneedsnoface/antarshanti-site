@@ -1,55 +1,30 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Play, Sun } from "lucide-react";
+import { motion } from "framer-motion";
+import { Play, Sun, Moon, Calendar, BarChart3, Gift, BookOpen, Sparkles } from "lucide-react";
+
+// Types
+import SoulTwinReaction from "./SoulTwinReaction";
+import DailyDashboard, { MoodHistoryItem, RitualHistoryItem } from "./DailyDashboard";
+import DailySurpriseGenerator, { SurpriseItem } from "./DailySurpriseGenerator";
+import LoreBook from "./LoreBook";
 
 interface DailyRitualHomeProps {
     assignedRitualKey: string;
-    gitaLine?: string;
-    onStartRitual: (key: string, mood?: string | null) => void;
+    gitaLine: string;
+    onStartRitual: (ritualKey: string, mood: string | null) => void;
+
+    // Shell Control Callbacks
+    onOpenDashboard: () => void;
+    onOpenLore: () => void;
+    onOpenSurprise: () => void;
 }
 
-// Ritual Data Mapping (Keyed by the ID passed in URL)
-const RITUAL_DATA: Record<string, { name: string; subline: string; desc: string; img: string; color: string }> = {
-    karma_yoga: {
-        name: "Karma Yoga",
-        subline: "Action with clarity.",
-        desc: "10 minutes to reconnect with purpose.",
-        img: "/assets/ritual-card-karma.svg",
-        color: "#D4A94A"
-    },
-    tapasya: {
-        name: "Tapasya",
-        subline: "Inner courage practice.",
-        desc: "Break fear through small disciplined effort.",
-        img: "/assets/ritual-card-tapasya.svg",
-        color: "#E74C3C"
-    },
-    bhakti: {
-        name: "Bhakti",
-        subline: "Warmth and self-love.",
-        desc: "Reconnect with softness and gratitude.",
-        img: "/assets/ritual-card-bhakti.svg",
-        color: "#FF69B4"
-    },
-    satya: {
-        name: "Satya",
-        subline: "Truth alignment practice.",
-        desc: "Face what matters with honesty.",
-        img: "/assets/ritual-card-satya.svg",
-        color: "#3498DB"
-    },
-    dhyana: {
-        name: "Dhyana",
-        subline: "Mind calming ritual.",
-        desc: "Grounding breath work for clarity.",
-        img: "/assets/ritual-card-dhyana.svg",
-        color: "#9B59B6"
-    }
-};
+// ---------------------------------------------------------------------
+// DATA CONSTANTS (Preserved)
+// ---------------------------------------------------------------------
 
-// Mood Data
 const MOODS = [
     { id: "energized", emoji: "😀", label: "Energized" },
     { id: "okay", emoji: "🙂", label: "Okay" },
@@ -58,7 +33,6 @@ const MOODS = [
     { id: "drained", emoji: "😩", label: "Drained" }
 ];
 
-// Twin Reactions Map
 const TWIN_REACTIONS: Record<string, string> = {
     energized: "Aaj tumhari energy strong lag rahi hai 😄",
     okay: "Sahi hai… chalo thoda sa clarity lete hain.",
@@ -67,80 +41,65 @@ const TWIN_REACTIONS: Record<string, string> = {
     drained: "Chalo 10 minute ka ritual tumhe thoda grounded karega."
 };
 
-import DailyDashboard, { MoodHistoryItem, RitualHistoryItem } from "./DailyDashboard";
-import SoulTwinReaction from "./SoulTwinReaction";
-import DailySurpriseGenerator, { SurpriseItem } from "./DailySurpriseGenerator";
-import LoreBook from "./LoreBook";
-import { BarChart3, Gift, BookOpen } from "lucide-react";
-
-// MOCK DATA FOR DASHBOARD
-const MOCK_MOOD_HISTORY: MoodHistoryItem[] = [
-    { date: Date.now() - 86400000 * 6, previousMood: "low", afterMood: "neutral" },
-    { date: Date.now() - 86400000 * 5, previousMood: "neutral", afterMood: "ok" },
-    { date: Date.now() - 86400000 * 4, previousMood: "low", afterMood: "low" },
-    { date: Date.now() - 86400000 * 3, previousMood: "neutral", afterMood: "ok" },
-    { date: Date.now() - 86400000 * 2, previousMood: "ok", afterMood: "energized" },
-    { date: Date.now() - 86400000 * 1, previousMood: "ok", afterMood: "energized" },
-    { date: Date.now(), previousMood: "neutral", afterMood: "ok" }
-];
-
-const MOCK_RITUAL_HISTORY: RitualHistoryItem[] = [
-    { date: Date.now() - 86400000 * 6, ritualKey: "karma_yoga" },
-    { date: Date.now() - 86400000 * 5, ritualKey: "tapasya" },
-    { date: Date.now() - 86400000 * 4, ritualKey: "bhakti" },
-    { date: Date.now() - 86400000 * 3, ritualKey: "karma_yoga" },
-    { date: Date.now() - 86400000 * 2, ritualKey: "karma_yoga" },
-    { date: Date.now() - 86400000 * 1, ritualKey: "dhyana" },
-    { date: Date.now(), ritualKey: "karma_yoga" }
-];
+const RITUAL_DATA: Record<string, { name: string; subline: string; desc: string; img: string; color: string; duration: string }> = {
+    karma_yoga: {
+        name: "Karma Yoga",
+        subline: "Action with clarity.",
+        desc: "10 minutes to reconnect with purpose.",
+        img: "/assets/ritual-card-karma.svg",
+        color: "#D4A94A",
+        duration: "10 min"
+    },
+    tapasya: {
+        name: "Tapasya",
+        subline: "Inner courage practice.",
+        desc: "Break fear through small disciplined effort.",
+        img: "/assets/ritual-card-tapasya.svg",
+        color: "#E74C3C",
+        duration: "15 min"
+    },
+    bhakti: {
+        name: "Bhakti",
+        subline: "Warmth and self-love.",
+        desc: "Reconnect with softness and gratitude.",
+        img: "/assets/ritual-card-bhakti.svg",
+        color: "#FF69B4",
+        duration: "12 min"
+    },
+    satya: {
+        name: "Satya",
+        subline: "Truth alignment practice.",
+        desc: "Face what matters with honesty.",
+        img: "/assets/ritual-card-satya.svg",
+        color: "#3498DB",
+        duration: "10 min"
+    },
+    dhyana: {
+        name: "Dhyana",
+        subline: "Mind calming ritual.",
+        desc: "Grounding breath work for clarity.",
+        img: "/assets/ritual-card-dhyana.svg",
+        color: "#9B59B6",
+        duration: "20 min"
+    }
+};
 
 export default function DailyRitualHome({
     assignedRitualKey,
     gitaLine,
-    onStartRitual
+    onStartRitual,
+    onOpenDashboard,
+    onOpenLore,
+    onOpenSurprise
 }: DailyRitualHomeProps) {
     const [selectedMood, setSelectedMood] = useState<string | null>(null);
-    const [showDashboard, setShowDashboard] = useState(false);
-    const [showSurprise, setShowSurprise] = useState(false);
-    const [showLore, setShowLore] = useState(false);
-    const [lastSurpriseDate, setLastSurpriseDate] = useState<number | null>(null);
 
     // Default to Karma Yoga if key invalid
     const ritual = RITUAL_DATA[assignedRitualKey] || RITUAL_DATA["karma_yoga"];
     const twinText = selectedMood ? TWIN_REACTIONS[selectedMood] : "Kaisa mehsoos kar rahe ho aaj?";
 
-    const handleSurpriseGenerated = (surprise: SurpriseItem) => {
-        setLastSurpriseDate(Date.now());
-        console.log("Surprise Unlocked:", surprise);
-    };
-
-    if (showDashboard) {
-        return (
-            <DailyDashboard
-                streakCount={12}
-                weeklyCompletion={[true, true, false, true, true, true, true]}
-                moodHistory={MOCK_MOOD_HISTORY}
-                ritualHistory={MOCK_RITUAL_HISTORY}
-                onCloseDashboard={() => setShowDashboard(false)}
-            />
-        );
-    }
-
-    if (showLore) {
-        return <LoreBook onCloseLoreBook={() => setShowLore(false)} />;
-    }
-
     return (
         <div className="relative min-h-screen bg-gradient-to-b from-[#FFF5E1] via-[#FFFBF2] to-[#FFFFFF] font-sans text-gray-900 overflow-hidden flex flex-col items-center">
-
-            {/* Surprise Overlay */}
-            {showSurprise && (
-                <DailySurpriseGenerator
-                    lastSurpriseDate={lastSurpriseDate}
-                    onSurpriseGenerated={handleSurpriseGenerated}
-                    onClose={() => setShowSurprise(false)}
-                />
-            )}
 
             {/* Background Ambience */}
             <div className="absolute inset-0 pointer-events-none">
@@ -161,23 +120,21 @@ export default function DailyRitualHome({
                 {/* Header */}
                 <header className="text-center mt-4 w-full relative">
                     <button
-                        onClick={() => setShowSurprise(true)}
+                        onClick={onOpenSurprise}
                         className="absolute left-0 top-0 p-2 text-purple-700/60 hover:text-purple-700 hover:bg-purple-100/50 rounded-full transition-all"
                     >
                         <Gift size={24} />
-                        {/* Notification Dot */}
-                        {!lastSurpriseDate && <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />}
                     </button>
 
                     <div className="absolute right-0 top-0 flex gap-2">
                         <button
-                            onClick={() => setShowLore(true)}
+                            onClick={onOpenLore}
                             className="p-2 text-indigo-700/60 hover:text-indigo-700 hover:bg-indigo-100/50 rounded-full transition-all"
                         >
                             <BookOpen size={24} />
                         </button>
                         <button
-                            onClick={() => setShowDashboard(true)}
+                            onClick={onOpenDashboard}
                             className="p-2 text-amber-700/60 hover:text-amber-700 hover:bg-amber-100/50 rounded-full transition-all"
                         >
                             <BarChart3 size={24} />
@@ -187,7 +144,9 @@ export default function DailyRitualHome({
                     <h3 className="text-xs font-bold tracking-widest text-[#8B7355] uppercase mb-1 flex items-center justify-center gap-1">
                         <Sun size={14} /> Your Daily Ritual
                     </h3>
-                    <h1 className="text-2xl font-serif text-[#2D2438]">{ritual.subline}</h1>
+                    <h1 className="text-2xl font-serif text-[#2D2438]">
+                        {ritual.subline}
+                    </h1>
                     {gitaLine && (
                         <motion.p
                             initial={{ opacity: 0 }}
@@ -251,7 +210,6 @@ export default function DailyRitualHome({
                             eventType={selectedMood ? "mood_selected" : "random_idle"}
                             eventPayload={{ mood: selectedMood }}
                             characterMode="duo"
-                            onTwinTapped={() => { }} // Optional interaction
                             className="bg-white/40 p-2 pr-6 rounded-full backdrop-blur-sm"
                         />
                     </div>
@@ -265,7 +223,7 @@ export default function DailyRitualHome({
                     className="w-full py-4 bg-gradient-to-r from-[#D4A94A] to-[#B8860B] text-white rounded-full font-bold text-lg shadow-lg flex items-center justify-center gap-2 mb-4"
                 >
                     <Play fill="currentColor" size={20} />
-                    Start Ritual (10 min)
+                    Start Ritual ({ritual.duration})
                 </motion.button>
             </div>
         </div>
