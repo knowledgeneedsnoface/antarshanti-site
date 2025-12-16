@@ -7,6 +7,7 @@ import { BiomeType } from "./InnerAtlasJourney";
 interface ParallaxWorldProps {
     velocity: number; // 0 (stop) to 10 (warp)
     biome: BiomeType;
+    resistance: number; // 0 to 1
 }
 
 // ---------------------------------------------------------------------
@@ -36,7 +37,7 @@ const BIOME_ASSETS = {
     // ... add others
 };
 
-export default function ParallaxWorld({ velocity, biome }: ParallaxWorldProps) {
+export default function ParallaxWorld({ velocity, biome, resistance }: ParallaxWorldProps) {
 
     const currentTheme = BIOME_ASSETS[biome as keyof typeof BIOME_ASSETS] || BIOME_ASSETS.void;
 
@@ -49,8 +50,22 @@ export default function ParallaxWorld({ velocity, biome }: ParallaxWorldProps) {
     // Warp Blur Effect
     const warpBlur = velocity > 5 ? `blur(${velocity - 4}px)` : "blur(0px)";
 
+    // Resistance Filters
+    const saturation = 1 - resistance; // 1 -> 0
+    const brightness = 1 - (resistance * 0.4); // 1 -> 0.6
+    const fogOpacity = resistance * 0.5; // 0 -> 0.5
+
     return (
-        <div className={`absolute inset-0 transition-colors duration-1000 ${currentTheme.bg}`}>
+        <div
+            className={`absolute inset-0 transition-colors duration-1000 ${currentTheme.bg}`}
+            style={{ filter: `saturate(${saturation}) brightness(${brightness})` }}
+        >
+
+            {/* 0. RESISTANCE FOG (New Layer) */}
+            <div
+                className="absolute inset-0 bg-gray-900 pointer-events-none z-10 transition-opacity duration-1000"
+                style={{ opacity: fogOpacity }}
+            />
 
             {/* 1. SKY / FAR LAYER */}
             {currentTheme.sky && (

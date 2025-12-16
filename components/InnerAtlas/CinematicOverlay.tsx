@@ -7,12 +7,13 @@ import { JourneyPhase } from "./InnerAtlasJourney";
 interface CinematicOverlayProps {
     phase: JourneyPhase;
     velocity: number;
+    resistance: number;
     onSteer: (direction: "left" | "center" | "right", choiceId: string) => void;
 }
 
 import { REALM_SCENARIOS } from "./RealmConfig";
 
-export default function CinematicOverlay({ phase, velocity, onSteer }: CinematicOverlayProps) {
+export default function CinematicOverlay({ phase, velocity, resistance, onSteer }: CinematicOverlayProps) {
 
     // Determine if UI should be visible (Hide during warp)
     const isTransitioning = velocity > 5;
@@ -26,15 +27,29 @@ export default function CinematicOverlay({ phase, velocity, onSteer }: Cinematic
         <div className="absolute inset-0 z-30 flex flex-col justify-between py-20 px-6 pointer-events-none">
 
             {/* 1. MICRO-NARRATION (Top) */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center pt-10"
-            >
-                <h2 className="text-2xl md:text-3xl font-light text-white/90 drop-shadow-md font-serif italic">
+            <div className="text-center pt-10 flex flex-col items-center gap-4">
+                <motion.h2
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-2xl md:text-3xl font-light text-white/90 drop-shadow-md font-serif italic"
+                >
                     "{currentScenario.narrative}"
-                </h2>
-            </motion.div>
+                </motion.h2>
+
+                {/* RESISTANCE HINT */}
+                <AnimatePresence>
+                    {resistance > 0.4 && (
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: resistance }}
+                            exit={{ opacity: 0 }}
+                            className="text-amber-500/80 text-sm font-medium tracking-widest uppercase animate-pulse"
+                        >
+                            {resistance > 0.7 ? "The path tightens..." : "The air grows heavy..."}
+                        </motion.p>
+                    )}
+                </AnimatePresence>
+            </div>
 
             {/* 2. STEERING CONTROLS (Bottom/Sides) */}
             {/* These are placed spatially (Left, Center, Right) */}

@@ -107,30 +107,62 @@ export default function InnerAtlasJourney() {
     }, []);
 
 
+    // -- RESISTANCE MECHANIC --
+    const [resistance, setResistance] = useState(0); // 0.0 to 1.0
+    const interactionTimer = useRef<NodeJS.Timeout | null>(null);
+
+    // Reset resistance on phase change
+    useEffect(() => {
+        setResistance(0);
+        if (interactionTimer.current) clearInterval(interactionTimer.current);
+
+        // Only build resistance during choice phases
+        if (phase.includes("choice")) {
+            const startTime = Date.now();
+            interactionTimer.current = setInterval(() => {
+                const elapsed = (Date.now() - startTime) / 1000;
+                // Start building resistance after 5 seconds
+                if (elapsed > 5) {
+                    setResistance(r => Math.min(r + 0.05, 1)); // Slow buildup
+                }
+            }, 1000);
+        }
+
+        return () => {
+            if (interactionTimer.current) clearInterval(interactionTimer.current);
+        };
+    }, [phase]);
+
+    // -- PHYSICS MODIFIERS --
+    // Resistance slows down the world
+    const effectiveVelocity = Math.max(velocity * (1 - resistance * 0.6), 0.2);
+
     return (
         <div className="relative w-full h-screen overflow-hidden bg-[#050b14] text-white">
 
             {/* 1. VISUAL WORLD ENGINE */}
             <ParallaxWorld
-                velocity={velocity}
+                velocity={effectiveVelocity}
                 biome={biome}
+                resistance={resistance}
             />
 
             {/* 2. THE HERO (CHARIOT) */}
             <ChariotDriver
                 steerX={steerX}
-                velocity={velocity}
+                velocity={effectiveVelocity}
             />
 
             {/* 3. CINEMATIC OVERLAY (UI) */}
             <CinematicOverlay
                 phase={phase}
                 onSteer={handleSteer}
-                velocity={velocity}
+                velocity={effectiveVelocity}
+                resistance={resistance}
             />
 
             {/* 4. SFX CONTROLLER (Hidden) */}
-            {/* <AmbientAudioController biome={biome} velocity={velocity} /> */}
+            {/* <AmbientAudioController biome={biome} velocity={effectiveVelocity} resistance={resistance} /> */}
 
         </div>
     );
