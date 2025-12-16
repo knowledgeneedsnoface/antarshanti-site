@@ -1,0 +1,87 @@
+import { JourneyPhase, BiomeType } from "./InnerAtlasJourney";
+
+// ---------------------------------------------------------------------
+// TYPES
+// ---------------------------------------------------------------------
+
+export interface RealmOption {
+    id: string;
+    label: string;
+    sub: string;
+    direction: "left" | "center" | "right";
+    nextBiome: BiomeType;
+}
+
+export interface RealmScenario {
+    narrative: string;
+    options: RealmOption[];
+    nextPhase: JourneyPhase;
+}
+
+// ---------------------------------------------------------------------
+// CONFIGURATION
+// ---------------------------------------------------------------------
+
+export const REALM_SCENARIOS: Partial<Record<JourneyPhase, RealmScenario>> = {
+
+    // --- MIND REALM ---
+    mind_choice: {
+        narrative: "The landscape of your mind surrounds you. How does it feel right now?",
+        nextPhase: "mind_transition",
+        options: [
+            {
+                id: "stormy_sky",
+                direction: "left",
+                label: "Stormy Sky",
+                sub: "Bhaaga bhaaga",
+                nextBiome: "storm"
+            },
+            {
+                id: "quiet_lake",
+                direction: "center",
+                label: "Quiet Lake",
+                sub: "Shaant aur saaf",
+                nextBiome: "lake"
+            },
+            {
+                id: "crowded_bazaar",
+                direction: "right",
+                label: "Crowded Bazaar",
+                sub: "Shor gul",
+                nextBiome: "bazaar"
+            }
+        ]
+    },
+
+    // --- HEART REALM ---
+    heart_choice: {
+        narrative: "We enter the heart. What emotion is flowing through you?",
+        nextPhase: "heart_transition",
+        options: [
+            {
+                id: "heavy_stone",
+                direction: "left",
+                label: "Heavy Stone",
+                sub: "Bhaari",
+                nextBiome: "void"
+            },
+            {
+                id: "flowering_garden",
+                direction: "center",
+                label: "Flowering Garden",
+                sub: "Khush",
+                nextBiome: "forest"
+            },
+            {
+                id: "burning_fire",
+                direction: "right",
+                label: "Burning Fire",
+                sub: "Gussa",
+                nextBiome: "desert"
+            }
+        ]
+    }
+
+    // ... To be extended with Shadow, Battle, Power
+    // For MVP Cinematic prototype, Mind & Heart are sufficient to prove the loop.
+};
