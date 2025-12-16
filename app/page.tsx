@@ -15,6 +15,7 @@ const PortalHero = dynamic(() => import("./(components)/PortalHero"), {
   loading: () => <PortalFallback />,
   ssr: false
 });
+import PortalTransition from "./(components)/PortalTransition";
 import AuraReset from "./(components)/AuraReset";
 import RitualRiver from "./(components)/RitualRiver";
 import FlameMeditation from "./(components)/FlameMeditation";
@@ -32,6 +33,7 @@ export default function Home() {
     <>
       <div className="pt-0 bg-[#faf9f6] text-gray-900">
         <PortalHero />
+        <PortalTransition />
         <main>
           <AuraReset />
           <RitualRiver />
