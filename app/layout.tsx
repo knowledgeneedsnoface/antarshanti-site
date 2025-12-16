@@ -7,6 +7,7 @@ import GlobalNavbar from "./(components)/GlobalNavbar";
 import GlobalFooter from "./(components)/GlobalFooter";
 import ThemeRenderer from "./(components)/theme-system/ThemeRenderer";
 import ThemeSwitcher from "./(components)/theme-system/ThemeSwitcher";
+import MobileSettingsFab from "./(components)/MobileSettingsFab";
 import TwinWrapper from "./TwinWrapper";
 import LiteModeToggle from "./(components)/LiteModeToggle";
 import AccessibilityManager from "./(components)/AccessibilityManager";
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {/* Theme switcher button */}
             <ThemeSwitcher />
             <LiteModeToggle />
+            <MobileSettingsFab />
 
             {/* Soul Twin System */}
             <TwinWrapper />

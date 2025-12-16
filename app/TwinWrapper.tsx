@@ -39,14 +39,14 @@ export default function TwinWrapper() {
     const data = await getTwin(userId);
     setTwin(data);
     setLoading(false);
-    
+
     // Show onboarding if:
     // 1. No twin exists
     // 2. User hasn't dismissed it
     // 3. Not on demo page (to avoid conflicts)
     const dismissed = localStorage.getItem('twin_onboarding_dismissed');
     const isDemo = window.location.pathname === '/twin/demo';
-    
+
     if (!data && mounted && !dismissed && !isDemo) {
       // Delay to avoid conflict with page load
       setTimeout(() => setShowOnboarding(true), 3000);
@@ -64,17 +64,31 @@ export default function TwinWrapper() {
     localStorage.setItem('twin_onboarding_dismissed', 'true');
   }
 
+  const [quickBuyVisible, setQuickBuyVisible] = useState(false);
+
+  useEffect(() => {
+    const handleQuickBuy = (e: any) => {
+      setQuickBuyVisible(e.detail.visible);
+    };
+
+    window.addEventListener('quick-buy-visibility', handleQuickBuy);
+    return () => window.removeEventListener('quick-buy-visibility', handleQuickBuy);
+  }, []);
+
+  const positionClasses = `fixed z-50 right-6 transition-all duration-300 ${quickBuyVisible ? 'bottom-24 md:bottom-auto md:top-20' : 'bottom-6 md:bottom-auto md:top-20'
+    }`;
+
   if (!mounted) return null;
 
   return (
     <>
       {/* Twin Mini - Fixed position */}
       {loading ? (
-        <div className="fixed top-20 right-6 z-50">
+        <div className={positionClasses}>
           <TwinSkeleton />
         </div>
       ) : twin ? (
-        <div className="fixed top-20 right-6 z-50">
+        <div className={positionClasses}>
           <TwinMini twin={twin} onClick={() => setShowTwinFull(true)} />
         </div>
       ) : null}

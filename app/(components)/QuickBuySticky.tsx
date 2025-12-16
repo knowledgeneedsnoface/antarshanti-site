@@ -10,10 +10,13 @@ export default function QuickBuySticky() {
     useEffect(() => {
         const handleScroll = () => {
             // Show only after scrolling past 100vh
-            if (window.scrollY > window.innerHeight) {
-                setIsVisible(true);
-            } else {
-                setIsVisible(false);
+            const shouldShow = window.scrollY > window.innerHeight;
+            if (shouldShow !== isVisible) {
+                setIsVisible(shouldShow);
+                // Dispatch event for TwinWrapper overlap prevention
+                window.dispatchEvent(new CustomEvent('quick-buy-visibility', {
+                    detail: { visible: shouldShow }
+                }));
             }
         };
 

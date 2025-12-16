@@ -19,7 +19,7 @@ export default function ThemeSwitcher() {
       {/* Floating button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="fixed left-6 bottom-8 z-50 w-14 h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-xl flex items-center justify-center text-2xl hover:bg-white/30 transition-all"
+        className="hidden md:flex fixed left-6 bottom-8 z-50 w-14 h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-xl items-center justify-center text-2xl hover:bg-white/30 transition-all"
         initial={{ opacity: 0, scale: 0.8, x: -20 }}
         animate={{ opacity: 1, scale: 1, x: 0 }}
         whileHover={{ scale: 1.1, rotate: 15 }}
@@ -87,11 +87,10 @@ export default function ThemeSwitcher() {
                           setTheme(theme.id);
                           setTimeout(() => setIsOpen(false), 500);
                         }}
-                        className={`relative overflow-hidden rounded-2xl p-6 text-left transition-all ${
-                          isActive
+                        className={`relative overflow-hidden rounded-2xl p-6 text-left transition-all ${isActive
                             ? 'ring-4 ring-amber-500 shadow-xl'
                             : 'hover:shadow-lg'
-                        }`}
+                          }`}
                         style={{
                           background: theme.background.gradient,
                         }}
