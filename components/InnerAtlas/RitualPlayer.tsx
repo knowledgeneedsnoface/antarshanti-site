@@ -7,6 +7,8 @@ import { CheckCircle, X } from "lucide-react";
 interface RitualPlayerProps {
     assignedRitualKey: string;
     onRitualComplete: (key: string) => void;
+    mood?: string; // "energized" | "okay" | "neutral" | "low" | "drained"
+    streakCount?: number;
 }
 
 type StepData = {
@@ -97,8 +99,49 @@ const RITUALS: Record<string, RitualContent> = {
     }
 };
 
-export default function RitualPlayer({ assignedRitualKey, onRitualComplete }: RitualPlayerProps) {
-    const ritual = RITUALS[assignedRitualKey] || RITUALS["karma_yoga"];
+// Mood-based step variations
+const MOOD_VARIATIONS: Record<string, StepData> = {
+    drained_short: { title: "Gentle Breathing", instruction: "Bas 5 minute... tumhare liye kaafi hai aaj.", duration: 60, isReflection: false },
+    energized_challenge: { title: "Extended Practice", instruction: "Aaj tumhare paas energy hai... thoda aur deep jaate hain.", duration: STEP_DURATION + 60, isReflection: false },
+    streak_celebration: { title: "Streak Reflection", instruction: "Dekho kitna door aa gaye ho... consistency tumhari strength hai.", duration: REFLECTION_DURATION, isReflection: true },
+    broken_forgiveness: { title: "Self-Compassion", instruction: "Ruk gaye the... koi baat nahi. Aaj phir shuru karte hain.", duration: REFLECTION_DURATION, isReflection: true }
+};
+
+export default function RitualPlayer({ assignedRitualKey, onRitualComplete, mood, streakCount = 0 }: RitualPlayerProps) {
+    const baseRitual = RITUALS[assignedRitualKey] || RITUALS["karma_yoga"];
+
+    // Adapt ritual based on mood and streak
+    const getAdaptedSteps = (): StepData[] => {
+        let steps = [...baseRitual.steps];
+
+        // If drained, shorten ritual
+        if (mood === "drained") {
+            steps = [MOOD_VARIATIONS.drained_short, steps[steps.length - 1]]; // Just breathing + reflection
+        }
+
+        // If energized, add challenge step
+        if (mood === "energized") {
+            steps.splice(steps.length - 1, 0, MOOD_VARIATIONS.energized_challenge);
+        }
+
+        // If 3+ day streak, add celebration
+        if (streakCount >= 3 && streakCount % 3 === 0) {
+            steps.splice(steps.length - 1, 0, MOOD_VARIATIONS.streak_celebration);
+        }
+
+        // If streak was broken (streakCount === 1 after gap), add forgiveness
+        // This is a simplified check - in real implementation, you'd track last completion date
+        if (streakCount === 1) {
+            steps.splice(0, 0, MOOD_VARIATIONS.broken_forgiveness);
+        }
+
+        return steps;
+    };
+
+    const ritual: RitualContent = {
+        ...baseRitual,
+        steps: getAdaptedSteps()
+    };
 
     const [stepIndex, setStepIndex] = useState(0);
     const [timeLeft, setTimeLeft] = useState(ritual.steps[0].duration);

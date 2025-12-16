@@ -264,6 +264,8 @@ export default function InnerAtlasAppShell({ initialScreen = "chariot" }: InnerA
                     <RitualPlayer
                         assignedRitualKey={assignedRitual || "karma_yoga"}
                         onRitualComplete={() => handleRitualComplete(assignedRitual || "karma_yoga")}
+                        mood={todayMood || undefined}
+                        streakCount={streakCount}
                     />
                 );
             case "postReflection":
