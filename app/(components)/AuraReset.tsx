@@ -117,7 +117,7 @@ export default function AuraReset() {
                     style={{ opacity: textOpacity, y: textY }}
                     className="block text-amber-600/60 font-medium tracking-[0.2em] uppercase text-sm mb-6"
                 >
-                    The Aura Reset
+                    Aura Reset — Cleansing Mist Ritual
                 </motion.span>
 
                 <motion.h2

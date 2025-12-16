@@ -7,7 +7,7 @@ export default function CallToContinue() {
     return (
         <section className="py-20 bg-white border-t border-gray-100">
             <div className="container mx-auto px-6 text-center">
-                <h2 className="text-3xl font-light text-gray-900 mb-8">Carry This Calm Forward</h2>
+                <h2 className="text-3xl font-light text-gray-900 mb-8">Your Soul Twin — Grows With Rituals</h2>
 
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                     <motion.a

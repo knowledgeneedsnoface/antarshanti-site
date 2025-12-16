@@ -142,7 +142,7 @@ export default function RitualRiver() {
 
                 {/* River Header - always visible until river ends */}
                 <div className="absolute top-10 left-6 md:left-20 z-20">
-                    <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-2">The Ritual River</h2>
+                    <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-2">Ritual River — Your 10-Minute Daily Flow</h2>
                     <p className="text-gray-500 font-light">Walk the path. Let each step open you.</p>
                 </div>
 
