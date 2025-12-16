@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ParallaxWorld from "./ParallaxWorld";
 import ChariotDriver from "./ChariotDriver";
 import CinematicOverlay from "./CinematicOverlay";
+import { REALM_SCENARIOS } from "./RealmConfig";
 
 // ---------------------------------------------------------------------
 // TYPES & CONFIG
