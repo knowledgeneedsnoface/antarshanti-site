@@ -27,7 +27,7 @@ export const REALM_SCENARIOS: Partial<Record<JourneyPhase, RealmScenario>> = {
     // --- MIND REALM ---
     mind_choice: {
         narrative: "The landscape of your mind surrounds you. How does it feel right now?",
-        nextPhase: "mind_transition",
+        nextPhase: "heart_choice", // Point directly to next choice
         options: [
             {
                 id: "stormy_sky",
@@ -56,7 +56,7 @@ export const REALM_SCENARIOS: Partial<Record<JourneyPhase, RealmScenario>> = {
     // --- HEART REALM ---
     heart_choice: {
         narrative: "We enter the heart. What emotion is flowing through you?",
-        nextPhase: "heart_transition",
+        nextPhase: "shadow_choice", // Determine next phase
         options: [
             {
                 id: "heavy_stone",
@@ -80,8 +80,34 @@ export const REALM_SCENARIOS: Partial<Record<JourneyPhase, RealmScenario>> = {
                 nextBiome: "desert"
             }
         ]
-    }
+    },
 
-    // ... To be extended with Shadow, Battle, Power
-    // For MVP Cinematic prototype, Mind & Heart are sufficient to prove the loop.
+    // --- SHADOW REALM ---
+    shadow_choice: {
+        narrative: "The shadow draws near. What do you fear most?",
+        nextPhase: "arrival", // Loop back to start for now (or Battle if ready)
+        options: [
+            {
+                id: "failure",
+                direction: "left",
+                label: "Total Failure",
+                sub: "Haar jaana",
+                nextBiome: "storm"
+            },
+            {
+                id: "loneliness",
+                direction: "center",
+                label: "Deep Loneliness",
+                sub: "Akela-pan",
+                nextBiome: "void"
+            },
+            {
+                id: "judgement",
+                direction: "right",
+                label: "Others' Judgement",
+                sub: "Log kya kahenge",
+                nextBiome: "bazaar"
+            }
+        ]
+    }
 };

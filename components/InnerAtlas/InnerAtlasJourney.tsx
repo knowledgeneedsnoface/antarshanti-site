@@ -80,23 +80,20 @@ export default function InnerAtlasJourney() {
         const targetX = direction === "left" ? -0.8 : direction === "right" ? 0.8 : 0;
         setSteerX(targetX);
 
-        // 2. Save Selection
-        if (phase === "mind_choice") setSelections(prev => ({ ...prev, mind: choiceId }));
-        // ... extend for other phases
+        // 2. Save Selection (Generic handler)
+        setSelections(prev => ({ ...prev, [phase.split('_')[0]]: choiceId }));
 
-        // 3. Trigger Transition Sequence based on phase
-        if (phase === "mind_choice") {
-            // Example: Map choice to biome
-            const nextBiome = mapMindToBiome(choiceId);
-            triggerTransition("heart_choice", nextBiome);
+        // 3. Trigger Transition Sequence based on CONFIG
+        const scenario = REALM_SCENARIOS[phase as keyof typeof REALM_SCENARIOS];
+        if (scenario) {
+            const selectedOption = scenario.options.find(opt => opt.id === choiceId);
+
+            if (selectedOption) {
+                // Use config for next phase and biome
+                // Fallback to 'void' if not specified
+                triggerTransition(scenario.nextPhase, selectedOption.nextBiome || "void");
+            }
         }
-    };
-
-    // Helper mapping (Placeholder)
-    const mapMindToBiome = (id: string): BiomeType => {
-        if (id.includes("storm")) return "storm";
-        if (id.includes("forest")) return "forest";
-        return "cosmic";
     };
 
     // -- INITIALIZATION --
