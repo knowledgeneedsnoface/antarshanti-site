@@ -8,7 +8,13 @@ import React from "react";
 // import ImmersiveBenefits from "./(components)/ImmersiveBenefits";
 
 // Phase 2: Ritual Journey Components
-import PortalHero from "./(components)/PortalHero";
+import dynamic from "next/dynamic";
+import PortalFallback from "./(components)/PortalFallback";
+
+const PortalHero = dynamic(() => import("./(components)/PortalHero"), {
+  loading: () => <PortalFallback />,
+  ssr: false
+});
 import AuraReset from "./(components)/AuraReset";
 import RitualRiver from "./(components)/RitualRiver";
 import FlameMeditation from "./(components)/FlameMeditation";
