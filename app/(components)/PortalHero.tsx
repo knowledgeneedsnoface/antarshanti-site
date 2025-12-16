@@ -104,20 +104,28 @@ export default function PortalHero() {
             {/* Main Copy */}
             <div className="z-10 text-center max-w-2xl px-6 pointer-events-none select-none">
                 <motion.h1
-                    className="text-4xl md:text-5xl font-light text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 mb-6 tracking-wide"
-                    initial={{ opacity: 0, y: 20 }}
+                    className="text-4xl md:text-6xl font-light text-transparent bg-clip-text bg-gradient-to-b from-white to-white/80 mb-4 tracking-tight"
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 1 }}
+                    transition={{ delay: 0.1, duration: 0.8 }}
                 >
-                    Discover Your Inner Atlas.
+                    Enter Your 10-Minute Sanctuary
                 </motion.h1>
                 <motion.p
-                    className="text-white/40 font-light text-lg tracking-wide mb-10"
+                    className="text-xl md:text-2xl text-white/90 font-light leading-relaxed mb-2"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 1, duration: 1 }}
+                    transition={{ delay: 0.2, duration: 0.8 }}
                 >
-                    A cinematic journey into your Mind, Heart, and Shadow.
+                    A physical daily ritual kit, guided by a living digital soul companion.
+                </motion.p>
+                <motion.p
+                    className="text-sm md:text-base text-amber-100/60 font-serif italic tracking-wide mb-10"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3, duration: 0.8 }}
+                >
+                    Light. Breathe. Reflect. Your inner state evolves with you.
                 </motion.p>
 
                 <motion.button
