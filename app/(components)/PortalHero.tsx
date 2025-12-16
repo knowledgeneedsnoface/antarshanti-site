@@ -120,6 +120,14 @@ export default function PortalHero() {
                     A customized digital world for your daily practice.
                 </motion.p>
                 <motion.p
+                    className="text-base opacity-80 mt-2 mb-6 text-white/80"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.25, duration: 0.8 }}
+                >
+                    Your personalized 30-day spiritual journey
+                </motion.p>
+                <motion.p
                     className="text-xl md:text-2xl text-white/90 font-light leading-relaxed mb-2"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

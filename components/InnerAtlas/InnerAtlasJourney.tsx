@@ -67,6 +67,109 @@ export default function InnerAtlasJourney() {
     const [showTransition, setShowTransition] = useState(false);
     const [transitionPhase, setTransitionPhase] = useState<JourneyPhase>("arrival");
 
+    // Welcome Back Modal State
+    const [showWelcomeBack, setShowWelcomeBack] = useState(false);
+    const [savedJourneyExists, setSavedJourneyExists] = useState(false);
+
+    // Exit Modal State
+    const [showExitModal, setShowExitModal] = useState(false);
+
+    // -- PROGRESS PERSISTENCE --
+    // Save journey state to localStorage
+    useEffect(() => {
+        const journeyState = {
+            phase,
+            selections,
+            biome,
+            velocity,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('antarshanti_journey', JSON.stringify(journeyState));
+    }, [phase, selections, biome, velocity]);
+
+    // Load saved journey on mount
+    useEffect(() => {
+        const saved = localStorage.getItem('antarshanti_journey');
+        if (saved) {
+            try {
+                const state = JSON.parse(saved);
+                // Check if saved within last 24 hours
+                if (Date.now() - state.timestamp < 86400000) {
+                    setSavedJourneyExists(true);
+                    setShowWelcomeBack(true);
+                }
+            } catch (e) {
+                console.error('Failed to load saved journey:', e);
+            }
+        }
+    }, []);
+
+    // Handle continue journey
+    const handleContinueJourney = () => {
+        const saved = localStorage.getItem('antarshanti_journey');
+        if (saved) {
+            try {
+                const state = JSON.parse(saved);
+                setPhase(state.phase);
+                setSelections(state.selections);
+                setBiome(state.biome);
+                setVelocity(state.velocity || 1);
+                setShowWelcomeBack(false);
+            } catch (e) {
+                console.error('Failed to restore journey:', e);
+                setShowWelcomeBack(false);
+            }
+        }
+    };
+
+    // Handle start fresh
+    const handleStartFresh = () => {
+        localStorage.removeItem('antarshanti_journey');
+        setPhase("arrival");
+        setSelections({ mind: null, heart: null, shadow: null, battle: null, power: null });
+        setBiome("void");
+        setVelocity(1);
+        setShowWelcomeBack(false);
+    };
+
+    // Handle safe exit
+    const handleExitJourney = () => {
+        setShowExitModal(true);
+    };
+
+    const confirmExit = () => {
+        // Progress is already saved via useEffect
+        window.location.href = '/';
+    };
+
+    // -- BROWSER HISTORY MANAGEMENT --
+    // Push state to browser history on phase change
+    useEffect(() => {
+        if (phase !== "arrival") {
+            window.history.pushState(
+                { phase, biome, selections },
+                '',
+                `/inner-atlas?phase=${phase}`
+            );
+        }
+    }, [phase, biome, selections]);
+
+    // Listen for popstate (back button)
+    useEffect(() => {
+        const handlePopState = (event: PopStateEvent) => {
+            if (event.state?.phase) {
+                setPhase(event.state.phase);
+                setBiome(event.state.biome);
+                if (event.state.selections) {
+                    setSelections(event.state.selections);
+                }
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, []);
+
     // -- TRANSITION SYSTEM --
     const triggerTransition = (nextPhase: JourneyPhase, newBiome: BiomeType) => {
         // Save current phase for Gita line
@@ -167,10 +270,10 @@ export default function InnerAtlasJourney() {
                     setResistance(r => {
                         const newResistance = Math.min(r + 0.05, 1);
 
-                        // Twin whisper when resistance crosses threshold
+                        // Twin whisper when resistance crosses threshold (SOFTENED)
                         if (newResistance > 0.5 && r <= 0.5) {
                             setTwinEvent("hesitation");
-                            setTwinMessage("Ruk gaye?");
+                            setTwinMessage("Soch rahe ho? Take your time.");
                         }
 
                         return newResistance;
@@ -256,6 +359,108 @@ export default function InnerAtlasJourney() {
                         show={showTransition}
                         phase={transitionPhase}
                     />
+                )}
+            </AnimatePresence>
+
+            {/* 7. WELCOME BACK MODAL */}
+            <AnimatePresence>
+                {showWelcomeBack && savedJourneyExists && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            className="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                        >
+                            <h2 className="text-2xl font-serif text-gray-900 mb-3">Welcome Back</h2>
+                            <p className="text-gray-600 mb-6">
+                                You were in the {phase.replace('_', ' ')} realm. Would you like to continue your journey or start fresh?
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={handleContinueJourney}
+                                    className="flex-1 bg-amber-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-amber-700 transition-colors"
+                                >
+                                    Continue Journey
+                                </button>
+                                <button
+                                    onClick={handleStartFresh}
+                                    className="flex-1 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:border-gray-400 transition-colors"
+                                >
+                                    Start Fresh
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* 8. EXIT CONFIRMATION MODAL */}
+            <AnimatePresence>
+                {showExitModal && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            className="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                        >
+                            <h2 className="text-2xl font-serif text-gray-900 mb-3">Your Journey is Saved</h2>
+                            <p className="text-gray-600 mb-6">
+                                Come back anytime to continue from the {phase.replace('_', ' ')} realm.
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={confirmExit}
+                                    className="flex-1 bg-amber-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-amber-700 transition-colors"
+                                >
+                                    Exit to Homepage
+                                </button>
+                                <button
+                                    onClick={() => setShowExitModal(false)}
+                                    className="flex-1 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:border-gray-400 transition-colors"
+                                >
+                                    Continue Journey
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* 9. SAFE EXIT BUTTON */}
+            <button
+                onClick={handleExitJourney}
+                className="fixed top-4 right-4 z-40 w-10 h-10 flex items-center justify-center text-white/60 hover:text-white/100 transition-colors"
+                aria-label="Save and exit"
+            >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            {/* 10. GENTLE RESISTANCE HINT */}
+            <AnimatePresence>
+                {resistance > 0.3 && resistance < 0.5 && (
+                    <motion.div
+                        className="fixed bottom-20 left-0 right-0 text-center z-30 pointer-events-none"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 0.6, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 1 }}
+                    >
+                        <p className="text-white/80 text-sm">No rush. Reflect as long as you need.</p>
+                    </motion.div>
                 )}
             </AnimatePresence>
 

@@ -173,9 +173,9 @@ export default function ParallaxWorld({ velocity, biome, resistance, diagnosticS
                     className="absolute inset-0 pointer-events-none z-20"
                     animate={{
                         boxShadow: [
-                            "inset 0 0 0px rgba(139, 0, 0, 0)",
-                            "inset 0 0 60px rgba(139, 0, 0, 0.4)",
-                            "inset 0 0 0px rgba(139, 0, 0, 0)"
+                            "inset 0 0 0px rgba(212, 169, 74, 0)",
+                            "inset 0 0 60px rgba(212, 169, 74, 0.3)",
+                            "inset 0 0 0px rgba(212, 169, 74, 0)"
                         ]
                     }}
                     transition={{

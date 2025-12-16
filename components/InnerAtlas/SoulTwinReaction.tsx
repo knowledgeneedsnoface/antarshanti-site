@@ -118,6 +118,7 @@ export default function SoulTwinReaction({
     const [activeChar, setActiveChar] = useState<"gann_baba" | "mira_maya">("gann_baba");
     const [message, setMessage] = useState("");
     const [key, setKey] = useState(0); // For forcing re-render of animation
+    const [show, setShow] = useState(true); // Control visibility with timer
 
     useEffect(() => {
         // 1. Determine Character
@@ -140,11 +141,19 @@ export default function SoulTwinReaction({
             if (getMsg) {
                 setMessage(getMsg(eventPayload));
                 setKey(prev => prev + 1);
+                setShow(true); // Show the message when a new one is set
             }
         }
 
     }, [eventType, eventPayload.mood, eventPayload.streak, eventPayload.timestamp, characterMode]);
     // Added key dependencies to trigger effect when payload actually changes (e.g. timestamp for refreshing idle)
+
+    useEffect(() => {
+        if (show) {
+            const timer = setTimeout(() => setShow(false), 6000); // Increased from 2000 to 6000
+            return () => clearTimeout(timer);
+        }
+    }, [show, eventType, eventPayload]); // Re-run timer if show state changes or event changes
 
     // Avatar Image source logic
     // If Mode is Duo, we still show the SPEAKER's avatar to make it clear who is talking? 
