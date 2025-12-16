@@ -118,17 +118,17 @@ export default function TwinFull({ twin, onClose, onSimulateRitual }: TwinFullPr
                 </div>
 
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gradient-to-br from-amber-400 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-lg shadow-lg">
-                  Level {twin.level}
+                  Cycle {twin.level}
                 </div>
               </div>
 
-              {/* XP Text */}
+              {/* Alignment Text */}
               <div className="mt-6 text-center">
-                <p className="text-2xl font-bold text-gray-900">
-                  {twin.xp} / {xpNeeded} XP
+                <p className="text-2xl font-medium font-serif text-gray-900">
+                  Alignment Depth: {Math.round(xpProgress)}%
                 </p>
-                <p className="text-sm text-gray-600">
-                  {Math.round(xpProgress)}% to next level
+                <p className="text-sm text-gray-500 italic">
+                  Complete rituals to deepen your alignment
                 </p>
               </div>
             </div>
@@ -138,8 +138,8 @@ export default function TwinFull({ twin, onClose, onSimulateRitual }: TwinFullPr
               <button
                 onClick={() => setSelectedTab('stats')}
                 className={`px-6 py-3 font-medium transition-colors ${selectedTab === 'stats'
-                    ? 'text-amber-600 border-b-2 border-amber-600'
-                    : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-amber-600 border-b-2 border-amber-600'
+                  : 'text-gray-600 hover:text-gray-900'
                   }`}
               >
                 Attributes
@@ -147,8 +147,8 @@ export default function TwinFull({ twin, onClose, onSimulateRitual }: TwinFullPr
               <button
                 onClick={() => setSelectedTab('history')}
                 className={`px-6 py-3 font-medium transition-colors ${selectedTab === 'history'
-                    ? 'text-amber-600 border-b-2 border-amber-600'
-                    : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-amber-600 border-b-2 border-amber-600'
+                  : 'text-gray-600 hover:text-gray-900'
                   }`}
               >
                 History
@@ -230,7 +230,7 @@ export default function TwinFull({ twin, onClose, onSimulateRitual }: TwinFullPr
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-amber-600">+{event.xp} XP</p>
+                            <p className="font-medium text-amber-600">Deepened</p>
                             <div className="text-xs text-gray-600 mt-1 space-y-0.5">
                               {Object.entries(event.changes).map(([attr, value]) => (
                                 value ? <div key={attr}>+{value} {attr}</div> : null

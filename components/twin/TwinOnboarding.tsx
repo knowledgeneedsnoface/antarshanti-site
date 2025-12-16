@@ -148,8 +148,8 @@ export default function TwinOnboarding({ onComplete, onSkip }: TwinOnboardingPro
                     key={path.id}
                     onClick={() => setSelectedPath(path.id)}
                     className={`p-6 rounded-2xl border-2 text-left transition-all ${selectedPath === path.id
-                        ? 'border-amber-500 bg-amber-50 shadow-lg scale-105'
-                        : 'border-gray-200 hover:border-amber-300 hover:bg-gray-50'
+                      ? 'border-amber-500 bg-amber-50 shadow-lg scale-105'
+                      : 'border-gray-200 hover:border-amber-300 hover:bg-gray-50'
                       }`}
                   >
                     <div className="text-4xl mb-3">{path.icon}</div>
@@ -185,8 +185,8 @@ export default function TwinOnboarding({ onComplete, onSkip }: TwinOnboardingPro
 
               <div className="mt-8 p-4 bg-amber-50/50 rounded-xl border border-amber-100">
                 <p className="text-amber-800 font-serif italic text-lg leading-relaxed">
-                  "I grow when you perform real-world rituals.<br />
-                  Without them, I stay asleep."
+                  "I do not grow from screen time.<br />
+                  I awaken only when you are consistent with your real-world rituals."
                 </p>
               </div>
             </motion.div>

@@ -37,8 +37,9 @@ export default function LotusTimeline() {
         <section className="py-32 bg-white relative">
             <div className="container mx-auto px-6">
                 <div className="text-center mb-20">
-                    <h2 className="text-4xl text-gray-900 font-light mb-4">The Blooming Lotus</h2>
-                    <p className="text-gray-500 font-light">Every week, a new part of you blooms.</p>
+                    <h2 className="text-4xl text-gray-900 font-light mb-2">The Blooming Lotus</h2>
+                    <p className="text-lg text-amber-700/80 font-medium mb-1">A 30-day structural journey of personal growth.</p>
+                    <p className="text-gray-500 font-light">Week by week, build a habit that blooms.</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-24 max-w-4xl mx-auto">

@@ -104,21 +104,32 @@ export default function PortalHero() {
             {/* Main Copy */}
             <div className="z-10 text-center max-w-2xl px-6 pointer-events-none select-none">
                 <motion.h1
-                    className="text-4xl md:text-6xl font-light text-transparent bg-clip-text bg-gradient-to-b from-white to-white/80 mb-4 tracking-tight"
+                    className="text-4xl md:text-6xl font-light text-transparent bg-clip-text bg-gradient-to-b from-white to-white/80 mb-2 tracking-tight"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1, duration: 0.8 }}
                 >
-                    Enter Your 10-Minute Sanctuary
+                    The Inner Atlas
                 </motion.h1>
                 <motion.p
-                    className="text-xl md:text-2xl text-white/90 font-light leading-relaxed mb-2"
+                    className="text-lg md:text-xl text-amber-100/80 font-light mb-8"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2, duration: 0.8 }}
                 >
-                    A physical daily ritual kit, guided by a living digital soul companion.
+                    A customized digital world for your daily practice.
                 </motion.p>
+                <motion.p
+                    className="text-xl md:text-2xl text-white/90 font-light leading-relaxed mb-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3, duration: 0.8 }}
+                >
+                    Light. Breathe. Repeat.
+                    <br />
+                    A daily practice to ground your inner state.
+                </motion.p>
+
                 <motion.p
                     className="text-sm md:text-base text-amber-100/60 font-serif italic tracking-wide mb-10"
                     initial={{ opacity: 0 }}
@@ -126,6 +137,15 @@ export default function PortalHero() {
                     transition={{ delay: 0.3, duration: 0.8 }}
                 >
                     Light. Breathe. Reflect. Your inner state evolves with you.
+                </motion.p>
+
+                <motion.p
+                    className="text-xs md:text-sm text-amber-200/50 font-medium tracking-widest uppercase mb-10"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4, duration: 0.8 }}
+                >
+                    The digital sanctuary awakens only when the physical flame is lit.
                 </motion.p>
 
                 <motion.button

@@ -115,10 +115,16 @@ export default function AuraReset() {
             <div className="text-center px-6 max-w-4xl relative z-10 pointer-events-none">
                 <motion.span
                     style={{ opacity: textOpacity, y: textY }}
-                    className="block text-amber-600/60 font-medium tracking-[0.2em] uppercase text-sm mb-6"
+                    className="block text-amber-600/60 font-medium tracking-[0.2em] uppercase text-sm mb-2"
                 >
-                    Aura Reset — Cleansing Mist Ritual
+                    The Aura Reset
                 </motion.span>
+                <motion.p
+                    style={{ opacity: textOpacity, y: textY }}
+                    className="text-gray-500 font-light mb-6"
+                >
+                    A breathwork and cleansing mist ritual to shift gears.
+                </motion.p>
 
                 <motion.h2
                     style={{ opacity: textOpacity, y: textY }}

@@ -122,6 +122,8 @@ export default function ProductCard() {
                     className="text-gray-600 mb-6 font-light leading-relaxed"
                   >
                     Everything you need for 30 days of daily rituals. Eco-friendly, screen-free, and designed to ground you in peace.
+                    <br /><br />
+                    <span className="text-amber-600 font-medium">This kit is the physical key that unlocks your digital Inner Atlas.</span>
                   </motion.p>
 
                   {/* Trust badges */}
@@ -170,8 +172,11 @@ export default function ProductCard() {
                     >
                       ₹1299
                     </motion.p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 mb-1">
                       Free delivery • COD available • 7-day peace guarantee
+                    </p>
+                    <p className="text-xs text-amber-700/70 font-medium bg-amber-50 inline-block px-3 py-1 rounded-full border border-amber-100">
+                      One-time purchase. Includes 30-Day Kit + Digital Access. No subscription.
                     </p>
                   </motion.div>
                 </div>

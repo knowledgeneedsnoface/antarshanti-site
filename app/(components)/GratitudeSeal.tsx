@@ -62,6 +62,15 @@ export default function GratitudeSeal() {
             >
                 {clicked ? "Ritual Complete" : "Tap to Seal Your Ritual"}
             </motion.p>
+
+            <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+                className="mt-6 text-[10px] md:text-xs text-amber-900/40 font-serif italic max-w-sm leading-relaxed"
+            >
+                "The digital realm honors your physical truth. Your intention is the bridge."
+            </motion.p>
         </section>
     );
 }

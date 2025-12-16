@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 
 // Mini Components for Step Interactions
@@ -130,27 +130,69 @@ const steps = [
 
 export default function RitualRiver() {
     const targetRef = useRef<HTMLDivElement>(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [isMobile, setIsMobile] = useState(false);
+    const [showHint, setShowHint] = useState(true);
+
     const { scrollYProgress } = useScroll({
         target: targetRef,
     });
 
     const x = useTransform(scrollYProgress, [0, 1], ["1%", "-85%"]);
 
-    return (
-        <section ref={targetRef} className="relative h-[400vh] bg-stone-50">
-            <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
-                {/* River Header - always visible until river ends */}
-                <div className="absolute top-10 left-6 md:left-20 z-20">
-                    <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-2">Ritual River — Your 10-Minute Daily Flow</h2>
-                    <p className="text-gray-500 font-light">Walk the path. Let each step open you.</p>
+    const handleMobileScroll = () => {
+        if (showHint) setShowHint(false);
+    };
+
+    return (
+        <section ref={targetRef} className="relative h-auto md:h-[400vh] bg-stone-50">
+            <div className="relative md:sticky md:top-0 flex flex-col md:flex-row h-auto md:h-screen items-center overflow-hidden md:overflow-visible py-20 md:py-0">
+
+                {/* River Header */}
+                <div className="relative md:absolute top-0 md:top-10 left-6 md:left-20 z-20 mb-10 md:mb-0 px-6 md:px-0">
+                    <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-2">The Ritual River</h2>
+                    <p className="text-lg text-amber-700/80 font-medium">Your guided 10-minute flow to find instant calm.</p>
+                    <p className="text-gray-500 font-light mt-1">A repeatable path. Walk it daily to build your sanctuary.</p>
                 </div>
 
-                <motion.div style={{ x }} className="flex gap-10 pl-[5vw] md:pl-[20vw] pr-20">
+                {/* Mobile Swipe Hint */}
+                <AnimatePresence>
+                    {isMobile && showHint && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute right-6 top-32 z-30 flex items-center gap-2 text-amber-600/60 font-medium text-xs uppercase tracking-widest pointer-events-none"
+                        >
+                            <span>Swipe to Flow</span>
+                            <motion.span
+                                animate={{ x: [0, 5, 0] }}
+                                transition={{ repeat: Infinity, duration: 1.5 }}
+                            >
+                                →
+                            </motion.span>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Cards Container */}
+                <motion.div
+                    ref={scrollContainerRef}
+                    style={!isMobile ? { x } : {}}
+                    className="flex gap-6 md:gap-10 pl-6 md:pl-[20vw] pr-6 md:pr-20 w-full md:w-auto overflow-x-auto md:overflow-visible pb-10 md:pb-0 snap-x snap-mandatory md:snap-none no-scrollbar"
+                    onScroll={handleMobileScroll}
+                >
                     {steps.map((step) => (
                         <div
                             key={step.id}
-                            className="group relative h-[50vh] w-[80vw] md:w-[35vw] md:h-[60vh] flex-shrink-0 rounded-3xl bg-white shadow-xl overflow-hidden border border-stone-100 flex flex-col justify-center items-center text-center p-8 hover:scale-[1.02] transition-transform duration-500"
+                            className="group relative h-[60vh] md:h-[60vh] min-w-[85vw] md:min-w-[35vw] md:w-[35vw] flex-shrink-0 rounded-3xl bg-white shadow-xl overflow-hidden border border-stone-100 flex flex-col justify-center items-center text-center p-8 hover:scale-[1.01] md:hover:scale-[1.02] transition-transform duration-500 snap-center"
                         >
                             {/* Background Decoration */}
                             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-bl-full opacity-50 transition-opacity group-hover:opacity-100" />
@@ -178,8 +220,8 @@ export default function RitualRiver() {
                         </div>
                     ))}
 
-                    {/* End cap */}
-                    <div className="w-[10vw]" />
+                    {/* End cap for spacing */}
+                    <div className="min-w-[5vw] md:min-w-[10vw]" />
                 </motion.div>
             </div>
         </section>

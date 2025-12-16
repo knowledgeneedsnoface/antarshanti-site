@@ -57,8 +57,8 @@ export default function TwinMini({ twin, onClick }: TwinMiniProps) {
     <motion.button
       onClick={onClick}
       className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 hover:bg-white/20 transition-all shadow-lg"
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
     >
       {/* Avatar with level ring */}
       <div className="relative w-16 h-16">
@@ -107,9 +107,9 @@ export default function TwinMini({ twin, onClick }: TwinMiniProps) {
         {/* Glow/Pulse Effect - Only when active */}
         {hasRitual && (
           <motion.div
-            className="absolute inset-0 rounded-full bg-amber-400/20 z-[-1]"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
-            transition={{ duration: 3, repeat: Infinity }}
+            className="absolute inset-0 rounded-full bg-amber-400/10 z-[-1]"
+            animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.3, 0.1] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           />
         )}
 
