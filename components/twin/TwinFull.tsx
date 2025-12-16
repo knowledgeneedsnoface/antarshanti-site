@@ -15,7 +15,7 @@ interface TwinFullProps {
 function generateAvatar(seed: number, size: number = 200) {
   const hue = (seed * 137.508) % 360;
   const shapes = Math.floor((seed % 5) + 3);
-  
+
   return (
     <svg viewBox="0 0 100 100" width={size} height={size}>
       <defs>
@@ -24,9 +24,9 @@ function generateAvatar(seed: number, size: number = 200) {
           <stop offset="100%" stopColor={`hsl(${(hue + 60) % 360}, 70%, 40%)`} />
         </linearGradient>
       </defs>
-      
+
       <circle cx="50" cy="50" r="48" fill={`url(#grad-full-${seed})`} opacity="0.3" />
-      
+
       {Array.from({ length: shapes }).map((_, i) => {
         const angle = (360 / shapes) * i;
         const x = 50 + 25 * Math.cos((angle * Math.PI) / 180);
@@ -41,7 +41,7 @@ function generateAvatar(seed: number, size: number = 200) {
           />
         );
       })}
-      
+
       <circle cx="50" cy="50" r="12" fill={`hsl(${hue}, 90%, 70%)`} />
     </svg>
   );
@@ -112,11 +112,11 @@ export default function TwinFull({ twin, onClose, onSimulateRitual }: TwinFullPr
                     </linearGradient>
                   </defs>
                 </svg>
-                
+
                 <div className="absolute inset-4 rounded-full overflow-hidden bg-white shadow-lg">
                   {generateAvatar(twin.avatarSeed, 176)}
                 </div>
-                
+
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gradient-to-br from-amber-400 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-lg shadow-lg">
                   Level {twin.level}
                 </div>
@@ -137,21 +137,19 @@ export default function TwinFull({ twin, onClose, onSimulateRitual }: TwinFullPr
             <div className="flex gap-2 mb-6 border-b border-gray-200">
               <button
                 onClick={() => setSelectedTab('stats')}
-                className={`px-6 py-3 font-medium transition-colors ${
-                  selectedTab === 'stats'
+                className={`px-6 py-3 font-medium transition-colors ${selectedTab === 'stats'
                     ? 'text-amber-600 border-b-2 border-amber-600'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
               >
                 Attributes
               </button>
               <button
                 onClick={() => setSelectedTab('history')}
-                className={`px-6 py-3 font-medium transition-colors ${
-                  selectedTab === 'history'
+                className={`px-6 py-3 font-medium transition-colors ${selectedTab === 'history'
                     ? 'text-amber-600 border-b-2 border-amber-600'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
               >
                 History
               </button>
@@ -184,10 +182,10 @@ export default function TwinFull({ twin, onClose, onSimulateRitual }: TwinFullPr
                   );
                 })}
 
-                {/* Simulate Rituals */}
-                {onSimulateRitual && (
+                {/* Simulate Rituals (Dev Only) */}
+                {process.env.NODE_ENV === 'development' && onSimulateRitual && (
                   <div className="mt-8 p-6 bg-amber-50 rounded-2xl border border-amber-200">
-                    <h3 className="font-bold text-lg mb-4 text-gray-900">Test Rituals</h3>
+                    <h3 className="font-bold text-lg mb-4 text-gray-900">Test Rituals (Dev)</h3>
                     <div className="grid grid-cols-2 gap-3">
                       {Object.entries(RITUALS).map(([id, ritual]) => (
                         <button

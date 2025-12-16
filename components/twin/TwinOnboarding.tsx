@@ -52,7 +52,7 @@ export default function TwinOnboarding({ onComplete, onSkip }: TwinOnboardingPro
   function generateAvatar(seed: number) {
     const hue = (seed * 137.508) % 360;
     const shapes = Math.floor((seed % 5) + 3);
-    
+
     return (
       <svg viewBox="0 0 100 100" className="w-full h-full">
         <defs>
@@ -61,9 +61,9 @@ export default function TwinOnboarding({ onComplete, onSkip }: TwinOnboardingPro
             <stop offset="100%" stopColor={`hsl(${(hue + 60) % 360}, 70%, 40%)`} />
           </linearGradient>
         </defs>
-        
+
         <circle cx="50" cy="50" r="48" fill={`url(#grad-onboard-${seed})`} opacity="0.3" />
-        
+
         {Array.from({ length: shapes }).map((_, i) => {
           const angle = (360 / shapes) * i;
           const x = 50 + 25 * Math.cos((angle * Math.PI) / 180);
@@ -78,7 +78,7 @@ export default function TwinOnboarding({ onComplete, onSkip }: TwinOnboardingPro
             />
           );
         })}
-        
+
         <circle cx="50" cy="50" r="12" fill={`hsl(${hue}, 90%, 70%)`} />
       </svg>
     );
@@ -96,15 +96,14 @@ export default function TwinOnboarding({ onComplete, onSkip }: TwinOnboardingPro
           <div className="text-6xl mb-4">🌟</div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Your Soul Twin</h2>
           <p className="text-gray-600">Your spiritual companion on the journey to inner peace</p>
-          
+
           {/* Progress */}
           <div className="flex gap-2 justify-center mt-6">
             {[1, 2, 3].map((s) => (
               <div
                 key={s}
-                className={`h-2 w-16 rounded-full ${
-                  s <= step ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gray-200'
-                }`}
+                className={`h-2 w-16 rounded-full ${s <= step ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gray-200'
+                  }`}
               />
             ))}
           </div>
@@ -148,11 +147,10 @@ export default function TwinOnboarding({ onComplete, onSkip }: TwinOnboardingPro
                   <button
                     key={path.id}
                     onClick={() => setSelectedPath(path.id)}
-                    className={`p-6 rounded-2xl border-2 text-left transition-all ${
-                      selectedPath === path.id
+                    className={`p-6 rounded-2xl border-2 text-left transition-all ${selectedPath === path.id
                         ? 'border-amber-500 bg-amber-50 shadow-lg scale-105'
                         : 'border-gray-200 hover:border-amber-300 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     <div className="text-4xl mb-3">{path.icon}</div>
                     <h4 className="font-bold text-gray-900 mb-2">{path.name}</h4>
@@ -173,7 +171,7 @@ export default function TwinOnboarding({ onComplete, onSkip }: TwinOnboardingPro
               className="text-center"
             >
               <h3 className="text-xl font-bold mb-6 text-gray-900">Choose your twin's appearance</h3>
-              
+
               <div className="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden shadow-xl bg-white">
                 {generateAvatar(avatarSeed)}
               </div>
@@ -184,8 +182,13 @@ export default function TwinOnboarding({ onComplete, onSkip }: TwinOnboardingPro
               >
                 🎲 Generate New Look
               </button>
-              
-              <p className="text-sm text-gray-500 mt-4">Click to generate different appearances</p>
+
+              <div className="mt-8 p-4 bg-amber-50/50 rounded-xl border border-amber-100">
+                <p className="text-amber-800 font-serif italic text-lg leading-relaxed">
+                  "I grow when you perform real-world rituals.<br />
+                  Without them, I stay asleep."
+                </p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

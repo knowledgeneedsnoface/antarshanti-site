@@ -13,7 +13,7 @@ interface TwinMiniProps {
 function generateAvatar(seed: number) {
   const hue = (seed * 137.508) % 360;
   const shapes = Math.floor((seed % 5) + 3);
-  
+
   return (
     <svg viewBox="0 0 100 100" className="w-full h-full">
       <defs>
@@ -22,9 +22,9 @@ function generateAvatar(seed: number) {
           <stop offset="100%" stopColor={`hsl(${(hue + 60) % 360}, 70%, 40%)`} />
         </linearGradient>
       </defs>
-      
+
       <circle cx="50" cy="50" r="48" fill={`url(#grad-${seed})`} opacity="0.3" />
-      
+
       {Array.from({ length: shapes }).map((_, i) => {
         const angle = (360 / shapes) * i;
         const x = 50 + 25 * Math.cos((angle * Math.PI) / 180);
@@ -39,7 +39,7 @@ function generateAvatar(seed: number) {
           />
         );
       })}
-      
+
       <circle cx="50" cy="50" r="12" fill={`hsl(${hue}, 90%, 70%)`} />
     </svg>
   );
@@ -47,6 +47,8 @@ function generateAvatar(seed: number) {
 
 export default function TwinMini({ twin, onClick }: TwinMiniProps) {
   if (!twin) return null;
+
+  const hasRitual = twin.history && twin.history.length > 0;
 
   const xpNeeded = xpToNextLevel(twin.level);
   const xpProgress = (twin.xp / xpNeeded) * 100;
@@ -90,15 +92,31 @@ export default function TwinMini({ twin, onClick }: TwinMiniProps) {
             </linearGradient>
           </defs>
         </svg>
-        
-        {/* Avatar */}
-        <div className="absolute inset-1 rounded-full overflow-hidden">
+
+        {/* Avatar Container - Controlled Visuals */}
+        <div className={`absolute inset-1 rounded-full overflow-hidden transition-all duration-700 ${hasRitual ? 'opacity-100 scale-100' : 'opacity-60 scale-95 grayscale-[0.5]'
+          }`}>
           {generateAvatar(twin.avatarSeed)}
+
+          {/* Sleep Overlay if inactive */}
+          {!hasRitual && (
+            <div className="absolute inset-0 bg-blue-900/20 backdrop-blur-[1px]" />
+          )}
         </div>
-        
-        {/* Level badge */}
-        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-lg">
-          {twin.level}
+
+        {/* Glow/Pulse Effect - Only when active */}
+        {hasRitual && (
+          <motion.div
+            className="absolute inset-0 rounded-full bg-amber-400/20 z-[-1]"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+        )}
+
+        {/* Level badge - Hide if asleep? Or show "Zzz"? Keeping badge but maybe distinct style? */}
+        <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-lg transition-colors ${hasRitual ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white' : 'bg-gray-400 text-white'
+          }`}>
+          {hasRitual ? twin.level : '1'}
         </div>
       </div>
 
@@ -106,7 +124,7 @@ export default function TwinMini({ twin, onClick }: TwinMiniProps) {
       <div className="flex flex-col gap-1 min-w-[120px]">
         <div className="text-sm font-bold text-white text-left">{twin.name}</div>
         <div className="text-xs text-white/70 text-left">{twin.path} Path</div>
-        
+
         {/* Mini attribute bars */}
         <div className="flex gap-1 mt-1">
           {(['calmness', 'discipline'] as const).map((attr) => (
