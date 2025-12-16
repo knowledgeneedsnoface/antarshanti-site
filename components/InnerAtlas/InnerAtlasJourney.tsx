@@ -97,6 +97,7 @@ export default function InnerAtlasJourney() {
                 if (Date.now() - state.timestamp < 86400000) {
                     setSavedJourneyExists(true);
                     setShowWelcomeBack(true);
+                    // Don't auto-restore yet - wait for user to choose
                 }
             } catch (e) {
                 console.error('Failed to load saved journey:', e);
@@ -328,13 +329,15 @@ export default function InnerAtlasJourney() {
                 velocity={effectiveVelocity}
             />
 
-            {/* 3. CINEMATIC OVERLAY (UI) */}
-            <CinematicOverlay
-                phase={phase}
-                onSteer={handleSteer}
-                velocity={effectiveVelocity}
-                resistance={resistance}
-            />
+            {/* 3. CINEMATIC OVERLAY (Choices) */}
+            {!showWelcomeBack && (
+                <CinematicOverlay
+                    phase={phase}
+                    onSteer={handleSteer}
+                    velocity={effectiveVelocity}
+                    resistance={resistance}
+                />
+            )}
 
             {/* 4. SFX CONTROLLER (Hidden) */}
             {/* <AmbientAudioController biome={biome} velocity={effectiveVelocity} resistance={resistance} /> */}
