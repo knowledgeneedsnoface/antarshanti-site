@@ -145,7 +145,7 @@ export default function DailyRitualHome({
                         <Sun size={14} /> Your Daily Ritual
                     </h3>
                     <h1 className="text-2xl font-serif text-[#2D2438]">
-                        {ritual.subline}
+                        Today's ritual is simple.
                     </h1>
                     {gitaLine && (
                         <motion.p
