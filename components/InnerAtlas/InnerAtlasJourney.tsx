@@ -8,6 +8,7 @@ import CinematicOverlay from "./CinematicOverlay";
 import { REALM_SCENARIOS } from "./RealmConfig";
 import SoulTwinReaction from "./SoulTwinReaction";
 import TransitionOverlay from "./TransitionOverlay";
+import JourneyEnding from "./JourneyEnding";
 
 // ---------------------------------------------------------------------
 // TYPES & CONFIG
@@ -25,7 +26,8 @@ export type JourneyPhase =
     | "battle_transition"
     | "power_choice"
     | "power_transition"
-    | "gita_reveal";
+    | "gita_reveal"
+    | "journey_ending";
 
 export type BiomeType = "void" | "storm" | "forest" | "lake" | "bazaar" | "desert" | "cosmic";
 
@@ -464,6 +466,18 @@ export default function InnerAtlasJourney() {
                     >
                         <p className="text-white/80 text-sm">No rush. Reflect as long as you need.</p>
                     </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* 11. JOURNEY ENDING SEQUENCE (30 seconds) */}
+            <AnimatePresence>
+                {phase === "journey_ending" && (
+                    <JourneyEnding
+                        onComplete={() => {
+                            // Navigate to Daily Ritual Home
+                            window.location.href = '/get-started';
+                        }}
+                    />
                 )}
             </AnimatePresence>
 

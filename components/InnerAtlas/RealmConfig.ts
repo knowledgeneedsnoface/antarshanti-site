@@ -85,7 +85,7 @@ export const REALM_SCENARIOS: Partial<Record<JourneyPhase, RealmScenario>> = {
     // --- SHADOW REALM ---
     shadow_choice: {
         narrative: "The shadow draws near. What do you fear most?",
-        nextPhase: "arrival", // Loop back to start for now (or Battle if ready)
+        nextPhase: "journey_ending", // Trigger 30-second ending sequence
         options: [
             {
                 id: "failure",
