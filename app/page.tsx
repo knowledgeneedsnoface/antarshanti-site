@@ -23,6 +23,7 @@ import LotusTimeline from "./(components)/LotusTimeline";
 import GratitudeSeal from "./(components)/GratitudeSeal";
 import CallToContinue from "./(components)/CallToContinue";
 import QuickBuySticky from "./(components)/QuickBuySticky";
+import DailyRituals from "./(components)/DailyRituals";
 
 import AboutFounderSection from "./(components)/AboutFounderSection";
 import VoicesOfPeace from "./(components)/VoicesOfPeace";
@@ -37,6 +38,7 @@ export default function Home() {
         <main>
           <AuraReset />
           <RitualRiver />
+          <DailyRituals />
           <FlameMeditation />
           <LotusTimeline />
           <GratitudeSeal />
