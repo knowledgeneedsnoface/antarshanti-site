@@ -18,7 +18,7 @@ export default function RitualVisual({ visual, opacity = 0.25 }: RitualVisualPro
         : false;
 
     // Map visual types to components
-    const visualComponents: Record<string, JSX.Element> = {
+    const visualComponents: Record<string, React.ReactElement> = {
         sky_horizon: <SkyHorizon opacity={opacity} prefersReducedMotion={prefersReducedMotion} />,
         full_moon_sky: <FullMoonSky opacity={opacity} prefersReducedMotion={prefersReducedMotion} />,
         ground_forward_drift: <GroundForwardDrift opacity={opacity} prefersReducedMotion={prefersReducedMotion} />,
