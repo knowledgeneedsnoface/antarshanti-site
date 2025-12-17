@@ -1,0 +1,383 @@
+{
+    "meta": {
+        "version": "1.0",
+        "cycleType": "lunar_30_days",
+        "maxBreathSeconds": 20,
+        "languages": [
+            "hinglish",
+            "english"
+        ]
+    },
+    "visualModes": {
+        "DRISHTI": {
+            "background": "sky_horizon",
+            "motion": "slow_parallax",
+            "opacity": 0.25
+        },
+        "KARMA": {
+            "background": "ground_forward_drift",
+            "motion": "subtle_forward",
+            "opacity": 0.2
+        },
+        "SHRAVANA": {
+            "background": "sound_waves",
+            "motion": "expanding_ripples",
+            "opacity": 0.25
+        },
+        "PRANA": {
+            "background": "breath_glow",
+            "motion": "single_expand_contract",
+            "opacity": 0.3
+        },
+        "SMARANA": {
+            "background": "warm_particles",
+            "motion": "floating_random",
+            "opacity": 0.2
+        }
+    },
+    "rituals": [
+        {
+            "day": 1,
+            "lunarPhase": "new_moon",
+            "mode": "SMARANA",
+            "visual": "warm_particles",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Aaj kuch theek karne ki zarurat nahi.",
+                "english": "Nothing needs fixing today."
+            }
+        },
+        {
+            "day": 2,
+            "lunarPhase": "new_moon",
+            "mode": "SHRAVANA",
+            "visual": "sound_waves",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Sabse halki awaaz suno.",
+                "english": "Listen to the quietest sound."
+            },
+            "fallback": {
+                "hinglish": "Awaaz na ho toh khamoshi suno.",
+                "english": "If no sound appears, listen to silence."
+            }
+        },
+        {
+            "day": 3,
+            "lunarPhase": "new_moon",
+            "mode": "PRANA",
+            "visual": "breath_glow",
+            "durationSeconds": 15,
+            "copy": {
+                "hinglish": "Ek gehri saans.",
+                "english": "One slow breath."
+            },
+            "note": "single_breath_only"
+        },
+        {
+            "day": 4,
+            "lunarPhase": "waxing",
+            "mode": "KARMA",
+            "visual": "ground_forward_drift",
+            "durationSeconds": 30,
+            "copy": {
+                "hinglish": "Thoda sa chalo.",
+                "english": "Take a short walk."
+            }
+        },
+        {
+            "day": 5,
+            "lunarPhase": "waxing",
+            "mode": "DRISHTI",
+            "visual": "flame_focus",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Jyoti ko dekho.",
+                "english": "Look at the flame."
+            }
+        },
+        {
+            "day": 6,
+            "lunarPhase": "waxing",
+            "mode": "SHRAVANA",
+            "visual": "sound_waves",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Awaazon ko jaane do.",
+                "english": "Let sounds pass through."
+            }
+        },
+        {
+            "day": 7,
+            "lunarPhase": "waxing",
+            "mode": "SMARANA",
+            "visual": "warm_particles",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Jo tumhara hai, wahi karo.",
+                "english": "Do what is yours."
+            }
+        },
+        {
+            "day": 8,
+            "lunarPhase": "waxing",
+            "mode": "KARMA",
+            "visual": "ground_forward_drift",
+            "durationSeconds": 25,
+            "copy": {
+                "hinglish": "Ek chhota kaam dheere karo.",
+                "english": "Do one small thing slowly."
+            }
+        },
+        {
+            "day": 9,
+            "lunarPhase": "waxing",
+            "mode": "DRISHTI",
+            "visual": "sky_horizon",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Aasmaan ki gehraai dekho.",
+                "english": "Notice the depth of the sky."
+            }
+        },
+        {
+            "day": 10,
+            "lunarPhase": "waxing",
+            "mode": "SHRAVANA",
+            "visual": "sound_waves",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Panchhiyon ki awaaz suno.",
+                "english": "Listen to birds."
+            },
+            "fallback": {
+                "hinglish": "Hawa ki awaaz suno.",
+                "english": "Listen to the air."
+            }
+        },
+        {
+            "day": 11,
+            "lunarPhase": "waxing",
+            "mode": "PRANA",
+            "visual": "breath_glow",
+            "durationSeconds": 15,
+            "copy": {
+                "hinglish": "Pair zameen par mehsoos karo.",
+                "english": "Feel your feet on the ground."
+            }
+        },
+        {
+            "day": 12,
+            "lunarPhase": "waxing",
+            "mode": "KARMA",
+            "visual": "ground_forward_drift",
+            "durationSeconds": 30,
+            "copy": {
+                "hinglish": "Sharir ko chalne do.",
+                "english": "Let the body move."
+            }
+        },
+        {
+            "day": 13,
+            "lunarPhase": "waxing",
+            "mode": "SMARANA",
+            "visual": "warm_particles",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Aaj kuch zor dene ki zarurat nahi.",
+                "english": "Nothing needs forcing today."
+            }
+        },
+        {
+            "day": 14,
+            "lunarPhase": "waxing",
+            "mode": "DRISHTI",
+            "visual": "sky_horizon",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Roshni ko badalte dekho.",
+                "english": "Watch the light change."
+            }
+        },
+        {
+            "day": 15,
+            "lunarPhase": "full_moon",
+            "mode": "DRISHTI",
+            "visual": "full_moon_sky",
+            "durationSeconds": 25,
+            "copy": {
+                "hinglish": "Chaand ko dekho. Bas dekho.",
+                "english": "Look at the moon. Just look."
+            },
+            "fallback": {
+                "hinglish": "Andhere ko dekho.",
+                "english": "Look into the darkness."
+            }
+        },
+        {
+            "day": 16,
+            "lunarPhase": "waning",
+            "mode": "SHRAVANA",
+            "visual": "night_sound_waves",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Raat ki awaazon ko suno.",
+                "english": "Listen to night sounds."
+            }
+        },
+        {
+            "day": 17,
+            "lunarPhase": "waning",
+            "mode": "KARMA",
+            "visual": "ground_forward_drift",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Ek cheez apni jagah par rakho.",
+                "english": "Put one thing back in its place."
+            }
+        },
+        {
+            "day": 18,
+            "lunarPhase": "waning",
+            "mode": "SMARANA",
+            "visual": "warm_particles",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Jo beet gaya, use pakadne ki zarurat nahi.",
+                "english": "What has passed does not need holding."
+            }
+        },
+        {
+            "day": 19,
+            "lunarPhase": "waning",
+            "mode": "DRISHTI",
+            "visual": "breath_observation",
+            "durationSeconds": 15,
+            "copy": {
+                "hinglish": "Saans ko badle bina dekho.",
+                "english": "Watch the breath without changing it."
+            }
+        },
+        {
+            "day": 20,
+            "lunarPhase": "waning",
+            "mode": "KARMA",
+            "visual": "body_stretch",
+            "durationSeconds": 15,
+            "copy": {
+                "hinglish": "Haath upar uthao. Phir chhod do.",
+                "english": "Raise your arms. Then let them drop."
+            }
+        },
+        {
+            "day": 21,
+            "lunarPhase": "waning",
+            "mode": "SHRAVANA",
+            "visual": "sound_waves",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Parichit awaaz ko naye tareeke se suno.",
+                "english": "Hear a familiar sound freshly."
+            }
+        },
+        {
+            "day": 22,
+            "lunarPhase": "waning",
+            "mode": "SMARANA",
+            "visual": "warm_particles",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Yeh pal kaafi hai.",
+                "english": "This moment is sufficient."
+            }
+        },
+        {
+            "day": 23,
+            "lunarPhase": "waning",
+            "mode": "PRANA",
+            "visual": "breath_glow",
+            "durationSeconds": 15,
+            "copy": {
+                "hinglish": "Ek saans. Bas.",
+                "english": "One breath. That's enough."
+            }
+        },
+        {
+            "day": 24,
+            "lunarPhase": "waning",
+            "mode": "DRISHTI",
+            "visual": "nature_stillness",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Kisi paudhe ko dekho.",
+                "english": "Look at a plant."
+            }
+        },
+        {
+            "day": 25,
+            "lunarPhase": "waning",
+            "mode": "KARMA",
+            "visual": "ground_forward_drift",
+            "durationSeconds": 30,
+            "copy": {
+                "hinglish": "Bina manzil ke thoda chalo.",
+                "english": "Walk without a destination."
+            }
+        },
+        {
+            "day": 26,
+            "lunarPhase": "waning",
+            "mode": "SHRAVANA",
+            "visual": "sound_gap",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Awaazon ke beech ki khamoshi suno.",
+                "english": "Listen to the silence between sounds."
+            }
+        },
+        {
+            "day": 27,
+            "lunarPhase": "new_moon",
+            "mode": "SMARANA",
+            "visual": "warm_particles",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Aaram lena theek hai.",
+                "english": "It is okay to rest."
+            }
+        },
+        {
+            "day": 28,
+            "lunarPhase": "new_moon",
+            "mode": "DRISHTI",
+            "visual": "flame_focus",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Aaj jyoti ko phir dekho.",
+                "english": "Look at the flame again."
+            }
+        },
+        {
+            "day": 29,
+            "lunarPhase": "new_moon",
+            "mode": "KARMA",
+            "visual": "still_body",
+            "durationSeconds": 30,
+            "copy": {
+                "hinglish": "30 second kuch mat karo.",
+                "english": "Do nothing for 30 seconds."
+            }
+        },
+        {
+            "day": 30,
+            "lunarPhase": "new_moon",
+            "mode": "SMARANA",
+            "visual": "warm_particles",
+            "durationSeconds": 20,
+            "copy": {
+                "hinglish": "Dishti mil gayi hai.",
+                "english": "Direction is enough."
+            }
+        }
+    ]
+}
