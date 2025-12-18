@@ -104,6 +104,7 @@ export default function DailyRitualEngine() {
                             primaryText={ritual.copy.hinglish}
                             secondaryText={ritual.copy.english}
                             durationSeconds={15}
+                            allowManualAdvance={true}
                             onAdvance={advanceStage}
                         />
                     )}

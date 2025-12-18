@@ -36,13 +36,14 @@ export default function RitualStage({
 
     useEffect(() => {
         // Auto-advance if duration is provided
-        if (durationSeconds && !allowManualAdvance) {
+        // We allow auto-advance even if manual advance is enabled (it acts as a timeout)
+        if (durationSeconds) {
             const timer = setTimeout(() => {
                 handleAdvance();
             }, durationSeconds * 1000);
             return () => clearTimeout(timer);
         }
-    }, [durationSeconds, allowManualAdvance]);
+    }, [durationSeconds]); // Removed allowManualAdvance dependency as it shouldn't block auto-advance
 
     const handleAdvance = () => {
         setIsExiting(true);
