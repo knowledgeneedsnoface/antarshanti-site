@@ -3,12 +3,12 @@
 /* Ultra-minimal spiritual design system */
 
 :root {
-  --saffron-aura: #F59E0B;
-  --lotus-white: #FFFFFF;
-  --incense-grey: #6B7280;
-  --spiritual-black: #1F2937;
-  --amber-glow: #FCD34D;
-  --copper-depth: #92400E;
+  --saffron-aura: #FCD34D; /* Luminous Gold */
+  --lotus-white: #FAFAFA;
+  --incense-grey: #A1A1AA;
+  --spiritual-black: #fafafa; /* Text is now Light on Dark */
+  --amber-glow: #F59E0B;
+  --copper-depth: #FCD34D; /* Accents are now Gold */
 }
 
 * {
@@ -16,20 +16,22 @@
 }
 
 html {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-manrope), sans-serif;
+  background-color: #030014; /* Deep Space */
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Crimson Text', serif;
-  font-weight: 400;
-  line-height: 1.2;
+  font-family: var(--font-cormorant), serif;
+  font-weight: 300; /* Thinner weights for elegance */
+  line-height: 1.1;
   letter-spacing: -0.02em;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   line-height: 1.6;
   color: var(--spiritual-black);
+  background-color: #030014;
 }
 
 /* Accessibility: Hide custom cursor for keyboard users */

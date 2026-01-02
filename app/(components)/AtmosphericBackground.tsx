@@ -13,14 +13,13 @@ export default function AtmosphericBackground() {
 
     const backgroundColor = useTransform(
         scrollYProgress,
-        [0, 0.25, 0.5, 0.6, 0.8, 1],
         [
-            "#fbfaf8", // Start: Morning Stillness (Warm White)
-            "#fdf6e4", // Transition: Gentle Sun (Soft Cream)
-            "#e7e5e4", // Mid: Stone Grounding (Warm Grey)
-            "#0a0908", // Deep: Cosmic Void (Rich Black)
-            "#1c1917", // Hold: Deep Earth (Warm Black)
-            "#fff0f5", // End: Rebirth (Lavender Blush)
+            "#030014", // Start: Deep Space (No more white start)
+            "#0c0a09", // Transition: Warm Void
+            "#1c1917", // Mid: Deep Earth
+            "#0a0908", // Deep: Abyssal
+            "#0f172a", // Hold: Midnight
+            "#030014", // End: Return to Space
         ]
     );
 

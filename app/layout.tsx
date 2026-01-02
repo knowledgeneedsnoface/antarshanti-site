@@ -1,45 +1,30 @@
 // app/layout.tsx
 import "./globals.css";
-import { Inter, Crimson_Text } from "next/font/google";
-import { CartProvider } from "./(components)/CartContext";
-import { ThemeProvider } from "./(components)/theme-system/ThemeContext";
-import GlobalNavbar from "./(components)/GlobalNavbar";
-import GlobalFooter from "./(components)/GlobalFooter";
-import ThemeRenderer from "./(components)/theme-system/ThemeRenderer";
-import ThemeSwitcher from "./(components)/theme-system/ThemeSwitcher";
-import MobileSettingsFab from "./(components)/MobileSettingsFab";
-import TwinWrapper from "./TwinWrapper";
-import LiteModeToggle from "./(components)/LiteModeToggle";
-import AccessibilityManager from "./(components)/AccessibilityManager";
-import TransitionController from "./(components)/TransitionController";
-import BatteryManager from "./(components)/BatteryManager";
-import Watermark from "./(components)/Watermark";
-import BreathingIndicator from "./(components)/BreathingIndicator";
-import SmoothScroll from "./(components)/SmoothScroll";
+import { Manrope, Cormorant_Garamond } from "next/font/google"; // High-End Lusion Stack
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-manrope",
   display: "swap"
 });
 
-const crimsonText = Crimson_Text({
-  weight: ["400", "600"],
+const cormorantGaramond = Cormorant_Garamond({
+  weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-crimson",
+  variable: "--font-cormorant",
   display: "swap"
 });
 
 export const metadata = {
-  title: "AntarShanti - Daily Rituals for Inner Peace",
-  description: "10 minutes of puja. A whole day of inner peace. Modern spiritual tools for ancient wisdom.",
+  title: "AntarShanti - The Inner Atlas",
+  description: "A guided return to presence. 10 minutes of silence.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${crimsonText.variable}`}>
-      <body className={`${inter.className} antialiased`}>
+    <html lang="en" className={`${manrope.variable} ${cormorantGaramond.variable}`}>
+      <body className={`${manrope.className} antialiased bg-[#030014]`}>
         <ThemeProvider>
           <CartProvider>
             {/* Dynamic spiritual ambience background */}
