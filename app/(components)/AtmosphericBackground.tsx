@@ -13,6 +13,7 @@ export default function AtmosphericBackground() {
 
     const backgroundColor = useTransform(
         scrollYProgress,
+        [0, 0.25, 0.5, 0.6, 0.8, 1],
         [
             "#030014", // Start: Deep Space (No more white start)
             "#0c0a09", // Transition: Warm Void
