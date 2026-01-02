@@ -56,7 +56,7 @@ export default function EtherealScene() {
                             intensity={1.5}
                             radius={0.6}
                         />
-                        <Noise opacity={0.1} /> {/* Higher grain for cinematic feel */}
+                        <Noise opacity={0.1} />
                         <Vignette eskil={false} offset={0.1} darkness={1.1} />
                     </EffectComposer>
                 </Suspense>
