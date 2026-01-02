@@ -1,4 +1,4 @@
-```
+
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
@@ -64,4 +64,4 @@ export default function EtherealScene() {
         </div>
     );
 }
-```
+
