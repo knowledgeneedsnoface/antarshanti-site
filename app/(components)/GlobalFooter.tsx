@@ -5,11 +5,11 @@ import Link from "next/link";
 
 export default function GlobalFooter() {
   return (
-    <footer className="relative bg-gradient-to-b from-amber-900 via-orange-900 to-amber-950 text-white overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-amber-500 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-500 rounded-full blur-3xl" />
+    <footer className="relative bg-transparent text-gray-800 overflow-hidden">
+      {/* Background decoration - optional subtle gradients */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-amber-200 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-200 rounded-full blur-3xl" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-6 py-16">
@@ -17,41 +17,41 @@ export default function GlobalFooter() {
           {/* Logo & Description */}
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-6 hover:opacity-80 transition-opacity">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center text-2xl">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-2xl text-white">
                 🕉
               </div>
-              <span className="text-3xl font-bold">AntarShanti</span>
+              <span className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">AntarShanti</span>
             </Link>
-            <p className="text-amber-100 text-lg leading-relaxed mb-6">
+            <p className="text-gray-600 text-lg leading-relaxed mb-6">
               10 minutes of puja. A whole day of inner peace.
             </p>
-            <p className="text-amber-200/80 leading-relaxed">
-              Modern spiritual tools for ancient wisdom. Experience daily rituals 
+            <p className="text-gray-500 leading-relaxed">
+              Modern spiritual tools for ancient wisdom. Experience daily rituals
               that ground you, calm you, and reconnect you with your true self.
             </p>
           </div>
 
           {/* About Us */}
           <div>
-            <h3 className="text-xl font-bold mb-6 text-amber-200">About Us</h3>
+            <h3 className="text-xl font-bold mb-6 text-amber-700">About Us</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/#about" className="text-amber-100 hover:text-white transition-colors">
+                <Link href="/#about" className="text-gray-600 hover:text-amber-600 transition-colors">
                   Our Story
                 </Link>
               </li>
               <li>
-                <Link href="/#founder" className="text-amber-100 hover:text-white transition-colors">
+                <Link href="/#founder" className="text-gray-600 hover:text-amber-600 transition-colors">
                   Meet the Founder
                 </Link>
               </li>
               <li>
-                <Link href="/" className="text-amber-100 hover:text-white transition-colors">
+                <Link href="/" className="text-gray-600 hover:text-amber-600 transition-colors">
                   Experience Journey
                 </Link>
               </li>
               <li>
-                <Link href="/checkout" className="text-amber-100 hover:text-white transition-colors">
+                <Link href="/checkout" className="text-gray-600 hover:text-amber-600 transition-colors">
                   Get Started
                 </Link>
               </li>
@@ -60,25 +60,25 @@ export default function GlobalFooter() {
 
           {/* Contact & Legal */}
           <div>
-            <h3 className="text-xl font-bold mb-6 text-amber-200">Support</h3>
+            <h3 className="text-xl font-bold mb-6 text-amber-700">Support</h3>
             <ul className="space-y-3">
               <li>
-                <a href="mailto:contact@antarshanti.com" className="text-amber-100 hover:text-white transition-colors">
+                <a href="mailto:contact@antarshanti.com" className="text-gray-600 hover:text-amber-600 transition-colors">
                   Contact Us
                 </a>
               </li>
               <li>
-                <Link href="/#faq" className="text-amber-100 hover:text-white transition-colors">
+                <Link href="/#faq" className="text-gray-600 hover:text-amber-600 transition-colors">
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link href="/checkout" className="text-amber-100 hover:text-white transition-colors">
+                <Link href="/checkout" className="text-gray-600 hover:text-amber-600 transition-colors">
                   Order Now
                 </Link>
               </li>
               <li>
-                <a href="tel:+919876543210" className="text-amber-100 hover:text-white transition-colors">
+                <a href="tel:+919876543210" className="text-gray-600 hover:text-amber-600 transition-colors">
                   Call: +91 98765 43210
                 </a>
               </li>
@@ -87,11 +87,11 @@ export default function GlobalFooter() {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-amber-700/50 my-8" />
+        <div className="border-t border-amber-200 my-8" />
 
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-amber-200/80 text-sm">
+          <p className="text-gray-500 text-sm">
             © {new Date().getFullYear()} AntarShanti. All rights reserved. Made with 🙏 in India.
           </p>
 
@@ -101,7 +101,7 @@ export default function GlobalFooter() {
               href="https://instagram.com/antarshanti"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-amber-200 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-amber-600 transition-colors"
               aria-label="Instagram"
             >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@ export default function GlobalFooter() {
               href="https://twitter.com/antarshanti"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-amber-200 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-amber-600 transition-colors"
               aria-label="Twitter"
             >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -123,7 +123,7 @@ export default function GlobalFooter() {
               href="https://facebook.com/antarshanti"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-amber-200 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-amber-600 transition-colors"
               aria-label="Facebook"
             >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
