@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { MeshTransmissionMaterial } from "@react-three/drei";
+import { useScroll } from "framer-motion";
 
 // Slower, smoother noise for "breathing" liquid
 const noiseFunction = `
@@ -37,20 +38,47 @@ const noiseFunction = `
 
 export default function FluidMesh() {
   const meshRef = useRef<THREE.Mesh>(null);
-  const { viewport, clock } = useThree();
-
-  // Custom Material Prop Ref
+  const { viewport } = useThree();
   const materialRef = useRef<any>(null);
 
-  useFrame((state) => {
-    // 1. Uniforms Update
+  // Track scroll velocity manually since we are outside React Context for Lenis sometimes
+  const lastScroll = useRef(0);
+  const velocity = useRef(0);
+
+  useFrame((state, delta) => {
+    // 1. Calculate Scroll Velocity
+    const currentScroll = window.scrollY;
+    const deltaScroll = Math.abs(currentScroll - lastScroll.current);
+    const instantVelocity = deltaScroll * 0.01; // Scale down
+
+    // Smooth the velocity (Lerp)
+    velocity.current += (instantVelocity - velocity.current) * 0.1;
+    lastScroll.current = currentScroll;
+
+    // 2. Uniforms Update
     if (materialRef.current && materialRef.current.userData.shader) {
       materialRef.current.userData.shader.uniforms.uTime.value = state.clock.getElapsedTime();
+
+      // Pass velocity to shader if needed, or just use it for material props below
     }
 
-    // 2. Slow Rotation
+    // 3. Dynamic Material Properties based on Velocity
+    if (materialRef.current) {
+      // Distortion increases with speed (0.5 -> 1.5)
+      const targetDistortion = 0.5 + Math.min(velocity.current * 2, 1.0);
+      materialRef.current.distortionScale = targetDistortion;
+
+      // Chromatic Aberration increases significantly (0.05 -> 0.3)
+      // This causes the colors to "tear" apart when moving fast
+      const targetAbberation = 0.05 + Math.min(velocity.current * 0.5, 0.25);
+      materialRef.current.chromaticAberration = targetAbberation;
+    }
+
+    // 4. Mesh Movement based on Scroll (Parallax)
+    // We want the mesh to feel like it's dragging behind
     if (meshRef.current) {
-      meshRef.current.rotation.z = state.clock.getElapsedTime() * 0.02; // Slow gentle spin
+      meshRef.current.rotation.z = state.clock.getElapsedTime() * 0.02;
+      // meshRef.current.position.y = -window.scrollY * 0.001; // Optional: move mesh up/down
     }
   });
 
@@ -69,25 +97,21 @@ export default function FluidMesh() {
       `
         #include <begin_vertex>
         
-        // Large, slow breathing waves
         float noiseFreq = 0.3;
         float noiseAmp = 0.8;
         vec2 noisePos = vec2(position.x * noiseFreq + uTime * 0.1, position.y * noiseFreq);
         float elevation = snoise(noisePos) * noiseAmp;
         
-        // Secondary detail wave
         float detailFreq = 1.2;
         float detailAmp = 0.2;
         float detail = snoise(vec2(position.x * detailFreq - uTime * 0.2, position.y * detailFreq)) * detailAmp;
 
         transformed.z += elevation + detail;
         
-        // Recalculate normal for lighting!
         vNormal = normalize(vec3(elevation, elevation, 1.0));
       `
     );
 
-    // Store shader ref for updates
     if (materialRef.current) {
       materialRef.current.userData.shader = shader;
     }
@@ -95,31 +119,22 @@ export default function FluidMesh() {
 
   return (
     <mesh ref={meshRef} rotation={[0, 0, 0]}>
-      {/* 
-        Heavy subdivision for smooth glass refraction 
-      */}
       <planeGeometry args={[viewport.width * 1.5, viewport.height * 1.5, 256, 256]} />
 
-      {/* 
-        THE LIQUID GOLD MATERIAL
-        MeshTransmissionMaterial simulates thick glass/jelly.
-      */}
       <MeshTransmissionMaterial
         ref={materialRef}
-        onBeforeCompile={onBeforeCompile} // We can inject vertex displacement even into Transmission material!
+        onBeforeCompile={onBeforeCompile}
 
-        /* Glass Properties */
-        transmission={1}      // Fully transmissive
-        thickness={1.5}       // Thick glass for heavy refraction
-        roughness={0.2}       // Slightly frosted
-        chromaticAberration={0.05} // Subtle rainbow at edges
-        anisotropy={0.5}      // Directional blur
+        transmission={1}
+        thickness={1.5}
+        roughness={0.2}
+        chromaticAberration={0.05} // Dynamic
+        anisotropy={0.5}
 
-        /* Color Properties */
-        color="#fbbf24"       // Amber Base
-        resolution={1024}     // High res refraction
-        samples={10}          // Quality
-        distortion={0.5}      // Wobbly refraction
+        color="#fbbf24"
+        resolution={1024}
+        samples={10}
+        distortion={0.5} // Dynamic
         distortionScale={0.5}
         temporalDistortion={0.1}
       />
