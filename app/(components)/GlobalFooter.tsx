@@ -5,11 +5,13 @@ import Link from "next/link";
 
 export default function GlobalFooter() {
   return (
-    <footer className="relative bg-transparent text-gray-800 overflow-hidden">
-      {/* Background decoration - optional subtle gradients */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-amber-200 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-200 rounded-full blur-3xl" />
+    <footer className="relative bg-[#fdfaf6] text-stone-800 overflow-hidden border-t border-stone-200">
+      {/* Background decoration */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-[20%] -left-[10%] w-[500px] h-[500px] bg-amber-200/20 rounded-full blur-[100px]" />
+        <div className="absolute -bottom-[20%] -right-[10%] w-[600px] h-[600px] bg-rose-200/20 rounded-full blur-[120px]" />
+        {/* Grounding Gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-stone-100 to-transparent opacity-80" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-6 py-16">

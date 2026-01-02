@@ -15,12 +15,12 @@ export default function AtmosphericBackground() {
         scrollYProgress,
         [0, 0.25, 0.5, 0.6, 0.8, 1],
         [
-            "#faf9f6", // Start (Mist)
-            "#faf9f6", // Hold Mist
-            "#fff8f0", // Warmth (Amber-ish)
-            "#0c0a09", // Void (Atlas)
-            "#0c0a09", // Hold Void
-            "#fff1f2", // Dawn (Rose-ish)
+            "#fbfaf8", // Start: Morning Stillness (Warm White)
+            "#fdf6e4", // Transition: Gentle Sun (Soft Cream)
+            "#e7e5e4", // Mid: Stone Grounding (Warm Grey)
+            "#0a0908", // Deep: Cosmic Void (Rich Black)
+            "#1c1917", // Hold: Deep Earth (Warm Black)
+            "#fff0f5", // End: Rebirth (Lavender Blush)
         ]
     );
 

@@ -9,15 +9,34 @@ import { Compass, Sparkles, BookOpen, Users } from "lucide-react";
 export default function GlobalNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] bg-transparent">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${isScrolled
+        ? "bg-white/70 backdrop-blur-xl border-b border-stone-200/50 py-3 shadow-sm"
+        : "bg-transparent py-5"
+        }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-xl">
-            🕉
+        <Link href="/" className="group flex items-center gap-3">
+          <div className="relative w-10 h-10 flex items-center justify-center">
+            {/* Pulsing Aura */}
+            <div className="absolute inset-0 bg-amber-400 rounded-full blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
+            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-amber-500 to-rose-500 flex items-center justify-center text-white font-serif font-bold text-xl shadow-inner border border-white/20">
+              🕉
+            </div>
           </div>
-          <span className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+          <span className="text-2xl font-serif font-medium text-stone-800 tracking-tight group-hover:text-amber-700 transition-colors">
             AntarShanti
           </span>
         </Link>
