@@ -1,18 +1,28 @@
 "use client";
 
-import { motion, useMotionValue, useTransform, AnimatePresence, useSpring } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { motion, useMotionValue, useSpring, AnimatePresence, useTransform } from "framer-motion";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function PortalHero() {
     const router = useRouter();
-    const [isHovering, setIsHovering] = useState(false);
-    const [isClicked, setIsClicked] = useState(false);
+    const [step, setStep] = useState<'breath' | 'content'>('breath');
+    // Using a simple state availability check for browser-only logic if needed
 
-    // Mouse tracking for "Curtain Parting" effect
+    // Initial "Guided Moment" sequence
+    useEffect(() => {
+        // Step 1: Breath prompt is visible by default state 'breath'
+
+        // Step 2: Transition to content after delay
+        const timer = setTimeout(() => {
+            setStep('content');
+        }, 4000); // 4 seconds total for the breath moment
+
+        return () => clearTimeout(timer);
+    }, []);
+
     const mouseX = useMotionValue(0);
-
     const handleMouseMove = (e: React.MouseEvent) => {
         if (typeof window === "undefined") return;
         const { clientX } = e;
@@ -20,135 +30,118 @@ export default function PortalHero() {
         mouseX.set(clientX / innerWidth - 0.5);
     };
 
-    // Particles generator
-    const particles = Array.from({ length: 30 });
+    const particles = Array.from({ length: 20 });
 
     return (
         <section
             onMouseMove={handleMouseMove}
-            className="relative w-full h-screen min-h-[800px] overflow-hidden bg-[#0a0502] text-white flex flex-col items-center justify-center z-50 cursor-default"
+            className="relative w-full h-screen min-h-[700px] overflow-hidden bg-[#0a0502] text-white flex flex-col items-center justify-center z-50 cursor-default"
         >
+            {/* Particles - maintain atmosphere */}
+            {particles.map((_, i) => (
+                <Particle key={i} mouseX={mouseX} initialSide={Math.random() < 0.5 ? -1 : 1} />
+            ))}
 
-            {/* Floating Embers with "Curtain Parting" Repulsion */}
-            {particles.map((_, i) => {
-                // Random initial positions
-                const initialX = Math.random() < 0.5 ? -1 : 1; // Left or Right side bias
+            {/* Decorative Center Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-900/10 rounded-full blur-[120px] pointer-events-none" />
 
-                return (
-                    <Particle
-                        key={i}
-                        mouseX={mouseX}
-                        initialSide={initialX}
-                    />
-                );
-            })}
 
-            {/* Main Content */}
-            <div className="z-10 text-center max-w-4xl px-6 relative">
-
-                {/* Decorative glow behind text */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-amber-900/10 rounded-full blur-[100px] pointer-events-none" />
-
-                <motion.h1
-                    className="relative text-6xl md:text-8xl font-thin tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-amber-50 to-amber-200/60 mb-6"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1, duration: 1, ease: "easeOut" }}
-                >
-                    AntarShanti
-                </motion.h1>
-
-                <motion.p
-                    className="relative text-xl md:text-2xl text-amber-100/70 font-light mb-12 max-w-2xl mx-auto leading-relaxed"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3, duration: 1 }}
-                >
-                    Peace is a practice, not a destination.
-                    <br />
-                    <span className="text-base md:text-lg opacity-80 mt-4 block font-normal">
-                        Discover the power of small, daily acts. Through simple, immersive activities, you bring yourself back to the present. This is self-therapy, where you hold the power to find your own peace.
-                    </span>
-                </motion.p>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.8 }}
-                    className="flex flex-col items-center gap-6"
-                >
-                    <button
-                        onClick={() => {
-                            setIsClicked(true);
-                            setTimeout(() => router.push('/inner-atlas'), 1000);
-                        }}
-                        className="group relative px-10 py-4 bg-gradient-to-r from-amber-600 to-orange-600 rounded-full text-white font-medium text-lg tracking-wide shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_-5px_rgba(245,158,11,0.5)] hover:scale-105 transition-all duration-300 overflow-hidden"
-                    >
-                        <span className="relative z-10 flex items-center gap-2">
-                            Start Your Practice
-                            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                        </span>
-                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                    </button>
-
-                    <Link href="/twin/demo" className="text-sm text-amber-200/40 hover:text-amber-200 transition-colors uppercase tracking-widest border-b border-transparent hover:border-amber-200/30 pb-1">
-                        Try Soul Twin Demo
-                    </Link>
-                </motion.div>
-            </div>
-
-            {/* Transition Whiteout Overlay */}
-            <AnimatePresence>
-                {isClicked && (
+            {/* GUIDED MOMENT OVERLAY */}
+            <AnimatePresence mode="wait">
+                {step === 'breath' && (
                     <motion.div
-                        className="fixed inset-0 bg-white z-[100] pointer-events-none"
+                        key="breath"
+                        className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ duration: 1, ease: "easeInOut" }}
-                    />
+                        exit={{ opacity: 0, transition: { duration: 1.5 } }}
+                    >
+                        <div className="text-xl md:text-2xl font-light text-amber-100/90 tracking-wide font-serif italic">
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 1 }}
+                            >
+                                Before you scroll...
+                            </motion.p>
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 1.5, duration: 1 }}
+                                className="mt-4"
+                            >
+                                take one slow breath.
+                            </motion.p>
+                        </div>
+                    </motion.div>
+                )}
+
+                {/* MAIN HERO CONTENT */}
+                {step === 'content' && (
+                    <motion.div
+                        key="content"
+                        className="z-10 text-center max-w-3xl px-6 relative flex flex-col items-center"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
+                    >
+                        {/* LAYER 1: Immediate Clarity (WHAT) */}
+                        <h1 className="text-5xl md:text-7xl font-medium tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-amber-100/80 mb-8 leading-[1.1]">
+                            A 10-Minute Daily Ritual <br /> to Calm Your Mind
+                        </h1>
+
+                        {/* LAYER 2: Emotional Resonance (WHY) */}
+                        <h2 className="text-lg md:text-xl text-stone-400 font-light mb-10 max-w-xl mx-auto leading-relaxed">
+                            For overthinking minds, tired hearts, and people who don’t want another meditation app.
+                        </h2>
+
+                        {/* LAYER 3: Ownership (POWER SHIFT) */}
+                        <p className="text-xs md:text-sm text-stone-500/80 font-medium tracking-widest uppercase mb-12">
+                            No guru. No lectures. <br className="md:hidden" />
+                            You guide yourself — we simply hold the space.
+                        </p>
+
+                        {/* ACTION AREA */}
+                        <div className="flex flex-col items-center gap-8">
+                            {/* Primary CTA */}
+                            <button
+                                onClick={() => router.push('/inner-atlas')}
+                                className="group relative px-9 py-4 bg-gradient-to-b from-amber-700 to-amber-800 rounded-full text-white font-medium text-lg tracking-wide shadow-[0_4px_20px_-5px_rgba(180,83,9,0.3)] hover:shadow-[0_4px_30px_-5px_rgba(180,83,9,0.5)] hover:scale-[1.02] transition-all duration-500 overflow-hidden border border-amber-600/30"
+                            >
+                                <span className="relative z-10 flex items-center gap-3">
+                                    <span className="text-xl">🕯</span> Start a 10-Minute Ritual
+                                </span>
+                                <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+                            </button>
+
+                            {/* Secondary Links */}
+                            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 text-sm text-stone-500/80">
+                                <a href="#why-it-works" className="hover:text-amber-200/80 transition-colors border-b border-transparent hover:border-amber-400/30 pb-0.5">
+                                    See how it works →
+                                </a>
+                                <Link href="/get-started" className="hover:text-amber-200/80 transition-colors border-b border-transparent hover:border-amber-400/30 pb-0.5">
+                                    Explore the ritual kit →
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* TRUST WHISPER */}
+                        <div className="absolute -bottom-32 left-0 right-0">
+                            <p className="text-[10px] md:text-xs text-stone-600/80 tracking-[0.2em] uppercase opacity-60">
+                                Used quietly by people who don’t post about spirituality.
+                            </p>
+                        </div>
+
+                    </motion.div>
                 )}
             </AnimatePresence>
-
-        </section >
+        </section>
     );
 }
 
-// Add Link import if not present, though Next usually handles it. But wait, removing imports might break things.
-// Need to ensure imports are correct.
-// The original file used `import { useRouter } from "next/navigation";` and framer motion etc.
-// I need check imports. `Link` was NOT imported in original file (it used motion.a).
-// I should add `import Link from "next/link";` at the top or use motion.a / standard a tag logic.
-// Let's use `import Link` if I can edit imports, but `replace_file_content` targets a block.
-// I will just use motion.a or add Link import via a separate edit if needed.
-// Actually, in the replacement content I used <Link>. I must ensure Link is imported.
-// The original imports were:
-// import { motion, useMotionValue, useTransform, AnimatePresence, useSpring } from "framer-motion";
-// import { useState, useRef, useEffect } from "react";
-// import { useRouter } from "next/navigation";
-// Only those. So I need to add Link import or use normal <a> or <motion.a>.
-// I'll stick to maintaining existing imports and adding Link if possible, or just using `router.push` on a button or `a` tag.
-// I used <Link> in my replacement content. I should probably use `motion.a` or just change the top of the file as well.
-// But `replace_file_content` operates on a range.
-// Let's do a replace on the whole file body, and I'll do a separate tool call to add the import if needed.
-// actually, I'll just change <Link> to an <a href> or <button> logic to avoid import errors for now, or use the router.
-// Wait, I can just use `motion.a` or standard `a`.
-// Or I can add the import.
-// I'll try to add the import in a subsequent step if it fails? No, that breaks compilation immediately.
-// I'll use `motion.a` or standard `a` which works without `Link`, or `router.push`.
-// I'll use a `motion.button` for the main CTA (already doing that) and `motion.a` for the secondary link.
-
-
 function Particle({ mouseX, initialSide }: { mouseX: any, initialSide: number }) {
-    // "Parting curtains" effect:
-    // If initialSide is -1 (left), moving mouse moves it further left.
-    // We use a spring for smooth repulsion.
-
-    // xOffset is driven by mouseX. 
-    // If mouseX goes -0.5 (left edge), we want particles to move AWAY from center or follow?
-    // User said: "Drift away (like parting curtains)". 
-    // Usually means moving cursor into them pushes them away.
-    // Let's make them move away from the cursor broadly.
-
+    // Reusing the particle logic from before...
+    // Only difference is imports are handled above.
     const xRepulsion = useTransform(mouseX, [-0.5, 0.5], [initialSide * -50, initialSide * 50]);
     const springX = useSpring(xRepulsion, { stiffness: 50, damping: 20 });
 
@@ -164,7 +157,7 @@ function Particle({ mouseX, initialSide }: { mouseX: any, initialSide: number })
                 scale: Math.random() * 0.5 + 0.2,
                 opacity: 0
             }}
-            style={{ x: springX }} // Apply repulsion
+            style={{ x: springX }}
             animate={{
                 y: -100,
                 opacity: [0, 0.6, 0],
@@ -183,7 +176,6 @@ function Particle({ mouseX, initialSide }: { mouseX: any, initialSide: number })
                     delay: randomDelay
                 }
             }}
-        // Only re-calc basic positions occasionally
         />
     )
 }

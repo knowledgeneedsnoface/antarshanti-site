@@ -9,8 +9,10 @@ export default function QuickBuySticky() {
 
     useEffect(() => {
         const handleScroll = () => {
-            // Show only after scrolling past 100vh
-            const shouldShow = window.scrollY > window.innerHeight;
+            // Show only after scrolling 40% of the page
+            const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            const shouldShow = scrollPercent > 40;
+
             if (shouldShow !== isVisible) {
                 setIsVisible(shouldShow);
                 // Dispatch event for TwinWrapper overlap prevention
@@ -21,8 +23,11 @@ export default function QuickBuySticky() {
         };
 
         window.addEventListener("scroll", handleScroll);
+        // Initial check
+        handleScroll();
+
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    }, [isVisible]);
 
     return (
         <AnimatePresence>
@@ -51,10 +56,10 @@ export default function QuickBuySticky() {
 
                         <div className="flex flex-col">
                             <span className="text-xs font-bold text-amber-600 uppercase tracking-wide">
-                                Quick Buy
+                                Want to make this physical?
                             </span>
                             <span className="text-sm font-medium text-gray-900">
-                                10-Min Ritual Kit
+                                Get the 10-Min Ritual Kit
                             </span>
                         </div>
 
