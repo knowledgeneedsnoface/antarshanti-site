@@ -70,7 +70,7 @@ export default function EtherealScene() {
                             intensity={0.5}
                             radius={0.4}
                         />
-                        <Noise opacity={0.04} /> {/* Subtle Film Grain */}
+                        <Noise opacity={0.04} />
                         <Vignette eskil={false} offset={0.1} darkness={0.8} />
                     </EffectComposer>
                 </Suspense>
