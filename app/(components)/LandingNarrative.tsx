@@ -25,9 +25,6 @@ export default function LandingNarrative() {
         offset: ["start end", "end start"]
     });
 
-    // Scale the portal ring from 1 to 50 as we scroll through the section
-    // Tracking starts when section enters viewport.
-    // We want the zoom to happen when it's centered.
     const portalScale = useTransform(atlasProgress, [0.3, 0.6], [1, 50]);
     const portalOpacity = useTransform(atlasProgress, [0.3, 0.5, 0.6], [1, 1, 0]);
     const smoothScale = useSpring(portalScale, { stiffness: 60, damping: 20 });
@@ -61,7 +58,7 @@ export default function LandingNarrative() {
                     </motion.div>
                 </section>
 
-                {/* SECTION 2: WHAT YOU ACTUALLY DO */}
+                {/* SECTION 2: WHAT YOU ACTUALLY DO (Methodology) - CONSTELLATION PATH */}
                 <section id="why-it-works" ref={methodologyRef} className="py-32 relative">
                     {/* Spirit Particles */}
                     <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
@@ -94,11 +91,15 @@ export default function LandingNarrative() {
 
                         <div className="relative grid md:grid-cols-3 gap-12 text-center md:text-left">
 
-                            {/* Connectivity Line */}
-                            <div className="absolute top-8 left-[10%] ring-0 w-[80%] h-0.5 bg-stone-200/50 hidden md:block z-0">
+                            {/* CONSTELLATION PATH (New) */}
+                            <div className="absolute top-8 left-[10%] w-[80%] h-px hidden md:block z-0 pointer-events-none">
+                                {/* Base Faint Line */}
+                                <div className="w-full h-full border-t border-dashed border-stone-300/50" />
+
+                                {/* Glowing Active Beam */}
                                 <motion.div
-                                    className="h-full bg-amber-400"
-                                    style={{ scaleX: methodProgress, transformOrigin: "left" }}
+                                    className="absolute top-0 left-0 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent shadow-[0_0_15px_rgba(251,191,36,0.6)]"
+                                    style={{ width: "100%", scaleX: methodProgress, transformOrigin: "left" }}
                                 />
                             </div>
 
@@ -109,13 +110,15 @@ export default function LandingNarrative() {
                             ].map((step, i) => (
                                 <motion.div
                                     key={i}
-                                    className="space-y-6 group relative z-10"
+                                    className="space-y-6 group relative z-10 p-6 rounded-2xl hover:bg-white/40 transition-colors duration-500"
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: 0.1 + i * 0.2, duration: 0.6 }}
+                                    whileHover={{ scale: 1.02 }}
                                 >
-                                    <div className="w-16 h-16 rounded-full bg-white/50 backdrop-blur-sm flex items-center justify-center text-amber-600 mb-4 mx-auto md:mx-0 group-hover:scale-110 group-hover:bg-white transition-all duration-300 ring-1 ring-amber-100 shadow-sm">
+                                    {/* Glowing Star Node */}
+                                    <div className="w-16 h-16 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-amber-600 mb-4 mx-auto md:mx-0 shadow-lg ring-1 ring-amber-100 group-hover:shadow-[0_0_20px_rgba(251,191,36,0.3)] transition-all duration-300">
                                         <step.icon className="w-7 h-7" />
                                     </div>
                                     <h3 className="text-2xl font-serif text-stone-900">{step.title}</h3>
@@ -157,12 +160,12 @@ export default function LandingNarrative() {
                             </motion.div>
 
                             <motion.div
-                                className="p-10 rounded-3xl bg-white/80 backdrop-blur-xl shadow-2xl shadow-stone-200/20 text-stone-800 ring-1 ring-amber-100 relative md:-top-6"
+                                className="p-10 rounded-3xl bg-white/80 backdrop-blur-xl shadow-2xl shadow-stone-200/20 text-stone-800 ring-1 ring-amber-100 relative md:-top-6 transform-gpu"
                                 initial={{ opacity: 0, x: 30 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
                                 style={{ y: useTransform(scrollYProgress, [0.3, 0.6], [0, -100]) }}
-                                whileHover={{ y: -5, transition: { duration: 0.3 } }}
+                                whileHover={{ y: -5, rotateX: 2, rotateY: 2, transition: { duration: 0.3 } }}
                             >
                                 <div className="absolute -top-3 -right-3 w-20 h-20 bg-amber-400 rounded-full blur-2xl opacity-20 pointer-events-none" />
                                 <h3 className="text-sm font-bold mb-8 uppercase tracking-widest text-amber-600">AntarShanti</h3>
@@ -232,10 +235,17 @@ export default function LandingNarrative() {
                     </div>
                 </div>
 
-                {/* SECTION 5: SOUL TWIN & RITUAL KIT */}
-                {/* Background is handled by atmosphere (Rebirth color) */}
+                {/* SECTION 5: SOUL TWIN - LIQUID ORB EFFECT */}
                 <section className="py-32 px-6 md:px-12 relative z-10">
-                    <div className="max-w-4xl mx-auto text-center">
+                    <div className="max-w-4xl mx-auto text-center relative">
+
+                        {/* LIQUID ORB BACKDROP */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] -z-10 opacity-30 pointer-events-none">
+                            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-amber-300 fill-current blur-3xl animate-pulse">
+                                <path d="M42.7,-62.9C55.2,-52.8,65.2,-41.6,71.2,-29.1C77.2,-16.6,79.2,-2.8,75.4,9.5C71.6,21.9,62.1,32.8,51.8,42.3C41.6,51.8,30.6,59.9,18.3,63.9C6,68,-7.7,68,-20.3,63.4C-32.9,58.8,-44.4,49.7,-53.4,38.8C-62.5,27.8,-69.1,15.1,-68.6,2.6C-68,-9.9,-60.3,-22.1,-50.8,-31.8C-41.2,-41.5,-29.9,-48.6,-18.2,-59.4C-6.5,-70.2,5.6,-84.6,18.8,-83.4C32,-82.2,46.3,-65.4,42.7,-62.9Z" transform="translate(100 100)" />
+                            </svg>
+                        </div>
+
                         <motion.div
                             className="inline-flex items-center justify-center p-4 bg-white/40 rounded-full text-amber-700 mb-8 backdrop-blur-sm"
                             initial={{ scale: 0 }}
@@ -254,7 +264,7 @@ export default function LandingNarrative() {
                             Soul Twin listens. Reflects. And responds — without judging or correcting you.
                         </p>
 
-                        <Link href="/twin/demo" className="inline-block px-10 py-4 rounded-full border border-amber-600/30 text-amber-800 font-medium hover:bg-amber-100/50 hover:scale-105 transition-all duration-300">
+                        <Link href="/twin/demo" className="inline-block px-10 py-4 rounded-full border border-amber-600/30 text-amber-800 font-medium hover:bg-amber-100/50 hover:scale-105 transition-all duration-300 shadow-xl shadow-amber-500/10">
                             Try a short Soul Twin demo →
                         </Link>
                     </div>
@@ -281,6 +291,7 @@ export default function LandingNarrative() {
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8 }}
+                            whileHover={{ rotateY: 5, rotateX: 5, scale: 1.02 }}
                         >
                             <div className="text-center relative z-10">
                                 <motion.div className="text-7xl mb-6 grayscale group-hover:grayscale-0 transition-all duration-700" animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>🕯️</motion.div>
