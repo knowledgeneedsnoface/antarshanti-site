@@ -1,12 +1,11 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { MeshTransmissionMaterial } from "@react-three/drei";
 
-// Simplex Noise (Standard for smooth undulation)
-// Ported from standard GLSL noise algorithms
+// Slower, smoother noise for "breathing" liquid
 const noiseFunction = `
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -38,49 +37,29 @@ const noiseFunction = `
 
 export default function FluidMesh() {
   const meshRef = useRef<THREE.Mesh>(null);
-  const { viewport, mouse } = useThree();
+  const { viewport, clock } = useThree();
 
-  // Custom Shader Material that extends Physical Material? 
-  // For simplicity and performance, we stick to vertex displacement on a dense plane
-  // but use MeshStandardMaterial or MeshPhysicalMaterial for real lighting interaction.
-
-  // We will manually displace geometry in useFrame for maximum control?
-  // No, that's heavy on CPU. Vertex Shader is better.
-  // But we want it to look like SILK/GLASS.
-
-  // Solution: modify the onBeforeCompile of a StandardMaterial to invoke the displacement.
-
-  const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
-
-  const uniforms = useMemo(
-    () => ({
-      uTime: { value: 0 },
-      uMouse: { value: new THREE.Vector2(0, 0) },
-      uHover: { value: 0 },
-    }),
-    []
-  );
+  // Custom Material Prop Ref
+  const materialRef = useRef<any>(null);
 
   useFrame((state) => {
-    const { clock } = state;
-    if (materialRef.current) {
-      materialRef.current.userData.shader.uniforms.uTime.value = clock.getElapsedTime();
+    // 1. Uniforms Update
+    if (materialRef.current && materialRef.current.userData.shader) {
+      materialRef.current.userData.shader.uniforms.uTime.value = state.clock.getElapsedTime();
+    }
 
-      // Lerp mouse towards target for smoothness
-      const currentMouse = materialRef.current.userData.shader.uniforms.uMouse.value;
-      currentMouse.x += (mouse.x * viewport.width / 2 - currentMouse.x) * 0.1;
-      currentMouse.y += (mouse.y * viewport.height / 2 - currentMouse.y) * 0.1;
+    // 2. Slow Rotation
+    if (meshRef.current) {
+      meshRef.current.rotation.z = state.clock.getElapsedTime() * 0.02; // Slow gentle spin
     }
   });
 
   const onBeforeCompile = (shader: any) => {
-    shader.uniforms.uTime = uniforms.uTime;
-    shader.uniforms.uMouse = uniforms.uMouse;
+    shader.uniforms.uTime = { value: 0 };
 
     // Inject GLSL
     shader.vertexShader = `
       uniform float uTime;
-      uniform vec2 uMouse;
       ${noiseFunction}
       ${shader.vertexShader}
     `;
@@ -90,24 +69,20 @@ export default function FluidMesh() {
       `
         #include <begin_vertex>
         
-        // Base undulation
-        float noiseFreq = 0.5;
-        float noiseAmp = 0.5;
-        vec2 noisePos = vec2(position.x * noiseFreq + uTime * 0.2, position.y * noiseFreq);
+        // Large, slow breathing waves
+        float noiseFreq = 0.3;
+        float noiseAmp = 0.8;
+        vec2 noisePos = vec2(position.x * noiseFreq + uTime * 0.1, position.y * noiseFreq);
         float elevation = snoise(noisePos) * noiseAmp;
         
-        // Mouse Ripple
-        // Distance from vertex to mouse
-        float dist = distance(position.xy, uMouse);
-        float rippleArea = 1.0 - smoothstep(0.0, 3.0, dist);
-        
-        // Ripple wave
-        float ripple = sin(dist * 5.0 - uTime * 2.0) * 0.5 * rippleArea;
-        
-        transformed.z += elevation + ripple;
+        // Secondary detail wave
+        float detailFreq = 1.2;
+        float detailAmp = 0.2;
+        float detail = snoise(vec2(position.x * detailFreq - uTime * 0.2, position.y * detailFreq)) * detailAmp;
+
+        transformed.z += elevation + detail;
         
         // Recalculate normal for lighting!
-        // (Approximation for performance)
         vNormal = normalize(vec3(elevation, elevation, 1.0));
       `
     );
@@ -120,22 +95,34 @@ export default function FluidMesh() {
 
   return (
     <mesh ref={meshRef} rotation={[0, 0, 0]}>
-      <planeGeometry args={[viewport.width * 1.5, viewport.height * 1.5, 128, 128]} />
+      {/* 
+        Heavy subdivision for smooth glass refraction 
+      */}
+      <planeGeometry args={[viewport.width * 1.5, viewport.height * 1.5, 256, 256]} />
 
       {/* 
-        This is the "Lusion" look: 
-        Dark, high roughness contrast, transmission (glassy)
+        THE LIQUID GOLD MATERIAL
+        MeshTransmissionMaterial simulates thick glass/jelly.
       */}
-      <meshPhysicalMaterial
+      <MeshTransmissionMaterial
         ref={materialRef}
-        onBeforeCompile={onBeforeCompile}
-        color="#1c1917"  // Deep Stone/Black
-        roughness={0.4}
-        metalness={0.6}
-        transmission={0.0} // Keep opaque for performance, rely on shininess
-        clearcoat={1.0}    // The "Wet" look
-        clearcoatRoughness={0.1}
-        side={THREE.DoubleSide}
+        onBeforeCompile={onBeforeCompile} // We can inject vertex displacement even into Transmission material!
+
+        /* Glass Properties */
+        transmission={1}      // Fully transmissive
+        thickness={1.5}       // Thick glass for heavy refraction
+        roughness={0.2}       // Slightly frosted
+        chromaticAberration={0.05} // Subtle rainbow at edges
+        anisotropy={0.5}      // Directional blur
+
+        /* Color Properties */
+        color="#fbbf24"       // Amber Base
+        bg="transparent"      // Let the back show through
+        resolution={1024}     // High res refraction
+        samples={10}          // Quality
+        distortion={0.5}      // Wobbly refraction
+        distortionScale={0.5}
+        temporalDistortion={0.1}
       />
     </mesh>
   );
