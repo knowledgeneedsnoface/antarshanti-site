@@ -1,6 +1,21 @@
 // app/layout.tsx
 import "./globals.css";
 import { Manrope, Cormorant_Garamond } from "next/font/google"; // High-End Lusion Stack
+import { CartProvider } from "./(components)/CartContext";
+import { ThemeProvider } from "./(components)/theme-system/ThemeContext";
+import GlobalNavbar from "./(components)/GlobalNavbar";
+import GlobalFooter from "./(components)/GlobalFooter";
+import ThemeRenderer from "./(components)/theme-system/ThemeRenderer";
+import ThemeSwitcher from "./(components)/theme-system/ThemeSwitcher";
+import MobileSettingsFab from "./(components)/MobileSettingsFab";
+import TwinWrapper from "./TwinWrapper";
+import LiteModeToggle from "./(components)/LiteModeToggle";
+import AccessibilityManager from "./(components)/AccessibilityManager";
+import TransitionController from "./(components)/TransitionController";
+import BatteryManager from "./(components)/BatteryManager";
+import Watermark from "./(components)/Watermark";
+import BreathingIndicator from "./(components)/BreathingIndicator";
+import SmoothScroll from "./(components)/SmoothScroll";
 
 const manrope = Manrope({
   subsets: ["latin"],
