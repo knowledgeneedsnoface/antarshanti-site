@@ -73,7 +73,7 @@ export default function FluidMesh() {
     }
   });
 
-  const onBeforeCompile = (shader: THREE.Shader) => {
+  const onBeforeCompile = (shader: any) => {
     shader.uniforms.uTime = uniforms.uTime;
     shader.uniforms.uMouse = uniforms.uMouse;
 
