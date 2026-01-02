@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import Link from "next/link";
 import { MoveRight, Sparkles, Flame, Wind, Anchor } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 export default function LandingNarrative() {
     const containerRef = useRef(null);
@@ -18,368 +18,290 @@ export default function LandingNarrative() {
         offset: ["start center", "end center"]
     });
 
+    // Portal Zoom Logic specifically for the Atlas Section
+    const atlasRef = useRef(null);
+    const { scrollYProgress: atlasProgress } = useScroll({
+        target: atlasRef,
+        offset: ["start end", "end start"]
+    });
+
+    // Scale the portal ring from 1 to 50 as we scroll through the section
+    // Tracking starts when section enters viewport.
+    // We want the zoom to happen when it's centered.
+    const portalScale = useTransform(atlasProgress, [0.3, 0.6], [1, 50]);
+    const portalOpacity = useTransform(atlasProgress, [0.3, 0.5, 0.6], [1, 1, 0]);
+    const smoothScale = useSpring(portalScale, { stiffness: 60, damping: 20 });
+
+    // Fade out text as we fly through
+    const textOpacity = useTransform(atlasProgress, [0.4, 0.55], [1, 0]);
+
     return (
-        <div ref={containerRef} className="bg-[#faf9f6] text-stone-800 overflow-hidden relative">
+        <div ref={containerRef} className="text-stone-800 relative z-10 pointer-events-none">
+            <div className="pointer-events-auto">
 
-            {/* SECTION 1: WHY THIS EXISTS (Validation) */}
-            <section className="py-32 px-6 md:px-12 max-w-4xl mx-auto text-center">
-                <RevealTitle text="You’re not broken." highlight="You’re just overstimulated." />
-
-                <motion.div
-                    className="max-w-2xl mx-auto space-y-6 text-xl text-stone-600 font-light leading-relaxed mt-10"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3, duration: 0.8 }}
-                >
-                    <p>
-                        Most people don’t need motivation or discipline.
-                        They need a pause that feels safe.
-                    </p>
-                    <p>
-                        AntarShanti isn’t about becoming better.
-                        It’s about returning to yourself — a little, every day.
-                    </p>
-                </motion.div>
-            </section>
-
-            {/* SECTION 2: WHAT YOU ACTUALLY DO (Methodology) */}
-            <section id="why-it-works" ref={methodologyRef} className="py-32 bg-white relative">
-                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                    <motion.div
-                        style={{ y: useTransform(scrollYProgress, [0, 1], [0, 100]) }}
-                        className="absolute top-[20%] left-[10%] w-[500px] h-[500px] bg-amber-50 rounded-full blur-[100px] opacity-60"
-                    />
-                </div>
-
-                <div className="max-w-6xl mx-auto px-6 relative z-10">
-                    <motion.h2
-                        className="text-3xl md:text-4xl font-medium text-center text-stone-900 mb-20"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        What happens in those 10 minutes?
-                    </motion.h2>
-
-                    <div className="relative grid md:grid-cols-3 gap-12 text-center md:text-left">
-
-                        {/* Connectivity Line (Desktop) */}
-                        <div className="absolute top-8 left-[10%] ring-0 w-[80%] h-0.5 bg-stone-100 hidden md:block z-0">
-                            <motion.div
-                                className="h-full bg-amber-200"
-                                style={{ scaleX: methodProgress, transformOrigin: "left" }}
-                            />
-                        </div>
-
-                        {/* Step 1 */}
-                        <motion.div
-                            className="space-y-6 group relative z-10"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.1, duration: 0.6 }}
-                        >
-                            <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 mb-4 mx-auto md:mx-0 group-hover:scale-110 group-hover:bg-amber-100 transition-all duration-300 ring-8 ring-white">
-                                <Anchor className="w-7 h-7" />
-                            </div>
-                            <h3 className="text-2xl font-serif text-stone-900">1. You arrive</h3>
-                            <p className="text-stone-600 leading-relaxed text-lg">
-                                A gentle prompt brings your attention back — no silence pressure.
-                            </p>
-                        </motion.div>
-
-                        {/* Step 2 */}
-                        <motion.div
-                            className="space-y-6 group relative z-10"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.3, duration: 0.6 }}
-                        >
-                            <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 mb-4 mx-auto md:mx-0 group-hover:scale-110 group-hover:bg-amber-100 transition-all duration-300 ring-8 ring-white">
-                                <Flame className="w-7 h-7" />
-                            </div>
-                            <h3 className="text-2xl font-serif text-stone-900">2. You practice</h3>
-                            <p className="text-stone-600 leading-relaxed text-lg">
-                                A simple ritual: breath, awareness, a small act of presence.
-                            </p>
-                        </motion.div>
-
-                        {/* Step 3 */}
-                        <motion.div
-                            className="space-y-6 group relative z-10"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.5, duration: 0.6 }}
-                        >
-                            <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 mb-4 mx-auto md:mx-0 group-hover:scale-110 group-hover:bg-amber-100 transition-all duration-300 ring-8 ring-white">
-                                <Wind className="w-7 h-7" />
-                            </div>
-                            <h3 className="text-2xl font-serif text-stone-900">3. You leave lighter</h3>
-                            <p className="text-stone-600 leading-relaxed text-lg">
-                                No tracking. No streak guilt. Just calm.
-                            </p>
-                        </motion.div>
-                    </div>
+                {/* SECTION 1: WHY THIS EXISTS (Validation) */}
+                <section className="py-32 px-6 md:px-12 max-w-4xl mx-auto text-center">
+                    <RevealTitle text="You’re not broken." highlight="You’re just overstimulated." />
 
                     <motion.div
-                        className="text-center mt-20 text-sm text-stone-400 uppercase tracking-widest font-medium"
+                        className="max-w-2xl mx-auto space-y-6 text-xl text-stone-600 font-light leading-relaxed mt-10"
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.8, duration: 1 }}
+                        transition={{ delay: 0.3, duration: 0.8 }}
                     >
-                        Nothing to achieve. Nothing to unlock.
-                    </motion.div>
-                </div>
-            </section>
-
-            {/* SECTION 3: DIFFERENTIATION (Comparison) with Parallax */}
-            <section className="py-32 px-6 md:px-12 bg-stone-50 overflow-hidden">
-                <div className="max-w-4xl mx-auto">
-                    <motion.h2
-                        className="text-3xl md:text-5xl font-serif text-center text-stone-900 mb-20"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        This is not meditation. <br />
-                        <span className="text-stone-400">And it’s not therapy.</span>
-                    </motion.h2>
-
-                    <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-                        {/* Not AntarShanti - Parallax Layer 1 */}
-                        <motion.div
-                            className="p-10 rounded-3xl bg-[#efedea] text-stone-500 opacity-80 hover:opacity-100 transition-opacity duration-300"
-                            initial={{ opacity: 0, x: -30 }}
-                            whileInView={{ opacity: 0.8, x: 0 }}
-                            viewport={{ once: true }}
-                            style={{ y: useTransform(scrollYProgress, [0.3, 0.6], [50, -50]) }}
-                            transition={{ duration: 0.8 }}
-                        >
-                            <h3 className="text-sm font-bold mb-8 uppercase tracking-widest text-stone-400">Not AntarShanti</h3>
-                            <ul className="space-y-6 font-medium">
-                                <li className="flex items-center gap-4"><span className="text-stone-300 text-xl">✕</span> Long sessions</li>
-                                <li className="flex items-center gap-4"><span className="text-stone-300 text-xl">✕</span> Positive thinking</li>
-                                <li className="flex items-center gap-4"><span className="text-stone-300 text-xl">✕</span> Fix-your-life energy</li>
-                                <li className="flex items-center gap-4"><span className="text-stone-300 text-xl">✕</span> Someone talking at you</li>
-                            </ul>
-                        </motion.div>
-
-                        {/* AntarShanti - Parallax Layer 2 (Faster) */}
-                        <motion.div
-                            className="p-10 rounded-3xl bg-white shadow-2xl shadow-stone-200/50 text-stone-800 ring-1 ring-amber-100 relative md:-top-6"
-                            initial={{ opacity: 0, x: 30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            style={{ y: useTransform(scrollYProgress, [0.3, 0.6], [0, -100]) }}
-                            transition={{ delay: 0.2, duration: 0.8 }}
-                            whileHover={{ y: -5, transition: { duration: 0.3 } }}
-                        >
-                            <div className="absolute -top-3 -right-3 w-20 h-20 bg-amber-50 rounded-full blur-2xl opacity-50 pointer-events-none" />
-                            <h3 className="text-sm font-bold mb-8 uppercase tracking-widest text-amber-600">AntarShanti</h3>
-                            <ul className="space-y-6 font-medium text-lg">
-                                <li className="flex items-center gap-4"><span className="text-amber-500 text-xl">✓</span> 10 minutes</li>
-                                <li className="flex items-center gap-4"><span className="text-amber-500 text-xl">✓</span> Small, human acts</li>
-                                <li className="flex items-center gap-4"><span className="text-amber-500 text-xl">✓</span> No fixing required</li>
-                                <li className="flex items-center gap-4"><span className="text-amber-500 text-xl">✓</span> You stay in control</li>
-                            </ul>
-                        </motion.div>
-                    </div>
-                </div>
-            </section>
-
-            {/* SECTION 4: INNER ATLAS (Primary Product) */}
-            <section className="py-32 px-6 bg-[#0c0a09] text-white relative overflow-hidden">
-                {/* Living Background */}
-                <motion.div
-                    className="absolute top-0 right-0 w-[800px] h-[800px] bg-amber-900/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/3 translate-x-1/3"
-                    animate={{ scale: [1, 1.1, 1], rotate: [0, 5, 0] }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                />
-                <motion.div
-                    className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sky-900/10 rounded-full blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/3"
-                    animate={{ scale: [1, 1.2, 1], rotate: [0, -5, 0] }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                />
-
-                <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16 md:gap-24 relative z-10">
-                    <motion.div
-                        className="flex-1 space-y-10"
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        <h2 className="text-4xl md:text-6xl font-serif text-amber-50">Your Inner Atlas</h2>
-                        <div className="space-y-6 text-xl text-stone-300 font-light leading-relaxed">
-                            <p>
-                                The Inner Atlas is your personal ritual path.
-                                Each day offers a small practice designed to bring you back to the present.
-                            </p>
-                            <p>
-                                Some days it’s breath.
-                                Some days it’s noticing light, sound, or stillness.
-                            </p>
-                            <p className="text-white font-medium">
-                                Always simple. Always optional.
-                            </p>
-                        </div>
-                        <div className="pt-6">
-                            <Link href="/inner-atlas" className="group inline-flex items-center gap-3 text-amber-400 hover:text-amber-300 transition-colors text-lg font-medium">
-                                <span className="border-b border-amber-400/30 group-hover:border-amber-300 pb-1">Enter today’s ritual</span>
-                                <MoveRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </Link>
-                        </div>
-                    </motion.div>
-
-                    {/* Animated Abstract Atlas - Reused */}
-                    <motion.div
-                        className="flex-1 w-full flex items-center justify-center p-8"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2, duration: 1 }}
-                    >
-                        <div className="relative w-80 h-80">
-                            <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                                className="absolute inset-0 border border-stone-800 rounded-full opacity-60"
-                            />
-                            <motion.div
-                                animate={{ rotate: -360 }}
-                                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                                className="absolute inset-8 border border-stone-800 rounded-full opacity-40 border-dashed"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 to-transparent rounded-full" />
-                            <motion.div
-                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-gradient-to-br from-amber-500/5 via-amber-900/10 to-transparent rounded-full blur-2xl"
-                                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
-                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center z-10">
-                                <div className="text-center">
-                                    <span className="block text-4xl font-serif italic text-stone-500 mb-1">Day 1</span>
-                                    <span className="text-xs uppercase tracking-[0.3em] text-stone-600">Beginning</span>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
-
-            {/* SECTION 5: SOUL TWIN & RITUAL KIT (Kept clean for pacing, mostly re-using previous robust animation) */}
-            <section className="py-32 px-6 md:px-12 bg-amber-50/30">
-                <div className="max-w-4xl mx-auto text-center">
-                    {/* Same content as before, but ensure spacing is preserved */}
-                    <motion.div
-                        className="inline-flex items-center justify-center p-4 bg-amber-100/50 rounded-full text-amber-700 mb-8"
-                        initial={{ scale: 0 }}
-                        whileInView={{ scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                    >
-                        <Sparkles className="w-8 h-8" />
-                    </motion.div>
-
-                    <motion.h2
-                        className="text-4xl md:text-5xl font-serif text-stone-900 mb-8"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        When you want a companion, <br /> not advice.
-                    </motion.h2>
-
-                    <motion.div
-                        className="text-xl text-stone-600 font-light leading-relaxed max-w-2xl mx-auto mb-12"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2, duration: 0.8 }}
-                    >
-                        <p className="mb-4">
-                            Soul Twin listens. Reflects. And responds — without judging or correcting you.
+                        <p>
+                            Most people don’t need motivation or discipline.
+                            They need a pause that feels safe.
                         </p>
                         <p>
-                            Think of it as a calm mirror, not a coach.
+                            AntarShanti isn’t about becoming better.
+                            It’s about returning to yourself — a little, every day.
                         </p>
                     </motion.div>
+                </section>
 
-                    <Link href="/twin/demo" className="inline-block px-10 py-4 rounded-full border border-amber-600/30 text-amber-800 font-medium hover:bg-amber-100 hover:scale-105 hover:shadow-lg transition-all duration-300">
-                        Try a short Soul Twin demo →
-                    </Link>
-                </div>
-            </section>
+                {/* SECTION 2: WHAT YOU ACTUALLY DO */}
+                <section id="why-it-works" ref={methodologyRef} className="py-32 relative">
+                    {/* Spirit Particles */}
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
+                        {[...Array(5)].map((_, i) => (
+                            <motion.div
+                                key={i}
+                                className="absolute bg-amber-400/20 rounded-full blur-xl"
+                                style={{
+                                    width: Math.random() * 100 + 50,
+                                    height: Math.random() * 100 + 50,
+                                    left: `${Math.random() * 100}%`,
+                                    top: `${Math.random() * 100}%`
+                                }}
+                                animate={{ y: [0, -50, 0], x: [0, 30, 0] }}
+                                transition={{ duration: 10 + i * 2, repeat: Infinity, ease: "easeInOut" }}
+                            />
+                        ))}
+                    </div>
 
-            {/* RITUAL KIT SECTION */}
-            <section className="py-32 px-6 md:px-12 bg-white">
-                <div className="max-w-6xl mx-auto flex flex-col md:flex-row-reverse items-center gap-16 md:gap-24">
-                    {/* Reusing previous content efficiently */}
-                    <motion.div className="flex-1 space-y-10" initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-                        <h2 className="text-3xl md:text-5xl font-serif text-stone-900">Some people like to <br /> make it physical.</h2>
-                        <div className="space-y-6 text-lg text-stone-600 font-light leading-relaxed">
-                            <p>A candle. A scent. <br />A quiet signal to your nervous system that it’s time to pause.</p>
-                        </div>
-                        <div className="pt-4">
-                            <Link href="/get-started" className="group inline-flex items-center gap-2 text-stone-900 hover:text-amber-700 transition-colors font-medium text-lg">
-                                <span className="border-b border-stone-200 group-hover:border-amber-600 pb-1">See what’s inside the 10-Minute Ritual Kit</span>
-                                <MoveRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </Link>
-                        </div>
-                    </motion.div>
-                    <motion.div className="flex-1 w-full bg-stone-50 aspect-[4/3] rounded-3xl flex items-center justify-center text-stone-400 relative overflow-hidden group" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.8 }}>
-                        <div className="text-center relative z-10">
-                            <motion.div className="text-7xl mb-6 grayscale group-hover:grayscale-0 transition-all duration-700" animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>🕯️</motion.div>
-                            <p className="uppercase tracking-[0.3em] text-xs font-bold text-stone-400">The Ritual Kit</p>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
-
-            {/* SECTION 7: CLOSING INVITATION */}
-            <section className="py-40 px-6 bg-[#faf9f6] text-center relative">
-                <div className="max-w-3xl mx-auto relative z-10">
-                    <RevealTitle text="You don’t need to change your life today." />
-
-                    <motion.p
-                        className="text-2xl text-stone-600 mb-16 font-light mt-8"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.5, duration: 0.8 }}
-                    >
-                        Just give yourself <br />
-                        <span className="font-medium text-stone-900 mt-2 block">10 uninterrupted minutes.</span>
-                    </motion.p>
-
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
-                    >
-                        <Link
-                            href="/inner-atlas"
-                            className="inline-block px-12 py-5 bg-stone-900 text-white rounded-full text-xl font-medium shadow-2xl hover:bg-stone-800 hover:shadow-stone-900/20 hover:scale-[1.03] transition-all duration-300"
+                    <div className="max-w-6xl mx-auto px-6 relative z-10">
+                        <motion.h2
+                            className="text-3xl md:text-4xl font-medium text-center text-stone-900 mb-20"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
                         >
-                            Begin when you’re ready →
-                        </Link>
-                    </motion.div>
+                            What happens in those 10 minutes?
+                        </motion.h2>
+
+                        <div className="relative grid md:grid-cols-3 gap-12 text-center md:text-left">
+
+                            {/* Connectivity Line */}
+                            <div className="absolute top-8 left-[10%] ring-0 w-[80%] h-0.5 bg-stone-200/50 hidden md:block z-0">
+                                <motion.div
+                                    className="h-full bg-amber-400"
+                                    style={{ scaleX: methodProgress, transformOrigin: "left" }}
+                                />
+                            </div>
+
+                            {[
+                                { icon: Anchor, title: "1. You arrive", desc: "A gentle prompt brings your attention back." },
+                                { icon: Flame, title: "2. You practice", desc: "A simple ritual: breath, awareness, presence." },
+                                { icon: Wind, title: "3. You leave lighter", desc: "No tracking. No streak guilt. Just calm." }
+                            ].map((step, i) => (
+                                <motion.div
+                                    key={i}
+                                    className="space-y-6 group relative z-10"
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.1 + i * 0.2, duration: 0.6 }}
+                                >
+                                    <div className="w-16 h-16 rounded-full bg-white/50 backdrop-blur-sm flex items-center justify-center text-amber-600 mb-4 mx-auto md:mx-0 group-hover:scale-110 group-hover:bg-white transition-all duration-300 ring-1 ring-amber-100 shadow-sm">
+                                        <step.icon className="w-7 h-7" />
+                                    </div>
+                                    <h3 className="text-2xl font-serif text-stone-900">{step.title}</h3>
+                                    <p className="text-stone-600 leading-relaxed text-lg">{step.desc}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* SECTION 3: DIFFERENTIATION */}
+                <section className="py-32 px-6 md:px-12">
+                    <div className="max-w-4xl mx-auto">
+                        <motion.h2
+                            className="text-3xl md:text-5xl font-serif text-center text-stone-900 mb-20"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            This is not meditation. <br />
+                            <span className="text-stone-400">And it’s not therapy.</span>
+                        </motion.h2>
+
+                        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                            <motion.div
+                                className="p-10 rounded-3xl bg-white/40 backdrop-blur-md text-stone-500 hover:bg-white/60 transition-all duration-300 shadow-sm"
+                                initial={{ opacity: 0, x: -30 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                style={{ y: useTransform(scrollYProgress, [0.3, 0.6], [50, -50]) }}
+                            >
+                                <h3 className="text-sm font-bold mb-8 uppercase tracking-widest text-stone-400">Not AntarShanti</h3>
+                                <ul className="space-y-6 font-medium">
+                                    {["Long sessions", "Positive thinking", "Fix-your-life energy", "Someone talking at you"].map(item => (
+                                        <li key={item} className="flex items-center gap-4"><span className="text-stone-300 text-xl">✕</span> {item}</li>
+                                    ))}
+                                </ul>
+                            </motion.div>
+
+                            <motion.div
+                                className="p-10 rounded-3xl bg-white/80 backdrop-blur-xl shadow-2xl shadow-stone-200/20 text-stone-800 ring-1 ring-amber-100 relative md:-top-6"
+                                initial={{ opacity: 0, x: 30 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                style={{ y: useTransform(scrollYProgress, [0.3, 0.6], [0, -100]) }}
+                                whileHover={{ y: -5, transition: { duration: 0.3 } }}
+                            >
+                                <div className="absolute -top-3 -right-3 w-20 h-20 bg-amber-400 rounded-full blur-2xl opacity-20 pointer-events-none" />
+                                <h3 className="text-sm font-bold mb-8 uppercase tracking-widest text-amber-600">AntarShanti</h3>
+                                <ul className="space-y-6 font-medium text-lg">
+                                    {["10 minutes", "Small, human acts", "No fixing required", "You stay in control"].map(item => (
+                                        <li key={item} className="flex items-center gap-4"><span className="text-amber-500 text-xl">✓</span> {item}</li>
+                                    ))}
+                                </ul>
+                            </motion.div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* SECTION 4: INNER ATLAS - THE PORTAL ZOOM */}
+                {/* 
+          This is the key immersive moment.
+          The container is tall (200vh) to allow scrolling "through" the moment.
+      */}
+                <div ref={atlasRef} className="relative h-[250vh]">
+                    <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+
+                        {/* The Portal Ring */}
+                        <motion.div
+                            className="absolute flex items-center justify-center z-0 pointer-events-none"
+                            style={{ scale: smoothScale, opacity: portalOpacity }}
+                        >
+                            {/* Outer faint Rings */}
+                            <div className="w-[45vh] h-[45vh] rounded-full border-[1px] border-amber-100/20" />
+                            <div className="absolute inset-0 rounded-full border-[1px] border-amber-100/10 scale-90" />
+
+                            {/* The TunneL: As it scales, this dark gradient swallows the screen */}
+                            <div className="absolute w-[150vw] h-[150vw] bg-radial-gradient from-transparent via-[#0c0a09]/50 to-[#0c0a09] opacity-80" />
+                        </motion.div>
+
+                        {/* Content that fades in/out */}
+                        <motion.div
+                            className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16 md:gap-24 relative z-10 px-6 w-full"
+                            style={{
+                                opacity: textOpacity,
+                                scale: useTransform(atlasProgress, [0.3, 0.5], [1, 1.2])
+                            }}
+                        >
+                            <div className="flex-1 space-y-10 text-white">
+                                <h2 className="text-4xl md:text-6xl font-serif text-amber-50 shadow-black drop-shadow-lg">Your Inner Atlas</h2>
+                                <div className="space-y-6 text-xl text-stone-300 font-light leading-relaxed drop-shadow-md">
+                                    <p>The Inner Atlas is your personal ritual path.</p>
+                                    <p className="text-white font-medium">Always simple. Always optional.</p>
+                                </div>
+                                <div className="pt-6">
+                                    <Link href="/inner-atlas" className="group inline-flex items-center gap-3 text-amber-400 text-lg font-medium">
+                                        <span className="border-b border-amber-400/30 pb-1">Enter today’s ritual</span>
+                                        <MoveRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                </div>
+                            </div>
+
+                            {/* Fixed Spinning Graphic - Disappears into zoom */}
+                            <div className="flex-1 w-full flex items-center justify-center">
+                                <div className="relative w-80 h-80">
+                                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: "linear" }} className="absolute inset-0 border border-stone-500/50 rounded-full opacity-60" />
+                                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                                        <span className="block text-4xl font-serif italic text-stone-400">Day 1</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
                 </div>
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-amber-100/30 rounded-full blur-[120px] pointer-events-none" />
-            </section>
+
+                {/* SECTION 5: SOUL TWIN & RITUAL KIT */}
+                {/* Background is handled by atmosphere (Rebirth color) */}
+                <section className="py-32 px-6 md:px-12 relative z-10">
+                    <div className="max-w-4xl mx-auto text-center">
+                        <motion.div
+                            className="inline-flex items-center justify-center p-4 bg-white/40 rounded-full text-amber-700 mb-8 backdrop-blur-sm"
+                            initial={{ scale: 0 }}
+                            whileInView={{ scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ type: "spring", stiffness: 200 }}
+                        >
+                            <Sparkles className="w-8 h-8" />
+                        </motion.div>
+
+                        <h2 className="text-4xl md:text-5xl font-serif text-stone-900 mb-8">
+                            When you want a companion, <br /> not advice.
+                        </h2>
+
+                        <p className="text-xl text-stone-600 font-light leading-relaxed max-w-2xl mx-auto mb-12">
+                            Soul Twin listens. Reflects. And responds — without judging or correcting you.
+                        </p>
+
+                        <Link href="/twin/demo" className="inline-block px-10 py-4 rounded-full border border-amber-600/30 text-amber-800 font-medium hover:bg-amber-100/50 hover:scale-105 transition-all duration-300">
+                            Try a short Soul Twin demo →
+                        </Link>
+                    </div>
+                </section>
+
+                {/* RITUAL KIT - Clean Card */}
+                <section className="py-32 px-6 md:px-12">
+                    <div className="max-w-6xl mx-auto flex flex-col md:flex-row-reverse items-center gap-16 md:gap-24">
+                        {/* Reusing previous content */}
+                        <div className="flex-1 space-y-10">
+                            <h2 className="text-3xl md:text-5xl font-serif text-stone-900">Some people like to <br /> make it physical.</h2>
+                            <p className="text-lg text-stone-600 font-light leading-relaxed">A quiet signal to your nervous system that it’s time to pause.</p>
+                            <div className="pt-4">
+                                <Link href="/get-started" className="group inline-flex items-center gap-2 text-stone-900 hover:text-amber-700 transition-colors font-medium text-lg">
+                                    <span className="border-b border-stone-200 group-hover:border-amber-600 pb-1">See what’s inside the 10-Minute Ritual Kit</span>
+                                    <MoveRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </Link>
+                            </div>
+                        </div>
+                        {/* Image Card */}
+                        <motion.div
+                            className="flex-1 w-full bg-white/50 aspect-[4/3] rounded-3xl flex items-center justify-center text-stone-400 relative overflow-hidden group shadow-xl backdrop-blur-sm"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            <div className="text-center relative z-10">
+                                <motion.div className="text-7xl mb-6 grayscale group-hover:grayscale-0 transition-all duration-700" animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>🕯️</motion.div>
+                            </div>
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* SECTION 7: CLOSING INVITATION */}
+                <section className="py-40 px-6 text-center relative">
+                    <div className="max-w-3xl mx-auto relative z-10">
+                        <RevealTitle text="You don’t need to change your life today." />
+                        <p className="text-2xl text-stone-600 mb-16 font-light mt-8">Just give yourself <span className="font-medium text-stone-900">10 uninterrupted minutes.</span></p>
+                        <Link href="/inner-atlas" className="inline-block px-12 py-5 bg-stone-900 text-white rounded-full text-xl font-medium shadow-2xl hover:scale-[1.03] transition-all">Begin when you’re ready →</Link>
+                    </div>
+                </section>
+            </div>
         </div>
     );
 }
 
-// Text Reveal Component using Framer Motion Stagger
 function RevealTitle({ text, highlight }: { text: string, highlight?: string }) {
     const words = text.split(" ");
     return (
