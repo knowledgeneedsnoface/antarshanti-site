@@ -31,8 +31,8 @@ const PATHS = {
 };
 
 export default function SpiritualTwin() {
-  const [step, setStep] = useState('selection');
-  const [selectedPath, setSelectedPath] = useState<string | null>(null);
+  const [step, setStep] = useState('chat'); // Default to chat to skip selection
+  const [selectedPath, setSelectedPath] = useState<string | null>('peace'); // Default to Path of Peace
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,7 +49,28 @@ export default function SpiritualTwin() {
       try {
         const result = await localStorage.getItem('twin-memory');
         if (result) {
-          setMemory(JSON.parse(result));
+          const parsedMemory = JSON.parse(result);
+          setMemory(parsedMemory);
+
+          // Initial greeting if starting directly in chat
+          if (messages.length === 0 && step === 'chat' && selectedPath) {
+            setMessages([
+              {
+                role: 'assistant',
+                content: `Welcome to the ${PATHS[selectedPath as keyof typeof PATHS].name}. I am your spiritual companion on this journey. ${parsedMemory.keywords.length > 0 ? `I remember our conversations about: ${parsedMemory.keywords.slice(-5).join(', ')}. ` : ''}How may I guide you today?`
+              }
+            ]);
+          }
+        } else {
+          // Initial greeting if no memory
+          if (messages.length === 0 && step === 'chat' && selectedPath) {
+            setMessages([
+              {
+                role: 'assistant',
+                content: `Welcome to the ${PATHS[selectedPath as keyof typeof PATHS].name}. I am your spiritual companion on this journey. How may I guide you today?`
+              }
+            ]);
+          }
         }
       } catch (error) {
         console.log('No previous memory found');
