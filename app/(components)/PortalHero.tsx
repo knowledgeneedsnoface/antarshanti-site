@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useTransform, AnimatePresence, useSpring } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function PortalHero() {
     const router = useRouter();
@@ -11,14 +12,12 @@ export default function PortalHero() {
 
     // Mouse tracking for "Curtain Parting" effect
     const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
 
     const handleMouseMove = (e: React.MouseEvent) => {
         if (typeof window === "undefined") return;
-        const { clientX, clientY } = e;
-        const { innerWidth, innerHeight } = window;
+        const { clientX } = e;
+        const { innerWidth } = window;
         mouseX.set(clientX / innerWidth - 0.5);
-        mouseY.set(clientY / innerHeight - 0.5);
     };
 
     // Particles generator
@@ -27,7 +26,7 @@ export default function PortalHero() {
     return (
         <section
             onMouseMove={handleMouseMove}
-            className="relative w-full h-screen min-h-[800px] overflow-hidden bg-[#0a0502] text-white flex flex-col items-center justify-center z-50 cursor-none" // hidden cursor for immersion if desired, or just custom
+            className="relative w-full h-screen min-h-[800px] overflow-hidden bg-[#0a0502] text-white flex flex-col items-center justify-center z-50 cursor-default"
         >
 
             {/* Floating Embers with "Curtain Parting" Repulsion */}
@@ -44,142 +43,58 @@ export default function PortalHero() {
                 );
             })}
 
-            {/* The Portal Ring */}
-            <motion.div
-                className="relative mb-12 cursor-pointer group"
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
-                onClick={() => {
-                    setIsClicked(true);
-                    setTimeout(() => router.push('/inner-atlas'), 1500);
-                }}
-                animate={{ scale: isClicked ? 50 : (isHovering ? 1.05 : 1) }}
-                transition={{ duration: isClicked ? 1.5 : 0.8, ease: isClicked ? "circIn" : "easeInOut" }}
-            >
-                {/* Glow Halo */}
-                <motion.div
-                    className="absolute inset-0 rounded-full bg-amber-600/20 blur-2xl"
-                    animate={{ opacity: isHovering ? 0.6 : 0.3, scale: isHovering ? 1.2 : 1 }}
-                />
+            {/* Main Content */}
+            <div className="z-10 text-center max-w-4xl px-6 relative">
 
-                {/* Ring SVG */}
-                <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <motion.circle
-                        cx="120" cy="120" r="100"
-                        stroke="url(#portalGradient)"
-                        strokeWidth="2"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 2, ease: "easeOut" }}
-                    />
-                    <motion.circle
-                        cx="120" cy="120" r="100"
-                        stroke="url(#portalGradient)"
-                        strokeWidth="4"
-                        initial={{ pathLength: 0, rotate: -90 }}
-                        animate={{ pathLength: isClicked ? 1 : 0.3, rotate: 270 }}
-                        transition={{ duration: 3, ease: "easeInOut", repeat: isClicked ? 0 : Infinity, repeatType: "mirror" }}
-                        className="opacity-60"
-                    />
-                    <defs>
-                        <linearGradient id="portalGradient" x1="20" y1="20" x2="220" y2="220" gradientUnits="userSpaceOnUse">
-                            <stop stopColor="#F59E0B" stopOpacity="0" />
-                            <stop offset="0.5" stopColor="#F59E0B" />
-                            <stop offset="1" stopColor="#F59E0B" stopOpacity="0" />
-                        </linearGradient>
-                    </defs>
-                </svg>
+                {/* Decorative glow behind text */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-amber-900/10 rounded-full blur-[100px] pointer-events-none" />
 
-                {/* Center Text specific to portal - "come in..." Whisper */}
-                <motion.div
-                    className="absolute inset-0 flex items-center justify-center text-sm tracking-[0.2em] text-amber-200/80 italic font-serif"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: isHovering ? 1 : 0, scale: isHovering ? 1 : 0.9 }}
-                    transition={{ duration: 0.5 }}
-                >
-                    begin...
-                </motion.div>
-            </motion.div>
-
-            {/* Main Copy */}
-            <div className="z-10 text-center max-w-2xl px-6 pointer-events-none select-none">
                 <motion.h1
-                    className="text-4xl md:text-6xl font-light text-transparent bg-clip-text bg-gradient-to-b from-white to-white/80 mb-2 tracking-tight"
+                    className="relative text-6xl md:text-8xl font-thin tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-amber-50 to-amber-200/60 mb-6"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1, duration: 1, ease: "easeOut" }}
+                >
+                    AntarShanti
+                </motion.h1>
+
+                <motion.p
+                    className="relative text-xl md:text-2xl text-amber-100/70 font-light mb-12 max-w-2xl mx-auto leading-relaxed"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3, duration: 1 }}
+                >
+                    The Inner Atlas awaits.
+                    <br />
+                    <span className="text-base md:text-lg opacity-60 mt-2 block">
+                        A personalized digital sanctuary for your daily practice.
+                    </span>
+                </motion.p>
+
+                <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1, duration: 0.8 }}
+                    transition={{ delay: 0.5, duration: 0.8 }}
+                    className="flex flex-col items-center gap-6"
                 >
-                    The Inner Atlas
-                </motion.h1>
-                <motion.p
-                    className="text-lg md:text-xl text-amber-100/80 font-light mb-8"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2, duration: 0.8 }}
-                >
-                    A customized digital world for your daily practice.
-                </motion.p>
-                <motion.p
-                    className="text-base opacity-80 mt-2 mb-6 text-white/80"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.25, duration: 0.8 }}
-                >
-                    Your personalized 30-day spiritual journey
-                </motion.p>
-                <motion.p
-                    className="text-xl md:text-2xl text-white/90 font-light leading-relaxed mb-2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3, duration: 0.8 }}
-                >
-                    Light. Breathe. Repeat.
-                    <br />
-                    A daily practice to ground your inner state.
-                </motion.p>
+                    <button
+                        onClick={() => {
+                            setIsClicked(true);
+                            setTimeout(() => router.push('/inner-atlas'), 1000);
+                        }}
+                        className="group relative px-10 py-4 bg-gradient-to-r from-amber-600 to-orange-600 rounded-full text-white font-medium text-lg tracking-wide shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_-5px_rgba(245,158,11,0.5)] hover:scale-105 transition-all duration-300 overflow-hidden"
+                    >
+                        <span className="relative z-10 flex items-center gap-2">
+                            Begin Journey
+                            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                        </span>
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                    </button>
 
-                <motion.p
-                    className="text-sm md:text-base text-amber-100/60 font-serif italic tracking-wide mb-10"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3, duration: 0.8 }}
-                >
-                    Light. Breathe. Reflect. Your inner state evolves with you.
-                </motion.p>
-
-                <motion.p
-                    className="text-xs md:text-sm text-amber-200/50 font-medium tracking-widest uppercase mb-10"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4, duration: 0.8 }}
-                >
-                    The digital sanctuary awakens only when the physical flame is lit.
-                </motion.p>
-
-                <motion.button
-                    onClick={() => {
-                        setIsClicked(true);
-                        setTimeout(() => router.push('/inner-atlas'), 1500);
-                    }}
-                    className="pointer-events-auto px-8 py-3 rounded-full border border-amber-500/30 text-amber-500/80 hover:bg-amber-500/10 hover:border-amber-500/60 hover:text-amber-400 transition-all duration-500 uppercase text-sm tracking-widest mb-6"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.5 }}
-                >
-                    Enter the Atlas
-                </motion.button>
-
-                <motion.a
-                    href="/twin/demo"
-                    className="pointer-events-auto block text-xs text-white/30 hover:text-amber-400 transition-colors uppercase tracking-widest border-b border-transparent hover:border-amber-400/50 pb-0.5"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 2 }}
-                >
-                    Or try the Twin Demo <span className="text-[10px] ml-1 opacity-50">→ 30s</span>
-                </motion.a>
+                    <Link href="/twin/demo" className="text-sm text-amber-200/40 hover:text-amber-200 transition-colors uppercase tracking-widest border-b border-transparent hover:border-amber-200/30 pb-1">
+                        Try Soul Twin Demo
+                    </Link>
+                </motion.div>
             </div>
 
             {/* Transition Whiteout Overlay */}
@@ -189,7 +104,7 @@ export default function PortalHero() {
                         className="fixed inset-0 bg-white z-[100] pointer-events-none"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 0.5, ease: "easeIn" }}
+                        transition={{ duration: 1, ease: "easeInOut" }}
                     />
                 )}
             </AnimatePresence>
@@ -197,6 +112,31 @@ export default function PortalHero() {
         </section >
     );
 }
+
+// Add Link import if not present, though Next usually handles it. But wait, removing imports might break things.
+// Need to ensure imports are correct.
+// The original file used `import { useRouter } from "next/navigation";` and framer motion etc.
+// I need check imports. `Link` was NOT imported in original file (it used motion.a).
+// I should add `import Link from "next/link";` at the top or use motion.a / standard a tag logic.
+// Let's use `import Link` if I can edit imports, but `replace_file_content` targets a block.
+// I will just use motion.a or add Link import via a separate edit if needed.
+// Actually, in the replacement content I used <Link>. I must ensure Link is imported.
+// The original imports were:
+// import { motion, useMotionValue, useTransform, AnimatePresence, useSpring } from "framer-motion";
+// import { useState, useRef, useEffect } from "react";
+// import { useRouter } from "next/navigation";
+// Only those. So I need to add Link import or use normal <a> or <motion.a>.
+// I'll stick to maintaining existing imports and adding Link if possible, or just using `router.push` on a button or `a` tag.
+// I used <Link> in my replacement content. I should probably use `motion.a` or just change the top of the file as well.
+// But `replace_file_content` operates on a range.
+// Let's do a replace on the whole file body, and I'll do a separate tool call to add the import if needed.
+// actually, I'll just change <Link> to an <a href> or <button> logic to avoid import errors for now, or use the router.
+// Wait, I can just use `motion.a` or standard `a`.
+// Or I can add the import.
+// I'll try to add the import in a subsequent step if it fails? No, that breaks compilation immediately.
+// I'll use `motion.a` or standard `a` which works without `Link`, or `router.push`.
+// I'll use a `motion.button` for the main CTA (already doing that) and `motion.a` for the secondary link.
+
 
 function Particle({ mouseX, initialSide }: { mouseX: any, initialSide: number }) {
     // "Parting curtains" effect:
