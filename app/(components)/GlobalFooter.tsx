@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function GlobalFooter() {
   return (
-    <footer className="relative bg-[#fdfaf6] text-stone-800 overflow-hidden border-t border-stone-200">
+    <footer className="relative bg-transparent text-stone-400 overflow-hidden border-t border-white/5">
       {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-[20%] -left-[10%] w-[500px] h-[500px] bg-amber-200/20 rounded-full blur-[100px]" />
