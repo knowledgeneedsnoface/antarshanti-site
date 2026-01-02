@@ -12,12 +12,14 @@ const PortalHero = dynamic(() => import("./(components)/PortalHero"), {
 
 import LandingNarrative from "./(components)/LandingNarrative";
 import QuickBuySticky from "./(components)/QuickBuySticky";
+import CursorEffect from "./(components)/CursorEffect";
 import GlobalFooter from "./(components)/GlobalFooter"; // Ensure footer is here effectively if not in layout
 
 export default function Home() {
   return (
     <>
       <div className="pt-0 bg-[#faf9f6] text-gray-900">
+        <CursorEffect />
         <PortalHero />
         <main>
           <LandingNarrative />
