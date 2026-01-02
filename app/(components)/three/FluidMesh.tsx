@@ -117,7 +117,6 @@ export default function FluidMesh() {
 
         /* Color Properties */
         color="#fbbf24"       // Amber Base
-        bg="transparent"      // Let the back show through
         resolution={1024}     // High res refraction
         samples={10}          // Quality
         distortion={0.5}      // Wobbly refraction
