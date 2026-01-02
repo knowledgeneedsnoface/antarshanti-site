@@ -14,13 +14,14 @@ import LandingNarrative from "./(components)/LandingNarrative";
 import QuickBuySticky from "./(components)/QuickBuySticky";
 import CursorEffect from "./(components)/CursorEffect";
 import AtmosphericBackground from "./(components)/AtmosphericBackground";
-import GlobalFooter from "./(components)/GlobalFooter"; // Ensure footer is here effectively if not in layout
+import EtherealScene from "./(components)/three/EtherealScene";
 
 export default function Home() {
   return (
     <>
       <div className="pt-0 text-gray-900 relative">
         <AtmosphericBackground />
+        <EtherealScene />
         <CursorEffect />
         <PortalHero />
         <main>

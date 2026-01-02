@@ -15,6 +15,7 @@ import TransitionController from "./(components)/TransitionController";
 import BatteryManager from "./(components)/BatteryManager";
 import Watermark from "./(components)/Watermark";
 import BreathingIndicator from "./(components)/BreathingIndicator";
+import SmoothScroll from "./(components)/SmoothScroll";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -55,13 +56,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <BatteryManager />
             <Watermark />
             <BreathingIndicator />
-            <TransitionController>
-              <GlobalNavbar />
-              <div className="min-h-screen relative z-10">
-                {children}
-              </div>
-              <GlobalFooter />
-            </TransitionController>
+            <SmoothScroll>
+              <TransitionController>
+                <GlobalNavbar />
+                <div className="min-h-screen relative z-10 text-rendering-optimizeLegibility antialiased">
+                  {children}
+                </div>
+                <GlobalFooter />
+              </TransitionController>
+            </SmoothScroll>
           </CartProvider>
         </ThemeProvider>
       </body>
