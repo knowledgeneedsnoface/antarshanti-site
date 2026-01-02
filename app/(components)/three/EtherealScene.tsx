@@ -52,7 +52,7 @@ export default function EtherealScene() {
                     <InteractiveLights />
 
                     {/* Cinematic Post-Processing */}
-                    <EffectComposer disableNormalPass>
+                    <EffectComposer>
                         <Bloom
                             luminanceThreshold={0.5}
                             luminanceSmoothing={0.9}
