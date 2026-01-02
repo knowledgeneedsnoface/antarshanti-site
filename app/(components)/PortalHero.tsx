@@ -64,10 +64,10 @@ export default function PortalHero() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3, duration: 1 }}
                 >
-                    The Inner Atlas awaits.
+                    Peace is a practice, not a destination.
                     <br />
-                    <span className="text-base md:text-lg opacity-60 mt-2 block">
-                        A personalized digital sanctuary for your daily practice.
+                    <span className="text-base md:text-lg opacity-80 mt-4 block font-normal">
+                        Discover the power of small, daily acts. Through simple, immersive activities, you bring yourself back to the present. This is self-therapy, where you hold the power to find your own peace.
                     </span>
                 </motion.p>
 
@@ -85,7 +85,7 @@ export default function PortalHero() {
                         className="group relative px-10 py-4 bg-gradient-to-r from-amber-600 to-orange-600 rounded-full text-white font-medium text-lg tracking-wide shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_-5px_rgba(245,158,11,0.5)] hover:scale-105 transition-all duration-300 overflow-hidden"
                     >
                         <span className="relative z-10 flex items-center gap-2">
-                            Begin Journey
+                            Start Your Practice
                             <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                         </span>
                         <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
